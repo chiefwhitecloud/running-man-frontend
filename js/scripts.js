@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 function onPageLoad(){
-	xhr.httpGetAsync("http://localhost/feed/races", function(response){
+	xhr.httpGetAsync("/feed/races", function(response){
 		var obj = JSON.parse(response);
 		var items = processRaces(obj["races"]);
 		rm.render.drawRaces(items);
