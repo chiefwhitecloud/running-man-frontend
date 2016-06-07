@@ -1,5 +1,5 @@
 
-/** 
+/**
   @typedef
 	@type raceViewModel
 	@property {string} name
@@ -7,12 +7,11 @@
   @property {string} date
 */
 
-/** 
+/**
   @typedef
   @type resultsViewModel
   @property {number} position
-  @property {string} firstName
-  @property {string} lastName
+  @property {string} name
   @property {string} resultsPath
   @property {string} time
   @property {string} sex
@@ -66,6 +65,7 @@ function renderRacerResults(url){
 
 			xhr.httpGetAsync(profilePath, function(response){
 				var obj = JSON.parse(response);
+        rm.render.drawRacerName(obj["name"]);
 				rm.render.drawRacerBirthdate(obj["birthDateLow"], obj["birthDateHigh"]);
 			})
 		})
@@ -129,12 +129,11 @@ function processRaceResults(racers, results, races){
 
 	for (var i = 0; i < results.length; i++) {
    	items.push(/** @type {resultsViewModel} */ ({
-   		position: results[i].position, 
-   		firstName: racers[results[i].racerId].firstName,
-   		lastName: racers[results[i].racerId].lastName,
+   		position: results[i].position,
+   		name: results[i].name,
    		resultsPath: racers[results[i].racerId].resultsPath,
    		time: results[i].time,
-   		sex: racers[results[i].racerId].sex,
+   		sex: results[i].sex,
    		sexPosition: results[i].sexPosition,
    		ageCategory: results[i].ageCategory,
    		ageCategoryPosition: results[i].ageCategoryPosition,
@@ -146,7 +145,7 @@ function processRaceResults(racers, results, races){
 
 	/** @type {raceResultViewModel} */
 	return {
-		results: items, 
+		results: items,
 		race: processRace(races[results[0].raceId])
 	};
 };
@@ -189,10 +188,12 @@ rm.render.drawRaces = function(races){
 
 rm.render.drawRacerResults = function (racerResultsVM){
 	rm.render.clearPage();
-	var header = document.createElement("h1");
-	header.textContent = racerResultsVM.racer.firstName + ' ' + racerResultsVM.racer.lastName;
+
+  var header = document.createElement("h1");
+  header.setAttribute("id", "racer-name");
 	document.body.appendChild(header);
-	var birthdate = document.createElement("div");
+
+  var birthdate = document.createElement("div");
 	birthdate.setAttribute("id", "birthdate");
 	document.body.appendChild(birthdate);
 
@@ -204,6 +205,11 @@ rm.render.drawRacerResults = function (racerResultsVM){
 rm.render.drawRacerBirthdate = function(low, high){
 	var div = document.body.querySelector("#birthdate");
 	div.textContent = low + ' - ' + high;
+}
+
+rm.render.drawRacerName = function(name){
+	var div = document.body.querySelector("#racer-name");
+	div.textContent = name;
 }
 
 /**
@@ -277,9 +283,9 @@ rm.render.getRaceResultsTable = function (results, opt_racerView){
 
    	var bib = document.createElement("td");
    	bib.textContent = results[i].bibNumber;
-		
+
 		var name = document.createElement("td");
-   	name.textContent = results[i].firstName + ' ' + results[i].lastName;
+   	name.textContent = results[i].name;
 
    	var time = document.createElement("td");
    	time.textContent = results[i].time;
@@ -332,12 +338,12 @@ rm.render.getRaceResultsTable = function (results, opt_racerView){
 			}
 		}
 
-		
+
 		if (racerSelfPath != undefined){
 			history.pushState({ type: 'racerResults', dataUrl: racerSelfPath}, "help", "/racer/" + racerId);
 			renderRacerResults(racerSelfPath);
 		}
-		
+
   }, false);
 
 	container.appendChild(table);
@@ -381,17 +387,14 @@ window.onpopstate = function(event) {
 };
 
 
-
-
-
 var xhr = {}
 
 xhr.httpGetAsync = function(url, callback){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
+    xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", url, true); 
+    xmlHttp.open("GET", url, true);
     xmlHttp.send(null);
 }
