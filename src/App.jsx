@@ -15,4 +15,10 @@ render((
       <Route path="/racer/:racerId" component={Racer}/>
     </Route>
   </Router>
-), document.getElementById('rrContent'))
+), document.getElementById('rrContent'));
+
+document.body.style.margin = "0px";
+document.body.style.padding = "0px";
+document.body.style.fontFamily = "Verdana";
+document.body.style.fontSize = "18px";
+document.body.style.backgroundColor = "#eaf0f2";

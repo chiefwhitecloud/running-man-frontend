@@ -2,7 +2,6 @@ import React from 'react';
 
 const RaceHeader = (props) => {
   var containerStyle = {
-    maxWidth: "800px",
   }
   var clearStyle ={
     clear: "both"

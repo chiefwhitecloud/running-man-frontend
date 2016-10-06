@@ -8,14 +8,10 @@ require("regenerator-runtime/runtime");
 
 require("core-js/fn/regexp/escape");
 
-/* eslint max-len: 0 */
-
 if (global._babelPolyfill) {
   throw new Error("only one instance of babel-polyfill is allowed");
 }
 global._babelPolyfill = true;
-
-// Should be removed in the next major release:
 
 var DEFINE_PROPERTY = "defineProperty";
 function define(O, key, value) {
@@ -32693,7 +32689,8 @@ function is(x, y) {
   if (x === y) {
     // Steps 1-5, 7-10
     // Steps 6.b-6.e: +0 != -0
-    return x !== 0 || 1 / x === 1 / y;
+    // Added the nonzero y check to make Flow happy, but it is redundant
+    return x !== 0 || y !== 0 || 1 / x === 1 / y;
   } else {
     // Step 6.a: NaN == NaN
     return x !== x && y !== y;
@@ -32934,6 +32931,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   )
 ), document.getElementById('rrContent'));
 
+document.body.style.margin = "0px";
+document.body.style.padding = "0px";
+document.body.style.fontFamily = "Verdana";
+document.body.style.fontSize = "18px";
+document.body.style.backgroundColor = "#eaf0f2";
+
 },{"./components/App":532,"./components/FilterableRaceResults":534,"./components/RaceList":536,"./components/Racer":538,"babel-polyfill":1,"react":530,"react-dom":298,"react-router":328}],532:[function(require,module,exports){
 'use strict';
 
@@ -32945,23 +32948,67 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App(props) {
+  var headerStyle = {
+    backgroundColor: "#292c2f",
+    boxShadow: "1px 2px 2px rgba(0, 0, 0, 0.15)",
+    padding: "20px 40px",
+    height: "80px",
+    boxSizing: "border-box"
+  };
+
+  var innerHeaderStyle = {
+    maxWidth: "1200px",
+    textAlign: "center",
+    margin: "0 auto"
+  };
+
+  var logoStyle = {
+    float: "left",
+    font: "normal 28px Cookie, Arial, Helvetica, sans-serif",
+    lineHeight: "40px",
+    margin: "0"
+  };
+
+  var containerStyle = {
+    maxWidth: "1200px",
+    margin: "0px auto"
+  };
+
   return _react2.default.createElement(
     'div',
     null,
     _react2.default.createElement(
       'div',
-      null,
-      'Running Man'
+      { style: headerStyle },
+      _react2.default.createElement(
+        'div',
+        { style: innerHeaderStyle },
+        _react2.default.createElement(
+          'h1',
+          { style: logoStyle },
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: "/", style: { textDecoration: "none", color: "#ffffff" } },
+            'Running Man'
+          )
+        )
+      )
     ),
-    props.children
+    _react2.default.createElement(
+      'div',
+      { style: containerStyle },
+      props.children
+    )
   );
 };
 exports.default = App;
 
-},{"react":530}],533:[function(require,module,exports){
+},{"react":530,"react-router":328}],533:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33268,9 +33315,7 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RaceHeader = function RaceHeader(props) {
-  var containerStyle = {
-    maxWidth: "800px"
-  };
+  var containerStyle = {};
   var clearStyle = {
     clear: "both"
   };
@@ -33433,7 +33478,7 @@ var RaceResults = function (_React$Component) {
       var rows = [];
 
       var selectedRacer = {
-        backgroundColor: "gray"
+        backgroundColor: "#2196f3"
       };
 
       if (this.props.results.length > 0) {
@@ -33512,12 +33557,18 @@ var RaceResults = function (_React$Component) {
         }
       }
 
+      var tableStyle = {
+        textTransform: "uppercase",
+        borderSpacing: "0px",
+        width: "100%"
+      };
+
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
           'table',
-          null,
+          { style: tableStyle },
           _react2.default.createElement(
             'thead',
             null,
@@ -33918,7 +33969,7 @@ var XHR = function () {
     }], [{
         key: 'get',
         value: function get(URL) {
-            var opt = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             var xhr = new XHR('GET');
             return xhr.request(URL, opt);
@@ -33926,7 +33977,7 @@ var XHR = function () {
     }, {
         key: 'post',
         value: function post(URL) {
-            var opt = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             var xhr = new XHR('POST');
             return xhr.request(URL, opt);
@@ -33934,7 +33985,7 @@ var XHR = function () {
     }, {
         key: 'put',
         value: function put(URL) {
-            var opt = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             var xhr = new XHR('put');
             return xhr.request(URL, opt);
@@ -33942,7 +33993,7 @@ var XHR = function () {
     }, {
         key: 'delete',
         value: function _delete(URL) {
-            var opt = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             var xhr = new XHR('DELETE');
             return xhr.request(URL, opt);

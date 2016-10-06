@@ -1,5 +1,5 @@
 {
-  "name": "Running Man Frontend",
+  "name": "running-man-frontend",
   "version": "0.0.1",
   "description": "Display and Analyze Road Running Results",
   "main": "server.js",

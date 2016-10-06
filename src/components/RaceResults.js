@@ -14,7 +14,7 @@ class RaceResults extends React.Component {
     let rows = [];
 
     const selectedRacer = {
-      backgroundColor: "gray"
+      backgroundColor: "#2196f3"
     }
 
     if (this.props.results.length > 0){
@@ -32,8 +32,14 @@ class RaceResults extends React.Component {
       }
     }
 
+    var tableStyle ={
+      textTransform: "uppercase",
+      borderSpacing: "0px",
+      width: "100%"
+    }
+
     return <div>
-      <table>
+      <table style={tableStyle}>
         <thead>
             <tr>
               <td>Position</td>
