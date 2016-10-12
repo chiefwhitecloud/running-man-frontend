@@ -14,7 +14,8 @@ class RaceResults extends React.Component {
     let rows = [];
 
     const selectedRacer = {
-      backgroundColor: "#2196f3"
+      backgroundColor: "#2196f3",
+      height: 30
     }
 
     if (this.props.results.length > 0){
@@ -35,21 +36,22 @@ class RaceResults extends React.Component {
     var tableStyle ={
       textTransform: "uppercase",
       borderSpacing: "0px",
-      width: "100%"
+      width: "100%",
+      fontSize: "16px",
     }
 
-    return <div>
+    return <div style={{backgroundColor: "#ffffff", borderRadius: "16px", padding: "10px", marginTop: "20px", boxShadow: "4px 4px 20px -4px rgba(0,0,0,0.75)"}}>
       <table style={tableStyle}>
-        <thead>
+        <thead style={{fontWeight: "bold"}}>
             <tr>
-              <td>Position</td>
+              <td>Place</td>
               <td>Bib</td>
               <td>Name</td>
               <td>Time</td>
-              <td>Category</td>
-              <td>Category Position</td>
-              <td>Age Category</td>
-              <td>Age Category Position</td>
+              <td>Cat</td>
+              <td>Cat Place</td>
+              <td>Age</td>
+              <td>Age Place</td>
             </tr>
         </thead>
         <tbody>

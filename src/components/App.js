@@ -28,6 +28,10 @@ const App = (props) => {
     margin: "0px auto"
   }
 
+  const footerStyle = {
+    height: "200px"
+  }
+
   return <div>
     <div style={headerStyle}>
       <div style={innerHeaderStyle}>
@@ -39,6 +43,7 @@ const App = (props) => {
     <div style={containerStyle}>
       {props.children}
     </div>
+    <div style={footerStyle}></div>
   </div>
 };
 export default App;

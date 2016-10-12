@@ -11,24 +11,20 @@ export default class RacerResult extends React.Component {
       isLoading: true
    };
    let raceMeta;
-   xhr.get(this.props.race["results"]).then((raceResults) => {
 
-     let racePos1 = 1;
-     let racePos2 = 1;
+   let querystringStartPos = 1;
 
-     if (this.props.racerResult.position <= 10){
-       racePos1 = 1;
-       racePos2 = this.props.racerResult.position + 10;
-     }
-     else{
-       racePos1 = this.props.racerResult.position - 10;
-       racePos2 = this.props.racerResult.position + 10;
-     }
+   if (this.props.racerResult.position <= 10){
+     querystringStartPos = 1;
+   }
+   else{
+     querystringStartPos = this.props.racerResult.position - 10;
+   }
 
-     let filteredResults = raceResults["results"].filter(raceResult => raceResult.position >= racePos1 && raceResult.position <= racePos2);
+   xhr.get(this.props.race["results"] + "?startPos=" + querystringStartPos + "&num=" + 20).then((raceResults) => {
 
      this.setState({
-       results : filteredResults,
+       results : raceResults["results"],
        isLoading: false
      });
    });

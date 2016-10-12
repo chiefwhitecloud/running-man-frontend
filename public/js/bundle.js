@@ -32979,6 +32979,10 @@ var App = function App(props) {
     margin: "0px auto"
   };
 
+  var footerStyle = {
+    height: "200px"
+  };
+
   return _react2.default.createElement(
     'div',
     null,
@@ -33003,7 +33007,8 @@ var App = function App(props) {
       'div',
       { style: containerStyle },
       props.children
-    )
+    ),
+    _react2.default.createElement('div', { style: footerStyle })
   );
 };
 exports.default = App;
@@ -33015,15 +33020,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _xhr = require('./../xhr');
-
-var _xhr2 = _interopRequireDefault(_xhr);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33039,31 +33042,41 @@ var FilterBar = function (_React$Component) {
   function FilterBar(props) {
     _classCallCheck(this, FilterBar);
 
-    return _possibleConstructorReturn(this, (FilterBar.__proto__ || Object.getPrototypeOf(FilterBar)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (FilterBar.__proto__ || Object.getPrototypeOf(FilterBar)).call(this, props));
+
+    _this.state = { dropdownOpen: false };
+    return _this;
   }
 
   _createClass(FilterBar, [{
+    key: 'show',
+    value: function show(evt) {
+      if (evt.target.className == 'dropdown-menu' && !this.state.dropdownOpen) {
+        this.setState({ dropdownOpen: true });
+        document.addEventListener("click", this.hide.bind(this));
+      }
+    }
+  }, {
+    key: 'hide',
+    value: function hide(evt) {
+      if (evt.target.className !== 'dropdown-menu' && this.state.dropdownOpen) {
+        this.setState({ dropdownOpen: false });
+        document.removeEventListener("click", this.hide.bind(this));
+      }
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      document.removeEventListener("click", this.hide.bind(this));
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      var AgeCategory = function AgeCategory(props) {
-        if (props.isSelected) {
-          return _react2.default.createElement(
-            'b',
-            null,
-            props.displayText
-          );
-        } else {
-          return _react2.default.createElement(
-            'div',
-            null,
-            props.displayText
-          );
-        }
-      };
-
       var rows = [];
+
+      var nestedAgeCategoryMap = new Map();
 
       if (this.props.ageCategories) {
         var _iteratorNormalCompletion = true;
@@ -33071,24 +33084,12 @@ var FilterBar = function (_React$Component) {
         var _iteratorError = undefined;
 
         try {
-          var _loop = function _loop() {
+          for (var _iterator = this.props.ageCategories.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var entry = _step.value;
 
-            rows.push(_react2.default.createElement(
-              'tr',
-              { key: entry[0], onClick: function onClick() {
-                  return _this2.props.handle(entry[1]);
-                } },
-              _react2.default.createElement(
-                'td',
-                null,
-                _react2.default.createElement(AgeCategory, { displayText: entry[0], isSelected: _this2.props.selectedAgeCategoryKey && _this2.props.selectedAgeCategoryKey == entry[0] })
-              )
-            ));
-          };
-
-          for (var _iterator = this.props.ageCategories.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            _loop();
+            if (entry[1].ageCategory == undefined) {
+              nestedAgeCategoryMap.set(entry[1].sex, []);
+            }
           }
         } catch (err) {
           _didIteratorError = true;
@@ -33104,20 +33105,174 @@ var FilterBar = function (_React$Component) {
             }
           }
         }
+
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = this.props.ageCategories.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _entry = _step2.value;
+
+            if (_entry[1].ageCategory != undefined) {
+              var v = nestedAgeCategoryMap.get(_entry[1].sex);
+              v.push(_entry[1]);
+              nestedAgeCategoryMap.set(_entry[1].sex, v);
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+      }
+
+      var groupStyle = {
+        float: "left",
+        width: "200px",
+        textAlign: "center",
+        boxSizing: "border-box"
+      };
+
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        var _loop = function _loop() {
+          var _step3$value = _slicedToArray(_step3.value, 2);
+
+          var key = _step3$value[0];
+          var value = _step3$value[1];
+
+          var ageCats = nestedAgeCategoryMap.get(key);
+          ageCatDivs = [];
+          var _iteratorNormalCompletion4 = true;
+          var _didIteratorError4 = false;
+          var _iteratorError4 = undefined;
+
+          try {
+            var _loop2 = function _loop2() {
+              var n = _step4.value;
+
+              ageCatDivs.push(_react2.default.createElement(MenuOption, { key: n.key, handler: function handler() {
+                  return _this2.props.handle(n);
+                }, displayText: n.ageCategory }));
+            };
+
+            for (var _iterator4 = ageCats[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+              _loop2();
+            }
+          } catch (err) {
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+              }
+            } finally {
+              if (_didIteratorError4) {
+                throw _iteratorError4;
+              }
+            }
+          }
+
+          rows.push(_react2.default.createElement(
+            'div',
+            { key: key, style: groupStyle },
+            _react2.default.createElement(
+              'div',
+              null,
+              function () {
+                switch (key) {
+                  case "M":
+                    return "Male";
+                  case "F":
+                    return "Female";
+                  case "W":
+                    return "Wheelchair";
+                  default:
+                    return key;
+                }
+              }()
+            ),
+            ageCatDivs
+          ));
+        };
+
+        for (var _iterator3 = nestedAgeCategoryMap.entries()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var ageCatDivs;
+
+          _loop();
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+
+      var outerDivStyle = {
+        position: "relative",
+        float: "right"
+      };
+
+      var buttonStyle = {
+        width: "200px"
+      };
+
+      var dropdownStyle = {
+        position: "absolute",
+        right: "0px",
+        width: 200 * nestedAgeCategoryMap.size,
+        backgroundColor: "gray",
+        fontFamily: "sans-serif",
+        fontSize: "13px"
+      };
+
+      if (this.state.dropdownOpen) {
+        dropdownStyle["display"] = "block";
+      } else {
+        dropdownStyle["display"] = "none";
       }
 
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'table',
-          null,
+          'div',
+          { style: outerDivStyle },
           _react2.default.createElement(
-            'tbody',
-            null,
-            rows
+            'button',
+            { onClick: this.show.bind(this), className: 'dropdown-menu', style: buttonStyle },
+            'filter'
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: dropdownStyle },
+            rows,
+            _react2.default.createElement('div', { style: { clear: "both" } })
           )
-        )
+        ),
+        _react2.default.createElement('div', { style: { clear: "both" } })
       );
     }
   }]);
@@ -33127,7 +33282,50 @@ var FilterBar = function (_React$Component) {
 
 exports.default = FilterBar;
 
-},{"./../xhr":541,"react":530}],534:[function(require,module,exports){
+
+FilterBar.propTypes = {
+  selectedAgeCategoryKey: _react2.default.PropTypes.string,
+  handle: _react2.default.PropTypes.func.isRequired,
+  ageCategories: function ageCategories(props, propName) {
+    var m = props[propName];
+    if (!m) {
+      return new Error('Required property ' + propName + ' not supplied');
+    }
+    if (!(m instanceof Map)) {
+      return new Error("must be a Map");
+    }
+  }
+};
+
+var MenuOption = function (_React$Component2) {
+  _inherits(MenuOption, _React$Component2);
+
+  function MenuOption(props) {
+    _classCallCheck(this, MenuOption);
+
+    return _possibleConstructorReturn(this, (MenuOption.__proto__ || Object.getPrototypeOf(MenuOption)).call(this, props));
+  }
+
+  _createClass(MenuOption, [{
+    key: 'render',
+    value: function render() {
+
+      var style = {
+        cursor: "pointer",
+        padding: 5
+      };
+      return _react2.default.createElement(
+        'div',
+        { style: style, onClick: this.props.handler },
+        this.props.displayText
+      );
+    }
+  }]);
+
+  return MenuOption;
+}(_react2.default.Component);
+
+},{"react":530}],534:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33196,7 +33394,16 @@ var FilterableRaceResults = function (_React$Component) {
         for (var _iterator = raceResults["results"][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var result = _step.value;
 
+          if (!ageCategories.has(result.sex)) {
+            ageCategories.set(result.sex, {
+              key: result.sex,
+              sex: result.sex,
+              ageCategory: undefined
+            });
+          }
+
           var key = result.sex + ' - ' + result.ageCategory;
+
           if (!ageCategories.has(key)) {
             ageCategories.set(key, {
               key: key,
@@ -33234,11 +33441,6 @@ var FilterableRaceResults = function (_React$Component) {
   }
 
   _createClass(FilterableRaceResults, [{
-    key: 'handleRowClick',
-    value: function handleRowClick(evt) {
-      console.log(evt);
-    }
-  }, {
     key: 'handleFilterRequest',
     value: function handleFilterRequest(info) {
       var results = [];
@@ -33250,7 +33452,7 @@ var FilterableRaceResults = function (_React$Component) {
         for (var _iterator2 = this.raceResults[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var result = _step2.value;
 
-          if (result.sex == info.sex && result.ageCategory == info.ageCategory) {
+          if (result.sex == info.sex && (info.ageCategory != undefined && result.ageCategory == info.ageCategory || info.ageCategory == undefined)) {
             results.push(result);
           }
         }
@@ -33331,7 +33533,7 @@ var RaceHeader = function RaceHeader(props) {
     "div",
     { style: containerStyle },
     _react2.default.createElement(
-      "div",
+      "h2",
       { style: nameStyle },
       props.name
     ),
@@ -33478,7 +33680,8 @@ var RaceResults = function (_React$Component) {
       var rows = [];
 
       var selectedRacer = {
-        backgroundColor: "#2196f3"
+        backgroundColor: "#2196f3",
+        height: 30
       };
 
       if (this.props.results.length > 0) {
@@ -33560,25 +33763,26 @@ var RaceResults = function (_React$Component) {
       var tableStyle = {
         textTransform: "uppercase",
         borderSpacing: "0px",
-        width: "100%"
+        width: "100%",
+        fontSize: "16px"
       };
 
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { backgroundColor: "#ffffff", borderRadius: "16px", padding: "10px", marginTop: "20px", boxShadow: "4px 4px 20px -4px rgba(0,0,0,0.75)" } },
         _react2.default.createElement(
           'table',
           { style: tableStyle },
           _react2.default.createElement(
             'thead',
-            null,
+            { style: { fontWeight: "bold" } },
             _react2.default.createElement(
               'tr',
               null,
               _react2.default.createElement(
                 'td',
                 null,
-                'Position'
+                'Place'
               ),
               _react2.default.createElement(
                 'td',
@@ -33598,22 +33802,22 @@ var RaceResults = function (_React$Component) {
               _react2.default.createElement(
                 'td',
                 null,
-                'Category'
+                'Cat'
               ),
               _react2.default.createElement(
                 'td',
                 null,
-                'Category Position'
+                'Cat Place'
               ),
               _react2.default.createElement(
                 'td',
                 null,
-                'Age Category'
+                'Age'
               ),
               _react2.default.createElement(
                 'td',
                 null,
-                'Age Category Position'
+                'Age Place'
               )
             )
           ),
@@ -33840,25 +34044,19 @@ var RacerResult = function (_React$Component) {
       isLoading: true
     };
     var raceMeta = void 0;
-    _xhr2.default.get(_this.props.race["results"]).then(function (raceResults) {
 
-      var racePos1 = 1;
-      var racePos2 = 1;
+    var querystringStartPos = 1;
 
-      if (_this.props.racerResult.position <= 10) {
-        racePos1 = 1;
-        racePos2 = _this.props.racerResult.position + 10;
-      } else {
-        racePos1 = _this.props.racerResult.position - 10;
-        racePos2 = _this.props.racerResult.position + 10;
-      }
+    if (_this.props.racerResult.position <= 10) {
+      querystringStartPos = 1;
+    } else {
+      querystringStartPos = _this.props.racerResult.position - 10;
+    }
 
-      var filteredResults = raceResults["results"].filter(function (raceResult) {
-        return raceResult.position >= racePos1 && raceResult.position <= racePos2;
-      });
+    _xhr2.default.get(_this.props.race["results"] + "?startPos=" + querystringStartPos + "&num=" + 20).then(function (raceResults) {
 
       _this.setState({
-        results: filteredResults,
+        results: raceResults["results"],
         isLoading: false
       });
     });

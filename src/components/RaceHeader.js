@@ -15,7 +15,7 @@ const RaceHeader = (props) => {
     float: "right"
   }
   return  <div style={containerStyle}>
-    <div style={nameStyle}>{props.name}</div>
+    <h2 style={nameStyle}>{props.name}</h2>
     <div style={dateStyle}>{props.date}</div>
     <div style={clearStyle} />
   </div>

@@ -24,7 +24,16 @@ export default class FilterableRaceResults extends React.Component {
      let ageCategories = new Map();
 
      for (const result of raceResults["results"]) {
+       if (!ageCategories.has(result.sex)){
+         ageCategories.set(result.sex, {
+           key: result.sex,
+           sex: result.sex,
+           ageCategory: undefined
+         });
+       }
+
        let key = result.sex + ' - ' + result.ageCategory;
+
        if (!ageCategories.has(key)){
          ageCategories.set(key, {
            key: key,
@@ -45,13 +54,10 @@ export default class FilterableRaceResults extends React.Component {
      });
    });
   }
-  handleRowClick(evt) {
-    console.log(evt);
-  }
   handleFilterRequest(info){
     let results = [];
     for (const result of this.raceResults) {
-      if (result.sex == info.sex && result.ageCategory == info.ageCategory){
+      if (result.sex == info.sex && ((info.ageCategory != undefined && result.ageCategory == info.ageCategory) || info.ageCategory == undefined)){
         results.push(result);
       }
     }
