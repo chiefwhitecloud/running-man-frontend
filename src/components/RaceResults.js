@@ -35,7 +35,7 @@ class RaceResults extends React.Component {
 
     var tableStyle ={
       textTransform: "uppercase",
-      borderSpacing: "0px",
+      borderCollapse: "collapse",
       width: "100%",
       fontSize: "16px",
     }
