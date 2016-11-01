@@ -1,7 +1,6 @@
 import React from 'react'
 import xhr from './../xhr'
 import { DayOfMonth, ShortMonthName, Year } from './../DateFormatter'
-import HeroComponent from './HeroComponent'
 import { Link } from 'react-router'
 
 export default class RaceList extends React.Component {
@@ -59,20 +58,18 @@ export default class RaceList extends React.Component {
 
     let racesDay = [];
 
-    for (var [year, value] of raceMap) {
+    for (var [year, raceDateMap] of raceMap) {
       racesDay.push(<YearContainer key={year} year={year} />);
-      for (var [date, val] of value) {
+      //sort the date ascending
+      var mapAsc = new Map([...raceDateMap.entries()].sort());
+      for (var [date, val] of mapAsc) {
         let races= val.map(RaceLink);
         racesDay.push(<RaceDayContainer key={date} raceDate={date}>{races}</RaceDayContainer>)
       }
+      racesDay.push(<div key={"clearFix" + year} style={{clear:"both"}}/>);
     }
 
-    racesDay.push(<div key={"clearFix"} style={{clear:"both"}}/>);
-
-    return <div>
-      <HeroComponent/>
-      <div>{racesDay}</div>
-    </div>;
+    return <div>{racesDay}</div>;
   }
 }
 

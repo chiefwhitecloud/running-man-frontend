@@ -21,14 +21,12 @@ class RaceResults extends React.Component {
     if (this.props.results.length > 0){
       for (const result of this.props.results) {
         rows.push(<tr key={result.racerId} onClick={() => this.handleRowClick(result.racerId)} style={this.props.selectedRacerId == result.racerId ? selectedRacer : null}>
-          <td>{result.position}</td>
-          <td>{result.bibNumber}</td>
-          <td>{result.name}</td>
-          <td>{result.time}</td>
-          <td>{result.sex}</td>
-          <td>{result.sexPosition}</td>
-          <td>{result.ageCategory}</td>
-          <td>{result.ageCategoryPosition}</td>
+          <td style={{textAlign:"right", padding:"5px"}}>{result.position}</td>
+          <td style={{textAlign:"right", padding:"5px"}}>{result.bibNumber}</td>
+          <td style={{padding:"5px 5px 5px 10px"}}>{result.name}</td>
+          <td style={{textAlign:"right", padding:"5px 30px 5px 5px"}}>{result.time}</td>
+          <td>{result.sex} ({result.sexPosition})</td>
+          <td>{result.ageCategory} ({result.ageCategoryPosition})</td>
         </tr>);
       }
     }
@@ -37,21 +35,20 @@ class RaceResults extends React.Component {
       textTransform: "uppercase",
       borderCollapse: "collapse",
       width: "100%",
-      fontSize: "16px",
+      fontSize: "14px",
+      fontFamily: "monospace"
     }
 
-    return <div style={{backgroundColor: "#ffffff", borderRadius: "16px", padding: "10px", marginTop: "20px", boxShadow: "4px 4px 20px -4px rgba(0,0,0,0.75)"}}>
+    return <div style={{backgroundColor: "#ffffff", padding: "70px", marginTop: "20px"}}>
       <table style={tableStyle}>
         <thead style={{fontWeight: "bold"}}>
             <tr>
-              <td>Place</td>
-              <td>Bib</td>
-              <td>Name</td>
-              <td>Time</td>
-              <td>Cat</td>
-              <td>Cat Place</td>
-              <td>Age</td>
-              <td>Age Place</td>
+              <th style={{maxWidth:"25px", padding:"5px", textAlign:"right"}}>Place</th>
+              <th style={{padding:"5px", textAlign:"right"}}>Bib</th>
+              <th style={{padding:"5px 5px 5px 10px", textAlign:"left"}}>Name</th>
+              <th style={{padding:"5px 30px 5px 5px", textAlign:"right"}}>Time</th>
+              <th style={{padding:"5px"}}>Cat</th>
+              <th style={{padding:"5px"}}>Age</th>
             </tr>
         </thead>
         <tbody>

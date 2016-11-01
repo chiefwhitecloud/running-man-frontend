@@ -11,6 +11,7 @@ render((
   <Router history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={RaceList} />
+      <Route path="/races" component={RaceList}/>
       <Route path="/race/:raceId" component={FilterableRaceResults}/>
       <Route path="/racer/:racerId" component={Racer}/>
     </Route>

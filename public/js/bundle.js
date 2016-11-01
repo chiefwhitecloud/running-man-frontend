@@ -32926,6 +32926,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     _reactRouter.Route,
     { path: '/', component: _App2.default },
     _react2.default.createElement(_reactRouter.IndexRoute, { component: _RaceList2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/races', component: _RaceList2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/race/:raceId', component: _FilterableRaceResults2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/racer/:racerId', component: _Racer2.default })
   )
@@ -33041,6 +33042,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _HeroComponent = require('./HeroComponent');
+
+var _HeroComponent2 = _interopRequireDefault(_HeroComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App(props) {
@@ -33074,37 +33079,79 @@ var App = function App(props) {
     height: "200px"
   };
 
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
+  var res;
+
+  var navLinkStyle = {
+    fontFamily: "Cookie, Arial, Helvetica, sans-serif",
+    lineHeight: "40px",
+    textDecoration: "none",
+    width: "120px",
+    color: "#ffffff",
+    float: "right"
+  };
+
+  if (props.location.pathname == '/') {
+    res = _react2.default.createElement(
       'div',
-      { style: headerStyle },
+      null,
+      _react2.default.createElement(_HeroComponent2.default, null),
       _react2.default.createElement(
         'div',
-        { style: innerHeaderStyle },
+        { style: Object.assign(containerStyle, { marginTop: "40px" }) },
+        props.children
+      )
+    );
+  } else {
+    res = _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'div',
+        { style: headerStyle },
         _react2.default.createElement(
-          'h1',
-          { style: logoStyle },
+          'div',
+          { style: innerHeaderStyle },
+          _react2.default.createElement(
+            'h1',
+            { style: logoStyle },
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: "/", style: { textDecoration: "none", color: "#ffffff" } },
+              'Running Man'
+            )
+          ),
           _react2.default.createElement(
             _reactRouter.Link,
-            { to: "/", style: { textDecoration: "none", color: "#ffffff" } },
-            'Running Man'
-          )
+            { to: "/", style: navLinkStyle },
+            'Home'
+          ),
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: "/about", style: navLinkStyle },
+            'About'
+          ),
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: "/races", style: navLinkStyle },
+            'Races'
+          ),
+          _react2.default.createElement('div', { style: { clear: "both" } })
         )
-      )
-    ),
-    _react2.default.createElement(
-      'div',
-      { style: containerStyle },
-      props.children
-    ),
-    _react2.default.createElement('div', { style: footerStyle })
-  );
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: containerStyle },
+        props.children
+      ),
+      _react2.default.createElement('div', { style: footerStyle })
+    );
+  }
+
+  return res;
 };
 exports.default = App;
 
-},{"react":530,"react-router":328}],534:[function(require,module,exports){
+},{"./HeroComponent":536,"react":530,"react-router":328}],534:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33611,8 +33658,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function HeroComponent() {
   return _react2.default.createElement(
     "div",
-    { style: { height: "350px" } },
-    "Find and Analyze Your Road Racing Results!"
+    { style: { height: "450px", backgroundColor: "#292c2f", color: "#ffffff", position: "relative" } },
+    _react2.default.createElement(
+      "div",
+      { style: { position: "absolute", left: "50%", top: "50%", transform: "translateX(-50%) translateY(-50%)" } },
+      _react2.default.createElement(
+        "h1",
+        { style: { textAlign: "center" } },
+        "Find and Analyze Your Road Racing Results!"
+      ),
+      _react2.default.createElement(
+        "h4",
+        { style: { textAlign: "center" } },
+        "Newfoundland & Labrador Road Racing Results... Organized."
+      )
+    )
   );
 }
 
@@ -33687,13 +33747,11 @@ var _xhr2 = _interopRequireDefault(_xhr);
 
 var _DateFormatter = require('./../DateFormatter');
 
-var _HeroComponent = require('./HeroComponent');
-
-var _HeroComponent2 = _interopRequireDefault(_HeroComponent);
-
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33840,15 +33898,17 @@ var RaceList = function (_React$Component) {
           var _step3$value = _slicedToArray(_step3.value, 2);
 
           var year = _step3$value[0];
-          var value = _step3$value[1];
+          var raceDateMap = _step3$value[1];
 
           racesDay.push(_react2.default.createElement(YearContainer, { key: year, year: year }));
+          //sort the date ascending
+          var mapAsc = new Map([].concat(_toConsumableArray(raceDateMap.entries())).sort());
           var _iteratorNormalCompletion5 = true;
           var _didIteratorError5 = false;
           var _iteratorError5 = undefined;
 
           try {
-            for (var _iterator5 = value[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            for (var _iterator5 = mapAsc[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
               var _step5$value = _slicedToArray(_step5.value, 2);
 
               var date = _step5$value[0];
@@ -33875,6 +33935,8 @@ var RaceList = function (_React$Component) {
               }
             }
           }
+
+          racesDay.push(_react2.default.createElement('div', { key: "clearFix" + year, style: { clear: "both" } }));
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -33891,17 +33953,10 @@ var RaceList = function (_React$Component) {
         }
       }
 
-      racesDay.push(_react2.default.createElement('div', { key: "clearFix", style: { clear: "both" } }));
-
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_HeroComponent2.default, null),
-        _react2.default.createElement(
-          'div',
-          null,
-          racesDay
-        )
+        racesDay
       );
     }
   }]);
@@ -33975,7 +34030,7 @@ var RaceLink = function RaceLink(item) {
   );
 };
 
-},{"./../DateFormatter":532,"./../xhr":543,"./HeroComponent":536,"react":530,"react-router":328}],539:[function(require,module,exports){
+},{"./../DateFormatter":532,"./../xhr":543,"react":530,"react-router":328}],539:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34045,43 +34100,39 @@ var RaceResults = function (_React$Component) {
                 }, style: _this2.props.selectedRacerId == result.racerId ? selectedRacer : null },
               _react2.default.createElement(
                 'td',
-                null,
+                { style: { textAlign: "right", padding: "5px" } },
                 result.position
               ),
               _react2.default.createElement(
                 'td',
-                null,
+                { style: { textAlign: "right", padding: "5px" } },
                 result.bibNumber
               ),
               _react2.default.createElement(
                 'td',
-                null,
+                { style: { padding: "5px 5px 5px 10px" } },
                 result.name
               ),
               _react2.default.createElement(
                 'td',
-                null,
+                { style: { textAlign: "right", padding: "5px 30px 5px 5px" } },
                 result.time
               ),
               _react2.default.createElement(
                 'td',
                 null,
-                result.sex
+                result.sex,
+                ' (',
+                result.sexPosition,
+                ')'
               ),
               _react2.default.createElement(
                 'td',
                 null,
-                result.sexPosition
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                result.ageCategory
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                result.ageCategoryPosition
+                result.ageCategory,
+                ' (',
+                result.ageCategoryPosition,
+                ')'
               )
             ));
           };
@@ -34109,12 +34160,13 @@ var RaceResults = function (_React$Component) {
         textTransform: "uppercase",
         borderCollapse: "collapse",
         width: "100%",
-        fontSize: "16px"
+        fontSize: "14px",
+        fontFamily: "monospace"
       };
 
       return _react2.default.createElement(
         'div',
-        { style: { backgroundColor: "#ffffff", borderRadius: "16px", padding: "10px", marginTop: "20px", boxShadow: "4px 4px 20px -4px rgba(0,0,0,0.75)" } },
+        { style: { backgroundColor: "#ffffff", padding: "70px", marginTop: "20px" } },
         _react2.default.createElement(
           'table',
           { style: tableStyle },
@@ -34125,44 +34177,34 @@ var RaceResults = function (_React$Component) {
               'tr',
               null,
               _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { maxWidth: "25px", padding: "5px", textAlign: "right" } },
                 'Place'
               ),
               _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { padding: "5px", textAlign: "right" } },
                 'Bib'
               ),
               _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { padding: "5px 5px 5px 10px", textAlign: "left" } },
                 'Name'
               ),
               _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { padding: "5px 30px 5px 5px", textAlign: "right" } },
                 'Time'
               ),
               _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { padding: "5px" } },
                 'Cat'
               ),
               _react2.default.createElement(
-                'td',
-                null,
-                'Cat Place'
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
+                'th',
+                { style: { padding: "5px" } },
                 'Age'
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                'Age Place'
               )
             )
           ),
