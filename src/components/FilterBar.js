@@ -109,7 +109,7 @@ export default class FilterBar extends React.Component {
 }
 
 FilterBar.propTypes = {
-  selectedAgeCategoryKey: React.PropTypes.string,
+  selectedAgeCategoryKeys: React.PropTypes.array,
   handle: React.PropTypes.func.isRequired,
   ageCategories: function(props, propName) {
     const m = props[propName];

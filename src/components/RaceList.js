@@ -3,7 +3,7 @@ import xhr from './../xhr'
 import { DayOfMonth, ShortMonthName, Year } from './../DateFormatter'
 import { Link } from 'react-router'
 
-export default class RaceList extends React.Component {
+export class RaceList extends React.Component {
   constructor(props) {
    super(props);
    this.state = {
@@ -99,3 +99,9 @@ const RaceLink = (item) => {
     <Link to={"/race/" + item.id} style={{textDecoration: "none", display: "block", marginBottom: "5px"}}>{item.name}</Link>
   </div>;
 };
+
+export function RaceListPage() {
+  return (<div style={{marginTop: "40px"}}>
+    <RaceList />
+  </div>);
+}
