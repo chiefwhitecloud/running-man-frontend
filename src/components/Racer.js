@@ -46,12 +46,8 @@ export default class Racer extends React.Component {
   }
   render() {
 
-    var divStyle = {
-      margin: "10px"
-    };
-
     let createItem = (item) => {
-      return <div key={item.raceId} style={divStyle}>
+      return <div key={item.raceId}>
           <RaceHeader key={item.raceId} name={this.state.races[item.raceId].name}  date={this.state.races[item.raceId].date} />
           <RacerResult key={item.raceId + item.racerId} racerResult={item} race={this.state.races[item.raceId]} />
         </div>;

@@ -1,23 +1,42 @@
 import React from 'react';
+import { LongDateFormat, Year } from './../DateFormatter'
 
 const RaceHeader = (props) => {
   var containerStyle = {
+    backgroundColor: "#c6dae2",
+    borderBottom: "2px solid #a2a2a2",
+    borderSizing: "border-box",
+    padding: "50px",
+    marginTop: "50px"
   }
-  var clearStyle ={
-    clear: "both"
-  }
+
   var nameStyle = {
-    maxWidth: "400px",
+    fontSize: "36px",
+    fontFamily: "sans-serif",
     float: "left"
-  }
-  var dateStyle = {
-    maxWidth: "400px",
+  };
+
+  var yearStyle = {
+    fontSize: "36px",
+    fontFamily: "sans-serif",
     float: "right"
-  }
+  };
+
+  var dateStyle = {
+    fontSize: "14px",
+    fontFamily: "sans-serif"
+  };
+
   return  <div style={containerStyle}>
-    <h2 style={nameStyle}>{props.name}</h2>
-    <div style={dateStyle}>{props.date}</div>
-    <div style={clearStyle} />
+    <div>
+      <div style={nameStyle}>{props.name}</div>
+      <div style={yearStyle}>{Year(props.date)}</div>
+      <div style={{clear:"both"}}></div>
+    </div>
+    <div style={dateStyle}>{LongDateFormat(props.date)}</div>
+    <div>
+      {props.children}
+    </div>
   </div>
 };
 

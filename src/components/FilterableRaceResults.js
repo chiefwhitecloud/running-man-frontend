@@ -86,9 +86,10 @@ export default class FilterableRaceResults extends React.Component {
     }
     else{
       return <div>
-        <RaceHeader name={this.state.race.name}  date={this.state.race.date} />
-        <SelectedFilters selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
-        <FilterBar ageCategories={this.ageCategories_} handle={this.handleFilterRequest.bind(this)} selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
+        <RaceHeader name={this.state.race.name}  date={this.state.race.date}>
+          <SelectedFilters selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
+          <FilterBar ageCategories={this.ageCategories_} handle={this.handleFilterRequest.bind(this)} selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
+        </RaceHeader>
         <RaceResults results={this.state.results} />
       </div>
     }

@@ -33661,9 +33661,12 @@ var FilterableRaceResults = function (_React$Component) {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_RaceHeader2.default, { name: this.state.race.name, date: this.state.race.date }),
-          _react2.default.createElement(_SelectedFilters2.default, { selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys }),
-          _react2.default.createElement(_FilterBar2.default, { ageCategories: this.ageCategories_, handle: this.handleFilterRequest.bind(this), selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys }),
+          _react2.default.createElement(
+            _RaceHeader2.default,
+            { name: this.state.race.name, date: this.state.race.date },
+            _react2.default.createElement(_SelectedFilters2.default, { selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys }),
+            _react2.default.createElement(_FilterBar2.default, { ageCategories: this.ageCategories_, handle: this.handleFilterRequest.bind(this), selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys })
+          ),
           _react2.default.createElement(_RaceResults2.default, { results: this.state.results })
         );
       }
@@ -33711,45 +33714,74 @@ function HeroComponent() {
 }
 
 },{"react":530}],537:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _DateFormatter = require('./../DateFormatter');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RaceHeader = function RaceHeader(props) {
-  var containerStyle = {};
-  var clearStyle = {
-    clear: "both"
+  var containerStyle = {
+    backgroundColor: "#c6dae2",
+    borderBottom: "2px solid #a2a2a2",
+    borderSizing: "border-box",
+    padding: "50px",
+    marginTop: "50px"
   };
+
   var nameStyle = {
-    maxWidth: "400px",
+    fontSize: "36px",
+    fontFamily: "sans-serif",
     float: "left"
   };
-  var dateStyle = {
-    maxWidth: "400px",
+
+  var yearStyle = {
+    fontSize: "36px",
+    fontFamily: "sans-serif",
     float: "right"
   };
+
+  var dateStyle = {
+    fontSize: "14px",
+    fontFamily: "sans-serif"
+  };
+
   return _react2.default.createElement(
-    "div",
+    'div',
     { style: containerStyle },
     _react2.default.createElement(
-      "h2",
-      { style: nameStyle },
-      props.name
+      'div',
+      null,
+      _react2.default.createElement(
+        'div',
+        { style: nameStyle },
+        props.name
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: yearStyle },
+        (0, _DateFormatter.Year)(props.date)
+      ),
+      _react2.default.createElement('div', { style: { clear: "both" } })
     ),
     _react2.default.createElement(
-      "div",
+      'div',
       { style: dateStyle },
-      props.date
+      (0, _DateFormatter.LongDateFormat)(props.date)
     ),
-    _react2.default.createElement("div", { style: clearStyle })
+    _react2.default.createElement(
+      'div',
+      null,
+      props.children
+    )
   );
 };
 
@@ -33760,7 +33792,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"react":530}],538:[function(require,module,exports){
+},{"./../DateFormatter":532,"react":530}],538:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34121,9 +34153,23 @@ var RaceResults = function (_React$Component) {
 
       var rows = [];
 
+      var headers = [];
+
+      var hasChipTime = false;
+
       var selectedRacer = {
         backgroundColor: "#2196f3",
         height: 30
+      };
+
+      var RacerRow = function RacerRow(props) {
+        return _react2.default.createElement(
+          'tr',
+          { key: props.result.racerId, onClick: function onClick() {
+              return _this2.handleRowClick(props.result.racerId);
+            }, style: props.selectedRacerId == props.result.racerId ? selectedRacer : null },
+          props.children
+        );
       };
 
       if (this.props.results.length > 0) {
@@ -34132,55 +34178,102 @@ var RaceResults = function (_React$Component) {
         var _iteratorError = undefined;
 
         try {
-          var _loop = function _loop() {
+          for (var _iterator = this.props.results[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var result = _step.value;
 
-            rows.push(_react2.default.createElement(
-              'tr',
-              { key: result.racerId, onClick: function onClick() {
-                  return _this2.handleRowClick(result.racerId);
-                }, style: _this2.props.selectedRacerId == result.racerId ? selectedRacer : null },
-              _react2.default.createElement(
-                'td',
-                { style: { textAlign: "right", padding: "5px" } },
-                result.position
-              ),
-              _react2.default.createElement(
-                'td',
-                { style: { textAlign: "right", padding: "5px" } },
-                result.bibNumber
-              ),
-              _react2.default.createElement(
-                'td',
-                { style: { padding: "5px 5px 5px 10px" } },
-                result.name
-              ),
-              _react2.default.createElement(
-                'td',
-                { style: { textAlign: "right", padding: "5px 30px 5px 5px" } },
-                result.time
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                result.sex,
-                ' (',
-                result.sexPosition,
-                ')'
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                result.ageCategory,
-                ' (',
-                result.ageCategoryPosition,
-                ')'
-              )
-            ));
-          };
-
-          for (var _iterator = this.props.results[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            _loop();
+            if (result.chipTime != undefined) {
+              hasChipTime = true;
+              rows.push(_react2.default.createElement(
+                RacerRow,
+                { result: result, selectedRacerId: this.props.selectedRacerId },
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px" } },
+                  result.position
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px" } },
+                  result.bibNumber
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { padding: "5px 5px 5px 10px" } },
+                  result.name,
+                  ' ',
+                  result.club != undefined ? '(' + result.club + ')' : ''
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px 30px 5px 5px" } },
+                  result.time
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px 30px 5px 5px" } },
+                  result.chipTime
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  result.sex,
+                  ' (',
+                  result.sexPosition,
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  result.ageCategory,
+                  ' (',
+                  result.ageCategoryPosition,
+                  ')'
+                )
+              ));
+            } else {
+              rows.push(_react2.default.createElement(
+                RacerRow,
+                { result: result, selectedRacerId: this.props.selectedRacerId },
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px" } },
+                  result.position
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px" } },
+                  result.bibNumber
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { padding: "5px 5px 5px 10px" } },
+                  result.name,
+                  ' ',
+                  result.club != undefined ? '(' + result.club + ')' : ''
+                ),
+                _react2.default.createElement(
+                  'td',
+                  { style: { textAlign: "right", padding: "5px 30px 5px 5px" } },
+                  result.time
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  result.sex,
+                  ' (',
+                  result.sexPosition,
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  result.ageCategory,
+                  ' (',
+                  result.ageCategoryPosition,
+                  ')'
+                )
+              ));
+            }
           }
         } catch (err) {
           _didIteratorError = true;
@@ -34196,6 +34289,44 @@ var RaceResults = function (_React$Component) {
             }
           }
         }
+
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { maxWidth: "25px", padding: "5px", textAlign: "right" } },
+          'Place'
+        ));
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { padding: "5px", textAlign: "right" } },
+          'Bib'
+        ));
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { padding: "5px 5px 5px 10px", textAlign: "left" } },
+          'Name'
+        ));
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { padding: "5px 30px 5px 5px", textAlign: "right" } },
+          'Time'
+        ));
+        if (hasChipTime) {
+          headers.push(_react2.default.createElement(
+            'th',
+            { style: { padding: "5px 30px 5px 5px", textAlign: "right" } },
+            'Chip'
+          ));
+        }
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { padding: "5px" } },
+          'Cat'
+        ));
+        headers.push(_react2.default.createElement(
+          'th',
+          { style: { padding: "5px" } },
+          'Age'
+        ));
       }
 
       var tableStyle = {
@@ -34208,7 +34339,7 @@ var RaceResults = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { style: { backgroundColor: "#ffffff", padding: "70px", marginTop: "20px" } },
+        { style: { backgroundColor: "#ffffff", padding: "70px" } },
         _react2.default.createElement(
           'table',
           { style: tableStyle },
@@ -34218,36 +34349,7 @@ var RaceResults = function (_React$Component) {
             _react2.default.createElement(
               'tr',
               null,
-              _react2.default.createElement(
-                'th',
-                { style: { maxWidth: "25px", padding: "5px", textAlign: "right" } },
-                'Place'
-              ),
-              _react2.default.createElement(
-                'th',
-                { style: { padding: "5px", textAlign: "right" } },
-                'Bib'
-              ),
-              _react2.default.createElement(
-                'th',
-                { style: { padding: "5px 5px 5px 10px", textAlign: "left" } },
-                'Name'
-              ),
-              _react2.default.createElement(
-                'th',
-                { style: { padding: "5px 30px 5px 5px", textAlign: "right" } },
-                'Time'
-              ),
-              _react2.default.createElement(
-                'th',
-                { style: { padding: "5px" } },
-                'Cat'
-              ),
-              _react2.default.createElement(
-                'th',
-                { style: { padding: "5px" } },
-                'Age'
-              )
+              headers
             )
           ),
           _react2.default.createElement(
@@ -34364,14 +34466,10 @@ var Racer = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var divStyle = {
-        margin: "10px"
-      };
-
       var createItem = function createItem(item) {
         return _react2.default.createElement(
           'div',
-          { key: item.raceId, style: divStyle },
+          { key: item.raceId },
           _react2.default.createElement(_RaceHeader2.default, { key: item.raceId, name: _this3.state.races[item.raceId].name, date: _this3.state.races[item.raceId].date }),
           _react2.default.createElement(_RacerResult2.default, { key: item.raceId + item.racerId, racerResult: item, race: _this3.state.races[item.raceId] })
         );
