@@ -32724,7 +32724,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./components/App":533,"./components/FilterableRaceResults":535,"./components/RaceList":538,"./components/Racer":540,"babel-polyfill":1,"react":530,"react-dom":298,"react-router":328}],532:[function(require,module,exports){
+},{"./components/App":533,"./components/FilterableRaceResults":535,"./components/RaceList":539,"./components/Racer":541,"babel-polyfill":1,"react":530,"react-dom":298,"react-router":328}],532:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33274,6 +33274,10 @@ var _FilterBar = require('./FilterBar');
 
 var _FilterBar2 = _interopRequireDefault(_FilterBar);
 
+var _Loading = require('./Loading');
+
+var _Loading2 = _interopRequireDefault(_Loading);
+
 var _SelectedFilters = require('./SelectedFilters');
 
 var _SelectedFilters2 = _interopRequireDefault(_SelectedFilters);
@@ -33440,11 +33444,7 @@ var FilterableRaceResults = function (_React$Component) {
     value: function render() {
 
       if (this.state.isLoading) {
-        return _react2.default.createElement(
-          'div',
-          null,
-          'Loading'
-        );
+        return _react2.default.createElement(_Loading2.default, null);
       } else {
         return _react2.default.createElement(
           'div',
@@ -33466,7 +33466,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":544,"./FilterBar":534,"./RaceHeader":537,"./RaceResults":539,"./SelectedFilters":543,"react":530}],536:[function(require,module,exports){
+},{"./../xhr":545,"./FilterBar":534,"./Loading":537,"./RaceHeader":538,"./RaceResults":540,"./SelectedFilters":544,"react":530}],536:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33502,6 +33502,57 @@ function HeroComponent() {
 }
 
 },{"react":530}],537:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Loading = function (_React$Component) {
+  _inherits(Loading, _React$Component);
+
+  function Loading(props, context) {
+    _classCallCheck(this, Loading);
+
+    return _possibleConstructorReturn(this, (Loading.__proto__ || Object.getPrototypeOf(Loading)).call(this, props));
+  }
+
+  _createClass(Loading, [{
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate() {
+      return false;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "loader" },
+        "Loading"
+      );
+    }
+  }]);
+
+  return Loading;
+}(_react2.default.Component);
+
+exports.default = Loading;
+
+},{"react":530}],538:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33580,7 +33631,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":532,"react":530}],538:[function(require,module,exports){
+},{"./../DateFormatter":532,"react":530}],539:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33892,7 +33943,7 @@ function RaceListPage() {
   );
 }
 
-},{"./../DateFormatter":532,"./../xhr":544,"react":530,"react-router":328}],539:[function(require,module,exports){
+},{"./../DateFormatter":532,"./../xhr":545,"react":530,"react-router":328}],540:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34141,7 +34192,7 @@ var RacerRow = function (_React$Component2) {
 
 exports.default = RaceResults;
 
-},{"./../xhr":544,"react":530}],540:[function(require,module,exports){
+},{"./../xhr":545,"react":530}],541:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34267,7 +34318,7 @@ var Racer = function (_React$Component) {
 
 exports.default = Racer;
 
-},{"./../xhr":544,"./RaceHeader":537,"./RacerDetail":541,"./RacerResult":542,"react":530}],541:[function(require,module,exports){
+},{"./../xhr":545,"./RaceHeader":538,"./RacerDetail":542,"./RacerResult":543,"react":530}],542:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34298,7 +34349,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":530}],542:[function(require,module,exports){
+},{"react":530}],543:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34385,7 +34436,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":544,"./RaceResults":539,"react":530}],543:[function(require,module,exports){
+},{"./../xhr":545,"./RaceResults":540,"react":530}],544:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34432,7 +34483,7 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":530}],544:[function(require,module,exports){
+},{"react":530}],545:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

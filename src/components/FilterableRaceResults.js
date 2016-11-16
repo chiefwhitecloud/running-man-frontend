@@ -2,6 +2,7 @@ import React from 'react'
 import RaceResults from './RaceResults'
 import RaceHeader from './RaceHeader'
 import FilterBar from './FilterBar'
+import Loading from './Loading'
 import SelectedFilters from './SelectedFilters'
 import xhr from './../xhr'
 
@@ -82,7 +83,7 @@ export default class FilterableRaceResults extends React.Component {
   render() {
 
     if (this.state.isLoading){
-      return <div>Loading</div>;
+      return <Loading />;
     }
     else{
       return <div>
