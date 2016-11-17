@@ -32685,7 +32685,13 @@ var _reactDom = require('react-dom');
 
 var _reactRouter = require('react-router');
 
-var _RaceList = require('./components/RaceList');
+var _PageLayout = require('./components/Races/PageLayout');
+
+var _PageLayout2 = _interopRequireDefault(_PageLayout);
+
+var _ListContainer = require('./components/Races/ListContainer');
+
+var _ListContainer2 = _interopRequireDefault(_ListContainer);
 
 var _FilterableRaceResults = require('./components/FilterableRaceResults');
 
@@ -32707,8 +32713,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   _react2.default.createElement(
     _reactRouter.Route,
     { path: '/', component: _App2.default },
-    _react2.default.createElement(_reactRouter.IndexRoute, { component: _RaceList.RaceList }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/races', component: _RaceList.RaceListPage }),
+    _react2.default.createElement(_reactRouter.IndexRoute, { component: _ListContainer2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/races', component: _PageLayout2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/race/:raceId', component: _FilterableRaceResults2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/racer/:racerId', component: _Racer2.default })
   )
@@ -32724,7 +32730,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./components/App":533,"./components/FilterableRaceResults":535,"./components/RaceList":539,"./components/Racer":541,"babel-polyfill":1,"react":530,"react-dom":298,"react-router":328}],532:[function(require,module,exports){
+},{"./components/App":533,"./components/FilterableRaceResults":535,"./components/Racer":540,"./components/Races/ListContainer":545,"./components/Races/PageLayout":546,"babel-polyfill":1,"react":530,"react-dom":298,"react-router":328}],532:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33466,7 +33472,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":545,"./FilterBar":534,"./Loading":537,"./RaceHeader":538,"./RaceResults":540,"./SelectedFilters":544,"react":530}],536:[function(require,module,exports){
+},{"./../xhr":549,"./FilterBar":534,"./Loading":537,"./RaceHeader":538,"./RaceResults":539,"./SelectedFilters":548,"react":530}],536:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33632,318 +33638,6 @@ RaceHeader.propTypes = {
 exports.default = RaceHeader;
 
 },{"./../DateFormatter":532,"react":530}],539:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RaceList = undefined;
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.RaceListPage = RaceListPage;
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _xhr = require('./../xhr');
-
-var _xhr2 = _interopRequireDefault(_xhr);
-
-var _DateFormatter = require('./../DateFormatter');
-
-var _reactRouter = require('react-router');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var RaceList = exports.RaceList = function (_React$Component) {
-  _inherits(RaceList, _React$Component);
-
-  function RaceList(props) {
-    _classCallCheck(this, RaceList);
-
-    var _this = _possibleConstructorReturn(this, (RaceList.__proto__ || Object.getPrototypeOf(RaceList)).call(this, props));
-
-    _this.state = {
-      items: []
-    };
-    _xhr2.default.get('/feed/races').then(function (result) {
-      _this.setState({
-        items: result["races"]
-      });
-    });
-    return _this;
-  }
-
-  _createClass(RaceList, [{
-    key: 'render',
-    value: function render() {
-
-      var raceMap = new Map();
-      var yearRegEx = /^\d{4}/;
-
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = this.state.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var value = _step.value;
-
-          var results = yearRegEx.exec(value["date"]);
-          if (results.length == 1) {
-            if (raceMap.get(results[0]) == undefined) {
-              raceMap.set(results[0], [value]);
-            } else {
-              var v = raceMap.get(results[0]);
-              v.push(value);
-              raceMap.set(results[0], v);
-            }
-          }
-        }
-
-        //group same races on same day
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = raceMap[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _step2$value = _slicedToArray(_step2.value, 2);
-
-          var year = _step2$value[0];
-          var value = _step2$value[1];
-
-          var races = raceMap.get(year);
-          var raceYearMap = new Map();
-          var prevDate = undefined;
-          var newRaceList = [];
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
-
-          try {
-            for (var _iterator4 = races[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var race = _step4.value;
-
-              if (prevDate != race["date"]) {
-                //new entry;
-                raceYearMap.set(race["date"], [race]);
-              } else {
-                //same day;
-                var _v = raceYearMap.get(race["date"]);
-                _v.push(race);
-                raceYearMap.set(race["date"], _v);
-              }
-              prevDate = race["date"];
-            }
-          } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                _iterator4.return();
-              }
-            } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
-              }
-            }
-          }
-
-          raceMap.set(year, raceYearMap);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      var racesDay = [];
-
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = raceMap[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var _step3$value = _slicedToArray(_step3.value, 2);
-
-          var year = _step3$value[0];
-          var raceDateMap = _step3$value[1];
-
-          racesDay.push(_react2.default.createElement(YearContainer, { key: year, year: year }));
-          //sort the date ascending
-          var mapAsc = new Map([].concat(_toConsumableArray(raceDateMap.entries())).sort());
-          var _iteratorNormalCompletion5 = true;
-          var _didIteratorError5 = false;
-          var _iteratorError5 = undefined;
-
-          try {
-            for (var _iterator5 = mapAsc[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-              var _step5$value = _slicedToArray(_step5.value, 2);
-
-              var date = _step5$value[0];
-              var val = _step5$value[1];
-
-              var _races = val.map(RaceLink);
-              racesDay.push(_react2.default.createElement(
-                RaceDayContainer,
-                { key: date, raceDate: date },
-                _races
-              ));
-            }
-          } catch (err) {
-            _didIteratorError5 = true;
-            _iteratorError5 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                _iterator5.return();
-              }
-            } finally {
-              if (_didIteratorError5) {
-                throw _iteratorError5;
-              }
-            }
-          }
-
-          racesDay.push(_react2.default.createElement('div', { key: "clearFix" + year, style: { clear: "both" } }));
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
-      }
-
-      return _react2.default.createElement(
-        'div',
-        null,
-        racesDay
-      );
-    }
-  }]);
-
-  return RaceList;
-}(_react2.default.Component);
-
-var YearContainer = function YearContainer(_ref) {
-  var year = _ref.year;
-
-  return _react2.default.createElement(
-    'div',
-    { style: { position: "relative", width: "388px", height: "90px", boxSizing: "border-box", fontFamily: "sans-serif", margin: "2px", fontSize: "14px", backgroundColor: "#f5f5f5", float: "left" } },
-    _react2.default.createElement(
-      'div',
-      { style: { position: "absolute", fontSize: "40px", left: "50%", top: "50%", transform: "translate(-50%,-50%)" } },
-      year
-    )
-  );
-};
-YearContainer.propTypes = { year: _react2.default.PropTypes.string };
-
-var RaceDayContainer = function RaceDayContainer(_ref2) {
-  var raceDate = _ref2.raceDate;
-  var children = _ref2.children;
-
-  return _react2.default.createElement(
-    'div',
-    { style: { width: "388px", height: "90px", boxSizing: "border-box", fontFamily: "sans-serif", margin: "2px", fontSize: "14px", backgroundColor: "#f5f5f5", float: "left" } },
-    _react2.default.createElement(
-      'div',
-      { style: { float: "left", width: "50px", textAlign: "center", boxSizing: "border-box", padding: "8px", fontFamily: "sans-serif" } },
-      _react2.default.createElement(
-        'div',
-        { style: { fontSize: "14px" } },
-        (0, _DateFormatter.ShortMonthName)(raceDate).toUpperCase()
-      ),
-      _react2.default.createElement(
-        'div',
-        { style: { fontSize: "24px" } },
-        (0, _DateFormatter.DayOfMonth)(raceDate)
-      ),
-      _react2.default.createElement(
-        'div',
-        { style: { fontSize: "12px", color: "#777777" } },
-        (0, _DateFormatter.Year)(raceDate).toUpperCase()
-      )
-    ),
-    _react2.default.createElement(
-      'div',
-      { style: { float: "right", width: "338px", boxSizing: "border-box", padding: "10px" } },
-      children
-    ),
-    _react2.default.createElement('div', { style: { clear: "both" } })
-  );
-};
-RaceDayContainer.propTypes = { raceDate: _react2.default.PropTypes.string };
-
-var RaceLink = function RaceLink(item) {
-  return _react2.default.createElement(
-    'div',
-    { key: item.id },
-    _react2.default.createElement(
-      _reactRouter.Link,
-      { to: "/race/" + item.id, style: { textDecoration: "none", display: "block", marginBottom: "5px" } },
-      item.name
-    )
-  );
-};
-
-function RaceListPage() {
-  return _react2.default.createElement(
-    'div',
-    { style: { marginTop: "40px" } },
-    _react2.default.createElement(RaceList, null)
-  );
-}
-
-},{"./../DateFormatter":532,"./../xhr":545,"react":530,"react-router":328}],540:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34192,7 +33886,7 @@ var RacerRow = function (_React$Component2) {
 
 exports.default = RaceResults;
 
-},{"./../xhr":545,"react":530}],541:[function(require,module,exports){
+},{"./../xhr":549,"react":530}],540:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34318,7 +34012,7 @@ var Racer = function (_React$Component) {
 
 exports.default = Racer;
 
-},{"./../xhr":545,"./RaceHeader":538,"./RacerDetail":542,"./RacerResult":543,"react":530}],542:[function(require,module,exports){
+},{"./../xhr":549,"./RaceHeader":538,"./RacerDetail":541,"./RacerResult":542,"react":530}],541:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34349,7 +34043,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":530}],543:[function(require,module,exports){
+},{"react":530}],542:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34436,7 +34130,392 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":545,"./RaceResults":540,"react":530}],544:[function(require,module,exports){
+},{"./../xhr":549,"./RaceResults":539,"react":530}],543:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _DateFormatter = require('./../../DateFormatter');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DayComponent = function DayComponent(_ref) {
+  var raceDate = _ref.raceDate;
+  var children = _ref.children;
+
+  return _react2.default.createElement(
+    'div',
+    { style: { width: "388px", height: "90px", boxSizing: "border-box", fontFamily: "sans-serif", margin: "2px", fontSize: "14px", backgroundColor: "#f5f5f5", float: "left" } },
+    _react2.default.createElement(
+      'div',
+      { style: { float: "left", width: "50px", textAlign: "center", boxSizing: "border-box", padding: "8px", fontFamily: "sans-serif" } },
+      _react2.default.createElement(
+        'div',
+        { style: { fontSize: "14px" } },
+        (0, _DateFormatter.ShortMonthName)(raceDate).toUpperCase()
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: { fontSize: "24px" } },
+        (0, _DateFormatter.DayOfMonth)(raceDate)
+      ),
+      _react2.default.createElement(
+        'div',
+        { style: { fontSize: "12px", color: "#777777" } },
+        (0, _DateFormatter.Year)(raceDate).toUpperCase()
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { style: { float: "right", width: "338px", boxSizing: "border-box", padding: "10px" } },
+      children
+    ),
+    _react2.default.createElement('div', { style: { clear: "both" } })
+  );
+};
+DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
+
+exports.default = DayComponent;
+
+},{"./../../DateFormatter":532,"react":530}],544:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RaceLink = function RaceLink(item) {
+  return _react2.default.createElement(
+    'div',
+    { key: item.id },
+    _react2.default.createElement(
+      _reactRouter.Link,
+      { to: "/race/" + item.id, style: { textDecoration: "none", display: "block", marginBottom: "5px" } },
+      item.name
+    )
+  );
+};
+
+exports.default = RaceLink;
+
+},{"react":530,"react-router":328}],545:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _xhr = require('./../../xhr');
+
+var _xhr2 = _interopRequireDefault(_xhr);
+
+var _YearComponent = require('./YearComponent');
+
+var _YearComponent2 = _interopRequireDefault(_YearComponent);
+
+var _DayComponent = require('./DayComponent');
+
+var _DayComponent2 = _interopRequireDefault(_DayComponent);
+
+var _LinkComponent = require('./LinkComponent');
+
+var _LinkComponent2 = _interopRequireDefault(_LinkComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class(props) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+    _this.state = {
+      items: []
+    };
+    _xhr2.default.get('/feed/races').then(function (result) {
+      _this.setState({
+        items: result["races"]
+      });
+    });
+    return _this;
+  }
+
+  _createClass(_class, [{
+    key: 'render',
+    value: function render() {
+
+      var raceMap = new Map();
+      var yearRegEx = /^\d{4}/;
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.state.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var value = _step.value;
+
+          var results = yearRegEx.exec(value["date"]);
+          if (results.length == 1) {
+            if (raceMap.get(results[0]) == undefined) {
+              raceMap.set(results[0], [value]);
+            } else {
+              var v = raceMap.get(results[0]);
+              v.push(value);
+              raceMap.set(results[0], v);
+            }
+          }
+        }
+
+        //group same races on same day
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = raceMap[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _step2$value = _slicedToArray(_step2.value, 2);
+
+          var year = _step2$value[0];
+          var value = _step2$value[1];
+
+          var races = raceMap.get(year);
+          var raceYearMap = new Map();
+          var prevDate = undefined;
+          var newRaceList = [];
+          var _iteratorNormalCompletion4 = true;
+          var _didIteratorError4 = false;
+          var _iteratorError4 = undefined;
+
+          try {
+            for (var _iterator4 = races[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+              var race = _step4.value;
+
+              if (prevDate != race["date"]) {
+                //new entry;
+                raceYearMap.set(race["date"], [race]);
+              } else {
+                //same day;
+                var _v = raceYearMap.get(race["date"]);
+                _v.push(race);
+                raceYearMap.set(race["date"], _v);
+              }
+              prevDate = race["date"];
+            }
+          } catch (err) {
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+              }
+            } finally {
+              if (_didIteratorError4) {
+                throw _iteratorError4;
+              }
+            }
+          }
+
+          raceMap.set(year, raceYearMap);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      var racesDay = [];
+
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = raceMap[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var _step3$value = _slicedToArray(_step3.value, 2);
+
+          var year = _step3$value[0];
+          var raceDateMap = _step3$value[1];
+
+          racesDay.push(_react2.default.createElement(_YearComponent2.default, { key: year, year: year }));
+          //sort the date ascending
+          var mapAsc = new Map([].concat(_toConsumableArray(raceDateMap.entries())).sort());
+          var _iteratorNormalCompletion5 = true;
+          var _didIteratorError5 = false;
+          var _iteratorError5 = undefined;
+
+          try {
+            for (var _iterator5 = mapAsc[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+              var _step5$value = _slicedToArray(_step5.value, 2);
+
+              var date = _step5$value[0];
+              var val = _step5$value[1];
+
+              var _races = val.map(_LinkComponent2.default);
+              racesDay.push(_react2.default.createElement(
+                _DayComponent2.default,
+                { key: date, raceDate: date },
+                _races
+              ));
+            }
+          } catch (err) {
+            _didIteratorError5 = true;
+            _iteratorError5 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                _iterator5.return();
+              }
+            } finally {
+              if (_didIteratorError5) {
+                throw _iteratorError5;
+              }
+            }
+          }
+
+          racesDay.push(_react2.default.createElement('div', { key: "clearFix" + year, style: { clear: "both" } }));
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        racesDay
+      );
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"./../../xhr":549,"./DayComponent":543,"./LinkComponent":544,"./YearComponent":547,"react":530}],546:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function () {
+  return _react2.default.createElement(
+    'div',
+    { style: { marginTop: "40px" } },
+    _react2.default.createElement(_ListContainer2.default, null)
+  );
+};
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ListContainer = require('./ListContainer');
+
+var _ListContainer2 = _interopRequireDefault(_ListContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"./ListContainer":545,"react":530}],547:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var YearComponent = function YearComponent(_ref) {
+  var year = _ref.year;
+
+  return _react2.default.createElement(
+    "div",
+    { style: { position: "relative", width: "388px", height: "90px", boxSizing: "border-box", fontFamily: "sans-serif", margin: "2px", fontSize: "14px", backgroundColor: "#f5f5f5", float: "left" } },
+    _react2.default.createElement(
+      "div",
+      { style: { position: "absolute", fontSize: "40px", left: "50%", top: "50%", transform: "translate(-50%,-50%)" } },
+      year
+    )
+  );
+};
+YearComponent.propTypes = { year: _react2.default.PropTypes.string };
+
+exports.default = YearComponent;
+
+},{"react":530}],548:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34483,7 +34562,7 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":530}],545:[function(require,module,exports){
+},{"react":530}],549:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
