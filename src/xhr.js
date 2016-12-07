@@ -37,7 +37,7 @@ export default class XHR  {
             let XHR = new XMLHttpRequest();
 
             XHR.onload = () => {
-                if(XHR.status === 200){
+                if(XHR.status === 200 || XHR.status === 201){
                     OK(JSON.parse(XHR.responseText));
                 }else{
                     ERR(XHR.statusText);

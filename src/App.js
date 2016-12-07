@@ -1,4 +1,4 @@
-import "babel-polyfill";
+import 'babel-polyfill';
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, browserHistory, IndexRoute } from 'react-router'
@@ -7,6 +7,7 @@ import RaceListContainer from './components/Races/ListContainer'
 import FilterableRaceResults from './components/FilterableRaceResults'
 import Racer from './components/Racer'
 import App from './components/App'
+import AdminApp from './AdminApp'
 
 render((
   <Router history={browserHistory}>
@@ -16,6 +17,7 @@ render((
       <Route path="/race/:raceId" component={FilterableRaceResults}/>
       <Route path="/racer/:racerId" component={Racer}/>
     </Route>
+    <Route path="/admin" component={AdminApp} />
   </Router>
 ), document.getElementById('rrContent'));
 
