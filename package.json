@@ -4,7 +4,7 @@
   "description": "Display and Analyze Road Running Results",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --reporter spec",
     "build": "browserify -g [envify --NODE_ENV 'development'] -t [babelify] src/App.js > public/js/bundle.js && cp src/style.css public/css/.",
     "production-build": "browserify -g [envify --NODE_ENV 'production'] -t [babelify] src/App.js > public/js/bundle.js"
   },
@@ -15,9 +15,11 @@
     "babel-polyfill": "^6.13.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "babel-register": "^6.18.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
-    "envify": "^3.4.1"
+    "envify": "^3.4.1",
+    "mocha": "^3.2.0"
   },
   "dependencies": {
     "body-parser": "1.X",
