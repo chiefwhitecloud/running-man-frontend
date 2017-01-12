@@ -34,6 +34,21 @@ class Store extends EventEmitter {
     this.emit('racegroups-change');
   }
 
+  createRaceGroup(name, distance){
+    xhr.post('/feed/racegroup', {
+      "headers" : {
+        "Content-Type" : "application/json"
+      },
+      "data" :
+        {
+          "name": name,
+          "distance": distance
+        }
+      }).then((result) => {
+        store.fetchRaceGroups();
+    });
+  }
+
   addRaceToRaceGroup(raceGroupSelf, raceId){
     const raceGroup = this._state.raceGroups.find(raceGroup => raceGroup.self == raceGroupSelf);
     xhr.post(raceGroup["races"], {

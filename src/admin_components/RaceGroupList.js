@@ -1,9 +1,9 @@
 import React from 'react'
 
-const RaceGroupList = ({raceGroups}) => {
+const RaceGroupList = ({raceGroups, onDeleteItem}) => {
   return <div>
     {raceGroups.map(function(raceGroup){
-      return <div key={raceGroup.id}>{raceGroup.name} - {raceGroup.distance}</div>
+      return <div key={raceGroup.id}>{raceGroup.name} - {raceGroup.distance} <button onClick={onDeleteItem.bind(raceGroup.id)}>Delete</button></div>
     })}
   </div>;
 };

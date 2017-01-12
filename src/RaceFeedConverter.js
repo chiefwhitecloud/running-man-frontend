@@ -56,3 +56,53 @@ export function GetRaceMapByYear (raceItems) {
 
   return raceMap;
 }
+
+
+
+/*
+* Creates a map from the race groups from the server.
+*
+* ex.
+* {
+*   raceGroupId: {
+*            raceGroup : {},
+*            races : [raceItem2, raceItem3]
+*   },
+*   .
+*   .
+* }
+*
+*/
+
+export function GetRacesSortedRaceGroup (raceGroupsItems, raceItems) {
+
+  let raceMap = new Map();
+  let raceGroupMap = new Map();
+
+  raceItems.forEach(function(race) {
+    raceMap.set(race["date"], race);
+  });
+
+  var sortedRaceMap = new Map([...raceMap.entries()].sort().reverse());
+
+  sortedRaceMap.forEach(function(race){
+    if (race["raceGroup"] == undefined){
+      return;
+    }
+    
+    let raceGroup = raceGroupsItems.find(function(raceGroup) {
+      return race["raceGroup"] == raceGroup["self"];
+    });
+
+    if (raceGroupMap.has(raceGroup["id"])){
+      let existingRaces = raceGroupMap.get(raceGroup["id"]).races;
+      existingRaces.push(race);
+      raceGroupMap.set(raceGroup["id"], {raceGroup: raceGroup, races: existingRaces})
+    }
+    else{
+      raceGroupMap.set(raceGroup["id"], {raceGroup: raceGroup, races: [race]})
+    }
+  });
+
+  return raceGroupMap;
+}

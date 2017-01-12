@@ -1,8 +1,8 @@
 import React from 'react'
-import xhr from './../../xhr'
 import YearComponent from './YearComponent'
 import DayComponent from './DayComponent'
 import LinkComponent from './LinkComponent'
+import { GetRaces } from './../FetchData'
 import { GetRaceMapByYear } from './../../RaceFeedConverter'
 import Loading from './../Loading'
 
@@ -25,7 +25,7 @@ export default class extends React.Component {
       });
     }
     else{
-      xhr.get('/feed/races').then((result) => {
+      GetRaces().then((result) => {
         raceMapCached = GetRaceMapByYear(result["races"]);
         this.setState({
           raceMap: raceMapCached,

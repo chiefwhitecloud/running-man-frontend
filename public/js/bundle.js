@@ -33070,7 +33070,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":532,"./components/App":543,"./components/FilterableRaceResults":545,"./components/Racer":550,"./components/Races/ListContainer":555,"./components/Races/PageLayout":556,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
+},{"./AdminApp":532,"./components/App":543,"./components/FilterableRaceResults":546,"./components/Racer":551,"./components/Races/ListContainer":556,"./components/Races/PageLayout":557,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33171,6 +33171,9 @@ Object.defineProperty(exports, "__esModule", {
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 exports.GetRaceMapByYear = GetRaceMapByYear;
+exports.GetRacesSortedRaceGroup = GetRacesSortedRaceGroup;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /*
 * Creates a map from the race items from the server.  Groups by year, then groups
@@ -33296,6 +33299,53 @@ function GetRaceMapByYear(raceItems) {
   return raceMap;
 }
 
+/*
+* Creates a map from the race groups from the server.
+*
+* ex.
+* {
+*   raceGroupId: {
+*            raceGroup : {},
+*            races : [raceItem2, raceItem3]
+*   },
+*   .
+*   .
+* }
+*
+*/
+
+function GetRacesSortedRaceGroup(raceGroupsItems, raceItems) {
+
+  var raceMap = new Map();
+  var raceGroupMap = new Map();
+
+  raceItems.forEach(function (race) {
+    raceMap.set(race["date"], race);
+  });
+
+  var sortedRaceMap = new Map([].concat(_toConsumableArray(raceMap.entries())).sort().reverse());
+
+  sortedRaceMap.forEach(function (race) {
+    if (race["raceGroup"] == undefined) {
+      return;
+    }
+
+    var raceGroup = raceGroupsItems.find(function (raceGroup) {
+      return race["raceGroup"] == raceGroup["self"];
+    });
+
+    if (raceGroupMap.has(raceGroup["id"])) {
+      var existingRaces = raceGroupMap.get(raceGroup["id"]).races;
+      existingRaces.push(race);
+      raceGroupMap.set(raceGroup["id"], { raceGroup: raceGroup, races: existingRaces });
+    } else {
+      raceGroupMap.set(raceGroup["id"], { raceGroup: raceGroup, races: [race] });
+    }
+  });
+
+  return raceGroupMap;
+}
+
 },{}],536:[function(require,module,exports){
 'use strict';
 
@@ -33392,6 +33442,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var RaceGroupList = function RaceGroupList(_ref) {
   var raceGroups = _ref.raceGroups;
+  var onDeleteItem = _ref.onDeleteItem;
 
   return _react2.default.createElement(
     'div',
@@ -33402,7 +33453,13 @@ var RaceGroupList = function RaceGroupList(_ref) {
         { key: raceGroup.id },
         raceGroup.name,
         ' - ',
-        raceGroup.distance
+        raceGroup.distance,
+        ' ',
+        _react2.default.createElement(
+          'button',
+          { onClick: onDeleteItem(raceGroup.id) },
+          'Delete'
+        )
       );
     })
   );
@@ -33440,6 +33497,8 @@ var _RaceGroupList = require('./RaceGroupList');
 
 var _RaceGroupList2 = _interopRequireDefault(_RaceGroupList);
 
+var _Store = require('./Store');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -33456,6 +33515,8 @@ var _class = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
+    _this._onStoreChange = _this._onStoreChange.bind(_this);
+    _this.handleDelete = _this.handleDelete.bind(_this);
     _this.state = {
       raceGroups: null,
       isFetching: false
@@ -33466,30 +33527,29 @@ var _class = function (_React$Component) {
   _createClass(_class, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
       this.setState({ isFetching: true });
-      _xhr2.default.get('/feed/racegroups').then(function (result) {
-        _this2.setState({
-          raceGroups: result.raceGroups,
-          isFetching: false
-        });
-      });
+      _Store.store.fetchRaceGroups();
+      _Store.store.addRaceGroupsChangeListener(this._onStoreChange);
     }
   }, {
-    key: 'addNewRaceGroup',
-    value: function addNewRaceGroup(name, distance) {
-      _xhr2.default.post('/feed/racegroup', {
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "data": {
-          "name": name,
-          "distance": distance
-        }
-      }).then(function (result) {
-        console.log(result);
-      });
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _Store.store.removeRaceGroupsChangeListener(this._onStoreChange);
+    }
+  }, {
+    key: '_onStoreChange',
+    value: function _onStoreChange() {
+      if (_Store.store.getRaceGroups()) {
+        this.setState({
+          isFetching: false,
+          raceGroups: _Store.store.getRaceGroups()
+        });
+      }
+    }
+  }, {
+    key: 'handleDelete',
+    value: function handleDelete(raceGroup) {
+      console.log(raceGroup);
     }
   }, {
     key: 'render',
@@ -33501,8 +33561,8 @@ var _class = function (_React$Component) {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_RaceGroupAdd2.default, { addRaceGroup: this.addNewRaceGroup.bind(this) }),
-          _react2.default.createElement(_RaceGroupList2.default, { raceGroups: this.state.raceGroups })
+          _react2.default.createElement(_RaceGroupAdd2.default, { addRaceGroup: _Store.store.createRaceGroup }),
+          _react2.default.createElement(_RaceGroupList2.default, { raceGroups: this.state.raceGroups, onDeleteItem: this.handleDelete })
         );
       } else {
         return null;
@@ -33515,7 +33575,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":547,"./../xhr":560,"./RaceGroupAdd":536,"./RaceGroupList":537,"react":531}],539:[function(require,module,exports){
+},{"./../components/Loading":548,"./../xhr":561,"./RaceGroupAdd":536,"./RaceGroupList":537,"./Store":542,"react":531}],539:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33662,7 +33722,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":547,"./RaceList":539,"./Store":542,"react":531}],541:[function(require,module,exports){
+},{"./../components/Loading":548,"./RaceList":539,"./Store":542,"react":531}],541:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33715,6 +33775,11 @@ var _class = function (_React$Component) {
         _react2.default.createElement(
           "td",
           null,
+          this.props.race.date
+        ),
+        _react2.default.createElement(
+          "td",
+          null,
           this.props.race.name
         ),
         _react2.default.createElement(
@@ -33734,7 +33799,9 @@ var _class = function (_React$Component) {
                   return _react2.default.createElement(
                     "option",
                     { value: raceGroup.self, key: raceGroup.id },
-                    raceGroup.name
+                    raceGroup["name"],
+                    " - ",
+                    raceGroup["distance"]
                   );
                 })
               )
@@ -33820,6 +33887,21 @@ var Store = function (_EventEmitter) {
       this.emit('racegroups-change');
     }
   }, {
+    key: 'createRaceGroup',
+    value: function createRaceGroup(name, distance) {
+      _xhr2.default.post('/feed/racegroup', {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "data": {
+          "name": name,
+          "distance": distance
+        }
+      }).then(function (result) {
+        store.fetchRaceGroups();
+      });
+    }
+  }, {
     key: 'addRaceToRaceGroup',
     value: function addRaceToRaceGroup(raceGroupSelf, raceId) {
       var _this2 = this;
@@ -33877,7 +33959,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":560,"events":297}],543:[function(require,module,exports){
+},{"./../xhr":561,"events":297}],543:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33999,7 +34081,40 @@ var App = function App(props) {
 };
 exports.default = App;
 
-},{"./HeroComponent":546,"react":531,"react-router":329}],544:[function(require,module,exports){
+},{"./HeroComponent":547,"react":531,"react-router":329}],544:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.doRequests = exports.getRacer = exports.getRaceGroups = exports.GetRaces = undefined;
+
+var _xhr = require('./../xhr');
+
+var _xhr2 = _interopRequireDefault(_xhr);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var GetRaces = exports.GetRaces = function GetRaces() {
+  return _xhr2.default.get('/feed/races');
+};
+
+var getRaceGroups = exports.getRaceGroups = function getRaceGroups() {
+  return _xhr2.default.get('/feed/racegroups');
+};
+
+var getRacer = exports.getRacer = function getRacer(racerId) {
+  return _xhr2.default.get('/feed/racer/' + racerId);
+};
+
+var doRequests = exports.doRequests = function doRequests(requests) {
+  var xhrs = requests.map(function (url) {
+    return typeof url === 'string' ? _xhr2.default.get(url) : url();
+  });
+  return Promise.all(xhrs);
+};
+
+},{"./../xhr":561}],545:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34311,7 +34426,7 @@ var MenuOption = function (_React$Component2) {
   return MenuOption;
 }(_react2.default.Component);
 
-},{"react":531}],545:[function(require,module,exports){
+},{"react":531}],546:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34528,7 +34643,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":560,"./FilterBar":544,"./Loading":547,"./RaceHeader":548,"./RaceResults":549,"./SelectedFilters":559,"react":531}],546:[function(require,module,exports){
+},{"./../xhr":561,"./FilterBar":545,"./Loading":548,"./RaceHeader":549,"./RaceResults":550,"./SelectedFilters":560,"react":531}],547:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34563,7 +34678,7 @@ function HeroComponent() {
   );
 }
 
-},{"react":531}],547:[function(require,module,exports){
+},{"react":531}],548:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34614,7 +34729,7 @@ var Loading = function (_React$Component) {
 
 exports.default = Loading;
 
-},{"react":531}],548:[function(require,module,exports){
+},{"react":531}],549:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34693,7 +34808,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":534,"react":531}],549:[function(require,module,exports){
+},{"./../DateFormatter":534,"react":531}],550:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34942,12 +35057,14 @@ var RacerRow = function (_React$Component2) {
 
 exports.default = RaceResults;
 
-},{"./../xhr":560,"react":531}],550:[function(require,module,exports){
+},{"./../xhr":561,"react":531}],551:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -34966,6 +35083,10 @@ var _RacerResult2 = _interopRequireDefault(_RacerResult);
 var _RacerDetail = require('./RacerDetail');
 
 var _RacerDetail2 = _interopRequireDefault(_RacerDetail);
+
+var _FetchData = require('./FetchData');
+
+var _RaceFeedConverter = require('./../RaceFeedConverter');
 
 var _xhr = require('./../xhr');
 
@@ -35003,21 +35124,31 @@ var Racer = function (_React$Component) {
     value: function doRaceFecthing_(props) {
       var _this2 = this;
 
-      var raceMeta = void 0;
-      _xhr2.default.get('/feed/racer/' + props.params.racerId).then(function (racer) {
+      (0, _FetchData.getRacer)(props.params.racerId).then(function (racer) {
         _this2.racer_ = racer;
         return racer;
-      }).then(function (race) {
-        raceMeta = race;
-        return _xhr2.default.get(race["profile"]);
-      }).then(function (racerProfile) {
-        _this2.racerProfile_ = racerProfile;
-        return _xhr2.default.get(_this2.racer_["results"]);
+      }).then(function (racer) {
+        return (0, _FetchData.doRequests)([racer["profile"], racer["results"], _FetchData.getRaceGroups]);
       }).then(function (results) {
+        var _results = _slicedToArray(results, 3);
+
+        var racerProfile = _results[0];
+        var racerResults = _results[1];
+        var raceGroupList = _results[2];
+
+        //convert from object to array.
+
+        var raceItems = Object.keys(racerResults["races"]).map(function (k) {
+          return racerResults["races"][k];
+        });
+
+        var raceGroups = (0, _RaceFeedConverter.GetRacesSortedRaceGroup)(raceGroupList["raceGroups"], raceItems);
+
         _this2.setState({
-          racerProfile: _this2.racerProfile_,
-          races: results["races"],
-          results: results["results"],
+          racerProfile: racerProfile,
+          races: racerResults["races"],
+          results: racerResults["results"],
+          raceGroups: raceGroups,
           isLoading: false
         });
       });
@@ -35037,14 +35168,64 @@ var Racer = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var createItem = function createItem(item) {
-        return _react2.default.createElement(
-          'div',
-          { key: item.raceId },
-          _react2.default.createElement(_RaceHeader2.default, { key: item.raceId, name: _this3.state.races[item.raceId].name, date: _this3.state.races[item.raceId].date }),
-          _react2.default.createElement(_RacerResult2.default, { key: item.raceId + item.racerId, racerResult: item, race: _this3.state.races[item.raceId] })
-        );
-      };
+      var raceGroups = [];
+
+      if (this.state.raceGroups) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = this.state.raceGroups[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _step$value = _slicedToArray(_step.value, 2);
+
+            var raceGroupId = _step$value[0];
+            var raceGroup = _step$value[1];
+
+            var races = raceGroup.races.map(function (race) {
+              var result = _this3.state.results.find(function (result) {
+                return result["raceId"] == race["id"];
+              });
+              return _react2.default.createElement(
+                'div',
+                { key: race["id"] },
+                race["date"],
+                ' ',
+                race["name"],
+                ' ',
+                result["position"],
+                ' ',
+                result["time"]
+              );
+            });
+            raceGroups.push(_react2.default.createElement(
+              'div',
+              { key: raceGroupId },
+              _react2.default.createElement(
+                'div',
+                null,
+                raceGroup.raceGroup["name"],
+                ' ',
+                raceGroup.raceGroup["distance"]
+              ),
+              races
+            ));
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
 
       if (this.state.isLoading) {
         return _react2.default.createElement(
@@ -35057,7 +35238,7 @@ var Racer = function (_React$Component) {
           'div',
           null,
           _react2.default.createElement(_RacerDetail2.default, { name: this.state.racerProfile.name }),
-          this.state.results.map(createItem)
+          raceGroups
         );
       }
     }
@@ -35068,7 +35249,7 @@ var Racer = function (_React$Component) {
 
 exports.default = Racer;
 
-},{"./../xhr":560,"./RaceHeader":548,"./RacerDetail":551,"./RacerResult":552,"react":531}],551:[function(require,module,exports){
+},{"./../RaceFeedConverter":535,"./../xhr":561,"./FetchData":544,"./RaceHeader":549,"./RacerDetail":552,"./RacerResult":553,"react":531}],552:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35099,7 +35280,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":531}],552:[function(require,module,exports){
+},{"react":531}],553:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35186,7 +35367,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":560,"./RaceResults":549,"react":531}],553:[function(require,module,exports){
+},{"./../xhr":561,"./RaceResults":550,"react":531}],554:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35239,7 +35420,7 @@ DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
 
 exports.default = DayComponent;
 
-},{"./../../DateFormatter":534,"react":531}],554:[function(require,module,exports){
+},{"./../../DateFormatter":534,"react":531}],555:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35268,7 +35449,7 @@ var RaceLink = function RaceLink(item) {
 
 exports.default = RaceLink;
 
-},{"react":531,"react-router":329}],555:[function(require,module,exports){
+},{"react":531,"react-router":329}],556:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35283,10 +35464,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _xhr = require('./../../xhr');
-
-var _xhr2 = _interopRequireDefault(_xhr);
-
 var _YearComponent = require('./YearComponent');
 
 var _YearComponent2 = _interopRequireDefault(_YearComponent);
@@ -35298,6 +35475,8 @@ var _DayComponent2 = _interopRequireDefault(_DayComponent);
 var _LinkComponent = require('./LinkComponent');
 
 var _LinkComponent2 = _interopRequireDefault(_LinkComponent);
+
+var _FetchData = require('./../FetchData');
 
 var _RaceFeedConverter = require('./../../RaceFeedConverter');
 
@@ -35344,7 +35523,7 @@ var _class = function (_React$Component) {
           isFetching: false
         });
       } else {
-        _xhr2.default.get('/feed/races').then(function (result) {
+        (0, _FetchData.GetRaces)().then(function (result) {
           raceMapCached = (0, _RaceFeedConverter.GetRaceMapByYear)(result["races"]);
           _this2.setState({
             raceMap: raceMapCached,
@@ -35446,7 +35625,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../../RaceFeedConverter":535,"./../../xhr":560,"./../Loading":547,"./DayComponent":553,"./LinkComponent":554,"./YearComponent":558,"react":531}],556:[function(require,module,exports){
+},{"./../../RaceFeedConverter":535,"./../FetchData":544,"./../Loading":548,"./DayComponent":554,"./LinkComponent":555,"./YearComponent":559,"react":531}],557:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35475,7 +35654,7 @@ var _SelectYearComponent2 = _interopRequireDefault(_SelectYearComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ListContainer":555,"./SelectYearComponent":557,"react":531}],557:[function(require,module,exports){
+},{"./ListContainer":556,"./SelectYearComponent":558,"react":531}],558:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35507,7 +35686,7 @@ SelectYearComponent.propTypes = { years: _react2.default.PropTypes.array };
 
 exports.default = SelectYearComponent;
 
-},{"react":531}],558:[function(require,module,exports){
+},{"react":531}],559:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35557,7 +35736,7 @@ var yearPositioningStyle = {
 
 exports.default = YearComponent;
 
-},{"react":531}],559:[function(require,module,exports){
+},{"react":531}],560:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35604,7 +35783,7 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":531}],560:[function(require,module,exports){
+},{"react":531}],561:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

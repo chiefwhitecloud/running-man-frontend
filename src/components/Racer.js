@@ -2,6 +2,8 @@ import React from 'react'
 import RaceHeader from './RaceHeader'
 import RacerResult from './RacerResult'
 import RacerDetail from './RacerDetail'
+import { getRacer, doRequests, getRaceGroups } from './FetchData'
+import { GetRacesSortedRaceGroup, GetRaceMapByYear } from './../RaceFeedConverter'
 import xhr from './../xhr'
 
 export default class Racer extends React.Component {
@@ -17,21 +19,24 @@ export default class Racer extends React.Component {
    this.doRaceFecthing_(this.props);
   }
   doRaceFecthing_(props){
-    let raceMeta;
-    xhr.get('/feed/racer/' + props.params.racerId).then((racer) => {
+    getRacer(props.params.racerId).then((racer) => {
       this.racer_ = racer;
       return racer;
-    }).then((race) => {
-      raceMeta = race;
-      return xhr.get(race["profile"]);
-    }).then((racerProfile) => {
-      this.racerProfile_ = racerProfile;
-      return xhr.get(this.racer_["results"]);
+    }).then((racer) => {
+      return doRequests([racer["profile"], racer["results"], getRaceGroups]);
     }).then((results) => {
+      let [racerProfile, racerResults, raceGroupList] = results;
+
+      //convert from object to array.
+      let raceItems = Object.keys(racerResults["races"]).map((k) => racerResults["races"][k]);
+
+      let raceGroups = GetRacesSortedRaceGroup(raceGroupList["raceGroups"], raceItems);
+
       this.setState({
-        racerProfile: this.racerProfile_,
-        races: results["races"],
-        results: results["results"],
+        racerProfile: racerProfile,
+        races: racerResults["races"],
+        results: racerResults["results"],
+        raceGroups: raceGroups,
         isLoading: false
       })
     });
@@ -46,12 +51,22 @@ export default class Racer extends React.Component {
   }
   render() {
 
-    let createItem = (item) => {
-      return <div key={item.raceId}>
-          <RaceHeader key={item.raceId} name={this.state.races[item.raceId].name}  date={this.state.races[item.raceId].date} />
-          <RacerResult key={item.raceId + item.racerId} racerResult={item} race={this.state.races[item.raceId]} />
-        </div>;
-    };
+    let raceGroups = [];
+
+    if (this.state.raceGroups){
+      for (var [raceGroupId, raceGroup] of this.state.raceGroups) {
+        let races = raceGroup.races.map((race) => {
+          let result = this.state.results.find(function(result){
+            return result["raceId"] == race["id"];
+          });
+          return <div key={race["id"]}>{race["date"]} {race["name"]} {result["position"]} {result["time"]}</div>
+        });
+        raceGroups.push(<div key={raceGroupId}>
+          <div>{raceGroup.raceGroup["name"]} {raceGroup.raceGroup["distance"]}</div>
+          {races}
+        </div>);
+      }
+    }
 
     if (this.state.isLoading){
       return <div>Loading</div>;
@@ -59,7 +74,7 @@ export default class Racer extends React.Component {
     else{
       return <div>
           <RacerDetail name={this.state.racerProfile.name} />
-          {this.state.results.map(createItem)}
+          {raceGroups}
       </div>;
     }
   }

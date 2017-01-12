@@ -18,6 +18,7 @@ export default class extends React.Component {
     }
     return (
       <tr>
+        <td>{this.props.race.date}</td>
         <td>{this.props.race.name}</td>
         <td>
           <form>
@@ -25,7 +26,7 @@ export default class extends React.Component {
               <select onChange={this.handleRaceGroupChange} value={selectedValue}>
                 <option key="notfound" ></option>
                 {this.props.raceGroups.map(function(raceGroup){
-                  return <option value={raceGroup.self} key={raceGroup.id} >{raceGroup.name}</option>
+                  return <option value={raceGroup.self} key={raceGroup.id} >{raceGroup["name"]} - {raceGroup["distance"]}</option>
                 })}
               </select>
             </label>
