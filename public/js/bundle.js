@@ -32996,18 +32996,23 @@ var _RaceListContainer = require('./admin_components/RaceListContainer');
 
 var _RaceListContainer2 = _interopRequireDefault(_RaceListContainer);
 
+var _ImportRaceContainer = require('./admin_components/ImportRaceContainer');
+
+var _ImportRaceContainer2 = _interopRequireDefault(_ImportRaceContainer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function AdminApp() {
   return _react2.default.createElement(
     'div',
     null,
+    _react2.default.createElement(_ImportRaceContainer2.default, null),
     _react2.default.createElement(_RaceGroupListContainer2.default, null),
     _react2.default.createElement(_RaceListContainer2.default, null)
   );
 }
 
-},{"./admin_components/RaceGroupListContainer":538,"./admin_components/RaceListContainer":540,"react":531}],533:[function(require,module,exports){
+},{"./admin_components/ImportRaceContainer":538,"./admin_components/RaceGroupListContainer":541,"./admin_components/RaceListContainer":544,"react":531}],533:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -33070,7 +33075,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":532,"./components/App":543,"./components/FilterableRaceResults":546,"./components/Racer":551,"./components/Races/ListContainer":556,"./components/Races/PageLayout":557,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
+},{"./AdminApp":532,"./components/App":547,"./components/FilterableRaceResults":550,"./components/Racer":555,"./components/Races/ListContainer":560,"./components/Races/PageLayout":561,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33355,6 +33360,343 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = require('events');
+
+var _xhr = require('./../xhr');
+
+var _xhr2 = _interopRequireDefault(_xhr);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ImportRace = function (_EventEmitter) {
+  _inherits(ImportRace, _EventEmitter);
+
+  function ImportRace() {
+    _classCallCheck(this, ImportRace);
+
+    var _this = _possibleConstructorReturn(this, (ImportRace.__proto__ || Object.getPrototypeOf(ImportRace)).call(this));
+
+    _this.url = undefined;
+    _this.status = undefined;
+    _this.errorMessage = undefined;
+    _this.handleProcessSuccessResponse = _this.handleProcessSuccessResponse.bind(_this);
+    _this.handleTaskCheckSuccessResponse = _this.handleTaskCheckSuccessResponse.bind(_this);
+    return _this;
+  }
+
+  _createClass(ImportRace, [{
+    key: 'setUrl',
+    value: function setUrl(url) {
+      this.url = url;
+      this.status = undefined;
+      this.errorMessage = undefined;
+    }
+  }, {
+    key: 'getStatus',
+    value: function getStatus() {
+      return this.status;
+    }
+  }, {
+    key: 'getErrorMessage',
+    value: function getErrorMessage() {
+      return this.errorMessage;
+    }
+  }, {
+    key: 'process',
+    value: function process() {
+      this.status = 'Submitting';
+      this.errorMessage = undefined;
+      this.emit('change');
+      var self = this;
+      _xhr2.default.post('/import', {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: {
+          raceUrl: this.url
+        }
+      }, this.handleProcessSuccessResponse, 202).catch(function (xhrResult) {
+        self.status = 'Failed';
+        self.errorMessage = xhrResult.statusText + ' : ' + xhrResult.responseText;
+        self.emit('change');
+      });
+    }
+  }, {
+    key: 'handleProcessSuccessResponse',
+    value: function handleProcessSuccessResponse(xhrResponse) {
+      var _this2 = this;
+
+      this.taskLocation = xhrResponse.getResponseHeader('Location');
+      this.status = 'Processing';
+      this.emit('change');
+      this.intervalId = setInterval(function () {
+        _this2.checkTask();
+      }, 1000);
+    }
+  }, {
+    key: 'handleTaskCheckSuccessResponse',
+    value: function handleTaskCheckSuccessResponse(xhrResponse) {
+      if (xhrResponse.responseURL === this.taskLocation) {
+        this.status = 'Still Processing';
+        this.emit('change');
+      } else {
+        clearInterval(this.intervalId);
+        this.status = 'Completed';
+        this.emit('change');
+      }
+    }
+  }, {
+    key: 'checkTask',
+    value: function checkTask() {
+      var _this3 = this;
+
+      _xhr2.default.get(this.taskLocation, {}, this.handleTaskCheckSuccessResponse).catch(function (errMessage) {
+        clearInterval(_this3.intervalId);
+        _this3.status = 'Failed';
+        _this3.errorMessage = errMessage;
+        _this3.emit('change');
+      });
+    }
+  }]);
+
+  return ImportRace;
+}(_events.EventEmitter);
+
+exports.default = ImportRace;
+
+},{"./../xhr":565,"events":297}],537:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ImportRaceComponent = function (_React$Component) {
+  _inherits(ImportRaceComponent, _React$Component);
+
+  function ImportRaceComponent(props) {
+    _classCallCheck(this, ImportRaceComponent);
+
+    var _this = _possibleConstructorReturn(this, (ImportRaceComponent.__proto__ || Object.getPrototypeOf(ImportRaceComponent)).call(this, props));
+
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.handleReset = _this.handleReset.bind(_this);
+    _this.state = {
+      url: ''
+    };
+    return _this;
+  }
+
+  _createClass(ImportRaceComponent, [{
+    key: 'handleInputChange',
+    value: function handleInputChange(event) {
+      this.setState({
+        url: event.target.value
+      });
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+      this.props.onSubmit(this.state.url);
+    }
+  }, {
+    key: 'handleReset',
+    value: function handleReset(event) {
+      event.preventDefault();
+      // reset the component state.
+      this.setState({
+        url: ''
+      });
+      this.props.onReset();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var display = void 0;
+
+      var form = _react2.default.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        _react2.default.createElement(
+          'label',
+          null,
+          'Url:',
+          _react2.default.createElement('input', { value: this.state.url, type: 'text', name: 'url', onChange: this.handleInputChange })
+        ),
+        _react2.default.createElement('input', { type: 'submit', value: 'Import' })
+      );
+
+      if (!this.props.isSubmitted) {
+        display = form;
+      } else if (this.props.importStatus === 'Failed') {
+        display = _react2.default.createElement(
+          'div',
+          null,
+          this.props.importStatus,
+          ' ',
+          this.props.errorMessage,
+          _react2.default.createElement(
+            'button',
+            { onClick: this.handleReset },
+            'Submit Another'
+          )
+        );
+      } else {
+        display = _react2.default.createElement(
+          'div',
+          null,
+          this.props.importStatus,
+          ' ',
+          this.props.errorMessage
+        );
+      }
+      return display;
+    }
+  }]);
+
+  return ImportRaceComponent;
+}(_react2.default.Component);
+
+exports.default = ImportRaceComponent;
+
+
+ImportRaceComponent.propTypes = {
+  isSubmitted: _react2.default.PropTypes.bool.isRequired,
+  onSubmit: _react2.default.PropTypes.func.isRequired,
+  onReset: _react2.default.PropTypes.func.isRequired,
+  importStatus: _react2.default.PropTypes.string,
+  errorMessage: _react2.default.PropTypes.string
+};
+
+},{"react":531}],538:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ImportRace = require('./ImportRace');
+
+var _ImportRace2 = _interopRequireDefault(_ImportRace);
+
+var _ImportRaceComponent = require('./ImportRaceComponent');
+
+var _ImportRaceComponent2 = _interopRequireDefault(_ImportRaceComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class(props) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+    _this.raceImporter = new _ImportRace2.default();
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.handleReset = _this.handleReset.bind(_this);
+    _this.handleRaceImporterChange = _this.handleRaceImporterChange.bind(_this);
+    _this.state = {
+      importStatus: undefined,
+      importErrorText: undefined
+    };
+    return _this;
+  }
+
+  _createClass(_class, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.raceImporter.on('change', this.handleRaceImporterChange);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.raceImporter.off('change', this.handleRaceImporterChange);
+    }
+  }, {
+    key: 'handleRaceImporterChange',
+    value: function handleRaceImporterChange() {
+      this.setState({
+        importStatus: this.raceImporter.getStatus(),
+        errorMessage: this.raceImporter.getErrorMessage()
+      });
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(url) {
+      this.raceImporter.setUrl(url);
+      this.raceImporter.process();
+    }
+  }, {
+    key: 'handleReset',
+    value: function handleReset() {
+      this.setState({
+        importStatus: undefined,
+        errorMessage: undefined
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(_ImportRaceComponent2.default, {
+        isSubmitted: this.state.importStatus !== undefined,
+        onSubmit: this.handleSubmit,
+        onReset: this.handleReset,
+        importStatus: this.state.importStatus,
+        errorMessage: this.state.errorMessage
+      });
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"./ImportRace":536,"./ImportRaceComponent":537,"react":531}],539:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -33427,7 +33769,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":531}],537:[function(require,module,exports){
+},{"react":531}],540:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33438,37 +33780,36 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _RaceGroupListItem = require('./RaceGroupListItem');
+
+var _RaceGroupListItem2 = _interopRequireDefault(_RaceGroupListItem);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RaceGroupList = function RaceGroupList(_ref) {
   var raceGroups = _ref.raceGroups;
   var onDeleteItem = _ref.onDeleteItem;
-
   return _react2.default.createElement(
     'div',
     null,
     raceGroups.map(function (raceGroup) {
-      return _react2.default.createElement(
-        'div',
-        { key: raceGroup.id },
-        raceGroup.name,
-        ' - ',
-        raceGroup.distance,
-        ' ',
-        _react2.default.createElement(
-          'button',
-          { onClick: onDeleteItem(raceGroup.id) },
-          'Delete'
-        )
-      );
+      return _react2.default.createElement(_RaceGroupListItem2.default, {
+        key: raceGroup.id,
+        onDelete: onDeleteItem,
+        raceGroup: raceGroup
+      });
     })
   );
 };
-RaceGroupList.propTypes = { years: _react2.default.PropTypes.array };
+
+RaceGroupList.propTypes = {
+  raceGroups: _react2.default.PropTypes.array.isRequired,
+  onDeleteItem: _react2.default.PropTypes.func.isRequired
+};
 
 exports.default = RaceGroupList;
 
-},{"react":531}],538:[function(require,module,exports){
+},{"./RaceGroupListItem":542,"react":531}],541:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33515,11 +33856,11 @@ var _class = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-    _this._onStoreChange = _this._onStoreChange.bind(_this);
+    _this.onStoreChange = _this.onStoreChange.bind(_this);
     _this.handleDelete = _this.handleDelete.bind(_this);
     _this.state = {
       raceGroups: null,
-      isFetching: false
+      isFetching: true
     };
     return _this;
   }
@@ -33527,18 +33868,17 @@ var _class = function (_React$Component) {
   _createClass(_class, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.setState({ isFetching: true });
       _Store.store.fetchRaceGroups();
-      _Store.store.addRaceGroupsChangeListener(this._onStoreChange);
+      _Store.store.addRaceGroupsChangeListener(this.onStoreChange);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      _Store.store.removeRaceGroupsChangeListener(this._onStoreChange);
+      _Store.store.removeRaceGroupsChangeListener(this.onStoreChange);
     }
   }, {
-    key: '_onStoreChange',
-    value: function _onStoreChange() {
+    key: 'onStoreChange',
+    value: function onStoreChange() {
       if (_Store.store.getRaceGroups()) {
         this.setState({
           isFetching: false,
@@ -33549,24 +33889,23 @@ var _class = function (_React$Component) {
   }, {
     key: 'handleDelete',
     value: function handleDelete(raceGroup) {
+      debugger;
       console.log(raceGroup);
     }
   }, {
     key: 'render',
     value: function render() {
-
       if (this.state.isFetching) {
         return _react2.default.createElement(_Loading2.default, null);
-      } else if (this.state.raceGroups != null) {
+      } else if (this.state.raceGroups !== null) {
         return _react2.default.createElement(
           'div',
           null,
           _react2.default.createElement(_RaceGroupAdd2.default, { addRaceGroup: _Store.store.createRaceGroup }),
           _react2.default.createElement(_RaceGroupList2.default, { raceGroups: this.state.raceGroups, onDeleteItem: this.handleDelete })
         );
-      } else {
-        return null;
       }
+      return null;
     }
   }]);
 
@@ -33575,7 +33914,54 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":548,"./../xhr":561,"./RaceGroupAdd":536,"./RaceGroupList":537,"./Store":542,"react":531}],539:[function(require,module,exports){
+},{"./../components/Loading":552,"./../xhr":565,"./RaceGroupAdd":539,"./RaceGroupList":540,"./Store":546,"react":531}],542:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RaceGroupListItem = function RaceGroupListItem(_ref) {
+  var raceGroup = _ref.raceGroup;
+  var onDelete = _ref.onDelete;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'div',
+      null,
+      raceGroup.name,
+      ' - ',
+      raceGroup.distance,
+      _react2.default.createElement(
+        'button',
+        { onClick: function onClick() {
+            return onDelete(raceGroup.id);
+          } },
+        'Delete'
+      )
+    )
+  );
+};
+
+RaceGroupListItem.propTypes = {
+  raceGroup: _react2.default.PropTypes.shape({
+    id: _react2.default.PropTypes.number.isRequired,
+    name: _react2.default.PropTypes.string.isRequired,
+    distance: _react2.default.PropTypes.string.isRequired
+  }).isRequired,
+  onDelete: _react2.default.PropTypes.func.isRequired
+};
+
+exports.default = RaceGroupListItem;
+
+},{"react":531}],543:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33596,7 +33982,6 @@ var RaceList = function RaceList(_ref) {
   var races = _ref.races;
   var raceGroups = _ref.raceGroups;
   var onRaceGroupSelectionChange = _ref.onRaceGroupSelectionChange;
-
   return _react2.default.createElement(
     'div',
     null,
@@ -33612,16 +33997,27 @@ var RaceList = function RaceList(_ref) {
         'tbody',
         null,
         races.map(function (race) {
-          return _react2.default.createElement(_RaceListItem2.default, { key: race.id, race: race, raceGroups: raceGroups, onRaceGroupSelectionChange: onRaceGroupSelectionChange });
+          return _react2.default.createElement(_RaceListItem2.default, {
+            key: race.id,
+            race: race,
+            raceGroups: raceGroups,
+            onRaceGroupSelectionChange: onRaceGroupSelectionChange
+          });
         })
       )
     )
   );
 };
 
+RaceList.propTypes = {
+  races: _react2.default.PropTypes.array.isRequired,
+  raceGroups: _react2.default.PropTypes.array.isRequired,
+  onRaceGroupSelectionChange: _react2.default.PropTypes.func.isRequired
+};
+
 exports.default = RaceList;
 
-},{"./RaceListItem":541,"react":531}],540:[function(require,module,exports){
+},{"./RaceListItem":545,"react":531}],544:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33660,11 +34056,11 @@ var _class = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-    _this._onStoreChange = _this._onStoreChange.bind(_this);
+    _this.onStoreChange = _this.onStoreChange.bind(_this);
     _this.state = {
       races: null,
       raceGroups: null,
-      isFetching: false
+      isFetching: true
     };
     return _this;
   }
@@ -33672,21 +34068,20 @@ var _class = function (_React$Component) {
   _createClass(_class, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.setState({ isFetching: true });
       _Store.store.fetchRaces();
       _Store.store.fetchRaceGroups();
-      _Store.store.addRacesChangeListener(this._onStoreChange);
-      _Store.store.addRaceGroupsChangeListener(this._onStoreChange);
+      _Store.store.addRacesChangeListener(this.onStoreChange);
+      _Store.store.addRaceGroupsChangeListener(this.onStoreChange);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      _Store.store.removeRacesChangeListener(this._onStoreChange);
-      _Store.store.removeRaceGroupsChangeListener(this._onStoreChange);
+      _Store.store.removeRacesChangeListener(this.onStoreChange);
+      _Store.store.removeRaceGroupsChangeListener(this.onStoreChange);
     }
   }, {
-    key: '_onStoreChange',
-    value: function _onStoreChange() {
+    key: 'onStoreChange',
+    value: function onStoreChange() {
       if (_Store.store.getRaces() && _Store.store.getRaceGroups()) {
         this.setState({
           isFetching: false,
@@ -33696,8 +34091,8 @@ var _class = function (_React$Component) {
       }
     }
   }, {
-    key: '_onRaceGroupSelectionChange',
-    value: function _onRaceGroupSelectionChange(raceGroupSelf, raceId) {
+    key: 'onRaceGroupSelectionChange',
+    value: function onRaceGroupSelectionChange(raceGroupSelf, raceId) {
       _Store.store.addRaceToRaceGroup(raceGroupSelf, raceId);
     }
   }, {
@@ -33709,11 +34104,14 @@ var _class = function (_React$Component) {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_RaceList2.default, { races: this.state.races, raceGroups: this.state.raceGroups, onRaceGroupSelectionChange: this._onRaceGroupSelectionChange })
+          _react2.default.createElement(_RaceList2.default, {
+            races: this.state.races,
+            raceGroups: this.state.raceGroups,
+            onRaceGroupSelectionChange: this.onRaceGroupSelectionChange
+          })
         );
-      } else {
-        return null;
       }
+      return null;
     }
   }]);
 
@@ -33722,7 +34120,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":548,"./RaceList":539,"./Store":542,"react":531}],541:[function(require,module,exports){
+},{"./../components/Loading":552,"./RaceList":543,"./Store":546,"react":531}],545:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33817,7 +34215,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":531}],542:[function(require,module,exports){
+},{"react":531}],546:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33844,10 +34242,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Store = function (_EventEmitter) {
   _inherits(Store, _EventEmitter);
 
-  function Store(props) {
+  function Store() {
     _classCallCheck(this, Store);
 
-    var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this));
 
     _this._state = {
       raceGroups: [],
@@ -33959,7 +34357,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":561,"events":297}],543:[function(require,module,exports){
+},{"./../xhr":565,"events":297}],547:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34081,7 +34479,7 @@ var App = function App(props) {
 };
 exports.default = App;
 
-},{"./HeroComponent":547,"react":531,"react-router":329}],544:[function(require,module,exports){
+},{"./HeroComponent":551,"react":531,"react-router":329}],548:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34114,7 +34512,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":561}],545:[function(require,module,exports){
+},{"./../xhr":565}],549:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34426,7 +34824,7 @@ var MenuOption = function (_React$Component2) {
   return MenuOption;
 }(_react2.default.Component);
 
-},{"react":531}],546:[function(require,module,exports){
+},{"react":531}],550:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34643,7 +35041,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":561,"./FilterBar":545,"./Loading":548,"./RaceHeader":549,"./RaceResults":550,"./SelectedFilters":560,"react":531}],547:[function(require,module,exports){
+},{"./../xhr":565,"./FilterBar":549,"./Loading":552,"./RaceHeader":553,"./RaceResults":554,"./SelectedFilters":564,"react":531}],551:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34678,7 +35076,7 @@ function HeroComponent() {
   );
 }
 
-},{"react":531}],548:[function(require,module,exports){
+},{"react":531}],552:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34729,7 +35127,7 @@ var Loading = function (_React$Component) {
 
 exports.default = Loading;
 
-},{"react":531}],549:[function(require,module,exports){
+},{"react":531}],553:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34808,7 +35206,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":534,"react":531}],550:[function(require,module,exports){
+},{"./../DateFormatter":534,"react":531}],554:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35057,7 +35455,7 @@ var RacerRow = function (_React$Component2) {
 
 exports.default = RaceResults;
 
-},{"./../xhr":561,"react":531}],551:[function(require,module,exports){
+},{"./../xhr":565,"react":531}],555:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35249,7 +35647,7 @@ var Racer = function (_React$Component) {
 
 exports.default = Racer;
 
-},{"./../RaceFeedConverter":535,"./../xhr":561,"./FetchData":544,"./RaceHeader":549,"./RacerDetail":552,"./RacerResult":553,"react":531}],552:[function(require,module,exports){
+},{"./../RaceFeedConverter":535,"./../xhr":565,"./FetchData":548,"./RaceHeader":553,"./RacerDetail":556,"./RacerResult":557,"react":531}],556:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35280,7 +35678,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":531}],553:[function(require,module,exports){
+},{"react":531}],557:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35367,7 +35765,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":561,"./RaceResults":550,"react":531}],554:[function(require,module,exports){
+},{"./../xhr":565,"./RaceResults":554,"react":531}],558:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35420,7 +35818,7 @@ DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
 
 exports.default = DayComponent;
 
-},{"./../../DateFormatter":534,"react":531}],555:[function(require,module,exports){
+},{"./../../DateFormatter":534,"react":531}],559:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35449,7 +35847,7 @@ var RaceLink = function RaceLink(item) {
 
 exports.default = RaceLink;
 
-},{"react":531,"react-router":329}],556:[function(require,module,exports){
+},{"react":531,"react-router":329}],560:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35625,7 +36023,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../../RaceFeedConverter":535,"./../FetchData":544,"./../Loading":548,"./DayComponent":554,"./LinkComponent":555,"./YearComponent":559,"react":531}],557:[function(require,module,exports){
+},{"./../../RaceFeedConverter":535,"./../FetchData":548,"./../Loading":552,"./DayComponent":558,"./LinkComponent":559,"./YearComponent":563,"react":531}],561:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35654,7 +36052,7 @@ var _SelectYearComponent2 = _interopRequireDefault(_SelectYearComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ListContainer":556,"./SelectYearComponent":558,"react":531}],558:[function(require,module,exports){
+},{"./ListContainer":560,"./SelectYearComponent":562,"react":531}],562:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35686,7 +36084,7 @@ SelectYearComponent.propTypes = { years: _react2.default.PropTypes.array };
 
 exports.default = SelectYearComponent;
 
-},{"react":531}],559:[function(require,module,exports){
+},{"react":531}],563:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35736,7 +36134,7 @@ var yearPositioningStyle = {
 
 exports.default = YearComponent;
 
-},{"react":531}],560:[function(require,module,exports){
+},{"react":531}],564:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35769,7 +36167,6 @@ var SelectedFilters = function (_React$Component) {
   _createClass(SelectedFilters, [{
     key: 'render',
     value: function render() {
-
       return _react2.default.createElement(
         'div',
         null,
@@ -35783,11 +36180,11 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":531}],561:[function(require,module,exports){
+},{"react":531}],565:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -35795,113 +36192,122 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var XHR = function () {
-    function XHR(method) {
-        _classCallCheck(this, XHR);
+  function XHR(method) {
+    _classCallCheck(this, XHR);
 
-        this.method = method;
+    this.method = method;
+  }
+
+  _createClass(XHR, [{
+    key: 'request',
+    value: function request(URL, _ref) {
+      var _this = this;
+
+      var _ref$params = _ref.params;
+      var params = _ref$params === undefined ? null : _ref$params;
+      var _ref$data = _ref.data;
+      var data = _ref$data === undefined ? null : _ref$data;
+      var _ref$auth = _ref.auth;
+      var auth = _ref$auth === undefined ? null : _ref$auth;
+      var _ref$headers = _ref.headers;
+      var headers = _ref$headers === undefined ? null : _ref$headers;
+      var expectedStatus = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 200;
+
+      var url = URL;
+
+      return new Promise(function (OK, ERR) {
+        var xhrRequest = new XMLHttpRequest();
+
+        xhrRequest.onload = function () {
+          if (xhrRequest.status === expectedStatus) {
+            OK(xhrRequest);
+          } else {
+            ERR(xhrRequest);
+          }
+        };
+
+        xhrRequest.onerror = function (err) {
+          ERR(err);
+        };
+
+        xhrRequest.open(_this.method, url, true);
+
+        if (headers instanceof Object) {
+          Object.keys(headers).forEach(function (k) {
+            return xhrRequest.setRequestHeader(k, headers[k]);
+          });
+        } else {
+          xhrRequest.setRequestHeader('Content-Type', 'text/plain');
+          xhrRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        }
+
+        if (params instanceof Object) {
+          url += _this.formatParams(params);
+        }
+
+        xhrRequest.send(data instanceof Object ? JSON.stringify(data) : data);
+      });
     }
+  }], [{
+    key: 'get',
+    value: function get(URL) {
+      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var processXHR = arguments[2];
 
-    _createClass(XHR, [{
-        key: 'request',
-        value: function request(URL, _ref) {
-            var _this = this;
-
-            var _ref$params = _ref.params;
-            var params = _ref$params === undefined ? null : _ref$params;
-            var _ref$data = _ref.data;
-            var data = _ref$data === undefined ? null : _ref$data;
-            var _ref$auth = _ref.auth;
-            var auth = _ref$auth === undefined ? null : _ref$auth;
-            var _ref$headers = _ref.headers;
-            var headers = _ref$headers === undefined ? null : _ref$headers;
-
-            return new Promise(function (OK, ERR) {
-
-                var XHR = new XMLHttpRequest();
-
-                XHR.onload = function () {
-                    if (XHR.status === 200 || XHR.status === 201) {
-                        OK(JSON.parse(XHR.responseText));
-                    } else {
-                        ERR(XHR.statusText);
-                    }
-                };
-
-                XHR.onerror = function (err) {
-                    ERR(err);
-                };
-
-                XHR.open(_this.method, URL, true);
-
-                if (headers instanceof Object) {
-                    Object.keys(headers).forEach(function (k) {
-                        XHR.setRequestHeader(k, headers[k]);
-                    });
-                } else {
-                    XHR.setRequestHeader('Content-Type', 'text/plain');
-                    XHR.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                }
-
-                if (params instanceof Object) {
-                    URL += _this.format_params(params);
-                }
-
-                var opt = [_this.method, URL, true];
-
-                if (auth !== null) {
-                    opt.push(auth.user);
-                    opt.push(auth.password);
-                }
-
-                if (data instanceof Object) {
-                    data = JSON.stringify(data);
-                }
-                XHR.send(data);
-            });
+      var xhr = new XHR('GET');
+      return xhr.request(URL, opt).then(function (resultXHR) {
+        if (processXHR) {
+          return processXHR(resultXHR);
+        } else if (resultXHR.getResponseHeader('Content-Type') === 'application/json') {
+          return JSON.parse(resultXHR.responseText);
         }
-    }], [{
-        key: 'get',
-        value: function get(URL) {
-            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return resultXHR.responseText;
+      }, function (failedXhr) {
+        return Promise.reject(failedXhr.responseText);
+      });
+    }
+  }, {
+    key: 'post',
+    value: function post(URL) {
+      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var processXHR = arguments[2];
+      var expectedStatus = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 201;
 
-            var xhr = new XHR('GET');
-            return xhr.request(URL, opt);
+      var xhr = new XHR('POST');
+      return xhr.request(URL, opt, expectedStatus).then(function (resultXHR) {
+        if (processXHR) {
+          return processXHR(resultXHR);
+        } else if (resultXHR.getResponseHeader('Content-Type') === 'application/json') {
+          return JSON.parse(resultXHR.responseText);
         }
-    }, {
-        key: 'post',
-        value: function post(URL) {
-            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return resultXHR.responseText;
+      });
+    }
+  }, {
+    key: 'put',
+    value: function put(URL) {
+      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-            var xhr = new XHR('POST');
-            return xhr.request(URL, opt);
-        }
-    }, {
-        key: 'put',
-        value: function put(URL) {
-            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      return new XHR('put').request(URL, opt);
+    }
+  }, {
+    key: 'delete',
+    value: function _delete(URL) {
+      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-            var xhr = new XHR('put');
-            return xhr.request(URL, opt);
-        }
-    }, {
-        key: 'delete',
-        value: function _delete(URL) {
-            var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      return new XHR('DELETE').request(URL, opt);
+    }
+  }, {
+    key: 'formatParams',
+    value: function formatParams(params) {
+      var pairs = Object.keys(params).map(function (k) {
+        return k + '=' + params[k];
+      });
+      return '?' + pairs.join('&');
+    }
+  }]);
 
-            var xhr = new XHR('DELETE');
-            return xhr.request(URL, opt);
-        }
-    }, {
-        key: 'format_params',
-        value: function format_params(params) {
-            var pairs = Object.keys(params).map(function (k) {
-                return k + '=' + params[k];
-            });
-            return '?' + pairs.join('&');
-        }
-    }]);
-
-    return XHR;
+  return XHR;
 }();
 
 exports.default = XHR;

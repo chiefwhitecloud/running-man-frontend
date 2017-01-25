@@ -1,12 +1,22 @@
-import React from 'react'
+import React from 'react';
 
-const RaceGroupList = ({raceGroups, onDeleteItem}) => {
-  return <div>
-    {raceGroups.map(function(raceGroup){
-      return <div key={raceGroup.id}>{raceGroup.name} - {raceGroup.distance} <button onClick={onDeleteItem.bind(raceGroup.id)}>Delete</button></div>
-    })}
-  </div>;
+import RaceGroupListItem from './RaceGroupListItem';
+
+const RaceGroupList = ({ raceGroups, onDeleteItem }) => (
+  <div>
+    {
+      raceGroups.map(raceGroup => <RaceGroupListItem
+        key={raceGroup.id}
+        onDelete={onDeleteItem}
+        raceGroup={raceGroup}
+      />)
+    }
+  </div>
+);
+
+RaceGroupList.propTypes = {
+  raceGroups: React.PropTypes.array.isRequired,
+  onDeleteItem: React.PropTypes.func.isRequired,
 };
-RaceGroupList.propTypes = { years: React.PropTypes.array };
 
 export default RaceGroupList;

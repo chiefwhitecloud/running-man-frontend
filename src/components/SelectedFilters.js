@@ -5,9 +5,6 @@ export default class SelectedFilters extends React.Component {
    super(props);
   }
   render() {
-
-  return <div>
-            {this.props.selectedAgeCategoryKey}
-        </div>
+    return <div>{this.props.selectedAgeCategoryKey}</div>;
   }
 }

@@ -1,56 +1,56 @@
-import React from 'react'
-import Loading from './../components/Loading'
-import RaceList from './RaceList'
-import { store } from './Store'
+import React from 'react';
+import Loading from './../components/Loading';
+import RaceList from './RaceList';
+import { store } from './Store';
 
 export default class extends React.Component {
   constructor(props) {
-   super(props);
-   this._onStoreChange = this._onStoreChange.bind(this);
-   this.state = {
+    super(props);
+    this.onStoreChange = this.onStoreChange.bind(this);
+    this.state = {
       races: null,
-      raceGroups : null,
-      isFetching: false
+      raceGroups: null,
+      isFetching: true,
     };
   }
   componentDidMount() {
-    this.setState({isFetching : true});
     store.fetchRaces();
     store.fetchRaceGroups();
-    store.addRacesChangeListener(this._onStoreChange);
-    store.addRaceGroupsChangeListener(this._onStoreChange);
+    store.addRacesChangeListener(this.onStoreChange);
+    store.addRaceGroupsChangeListener(this.onStoreChange);
   }
 
   componentWillUnmount() {
-    store.removeRacesChangeListener(this._onStoreChange);
-    store.removeRaceGroupsChangeListener(this._onStoreChange);
+    store.removeRacesChangeListener(this.onStoreChange);
+    store.removeRaceGroupsChangeListener(this.onStoreChange);
   }
 
-  _onStoreChange() {
-    if (store.getRaces() && store.getRaceGroups()){
+  onStoreChange() {
+    if (store.getRaces() && store.getRaceGroups()) {
       this.setState({
-        isFetching : false,
-        races : store.getRaces(),
-        raceGroups : store.getRaceGroups()
+        isFetching: false,
+        races: store.getRaces(),
+        raceGroups: store.getRaceGroups(),
       });
     }
   }
 
-  _onRaceGroupSelectionChange(raceGroupSelf, raceId){
-    store.addRaceToRaceGroup(raceGroupSelf, raceId)
+  onRaceGroupSelectionChange(raceGroupSelf, raceId) {
+    store.addRaceToRaceGroup(raceGroupSelf, raceId);
   }
 
   render() {
-    if (this.state.isFetching){
+    if (this.state.isFetching) {
       return <Loading />;
+    } else if (this.state.races != null && this.state.raceGroups != null) {
+      return (<div>
+        <RaceList
+          races={this.state.races}
+          raceGroups={this.state.raceGroups}
+          onRaceGroupSelectionChange={this.onRaceGroupSelectionChange}
+        />
+      </div>);
     }
-    else if (this.state.races != null && this.state.raceGroups != null){
-      return <div>
-        <RaceList races={this.state.races} raceGroups={this.state.raceGroups} onRaceGroupSelectionChange={this._onRaceGroupSelectionChange} />
-      </div>;
-    }
-    else{
-      return null;
-    }
+    return null;
   }
 }

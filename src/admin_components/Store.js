@@ -2,8 +2,8 @@ import xhr from './../xhr'
 import {EventEmitter} from 'events';
 
 class Store extends EventEmitter {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this._state = {
       raceGroups : [],
       races : []
