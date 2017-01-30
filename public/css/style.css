@@ -57,3 +57,27 @@
     height: 5em;
   }
 }
+
+.tabs{
+
+}
+
+.tab-content{
+  background-color: white;
+  padding: 40px;
+}
+
+button.tab-header {
+  background-color: white;
+  border: 0px;
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+  margin: 0px;
+}
+
+button.tab-header.selected {
+  border-top: 1px solid red;
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  border-bottom: 1px solid white;
+}

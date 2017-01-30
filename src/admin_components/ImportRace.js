@@ -1,7 +1,13 @@
 import { EventEmitter } from 'events';
 import xhr from './../xhr';
 
-export default class ImportRace extends EventEmitter {
+export const Status = {
+  PROCESSING: Symbol('PROCESSING'),
+  FAILED: Symbol('FAILED'),
+  COMPLETED: Symbol('COMPLETED'),
+};
+
+export class ImportRace extends EventEmitter {
   constructor() {
     super();
     this.url = undefined;
@@ -26,7 +32,7 @@ export default class ImportRace extends EventEmitter {
   }
 
   process() {
-    this.status = 'Submitting';
+    this.status = Status.PROCESSING;
     this.errorMessage = undefined;
     this.emit('change');
     const self = this;
@@ -38,7 +44,7 @@ export default class ImportRace extends EventEmitter {
         raceUrl: this.url,
       },
     }, this.handleProcessSuccessResponse, 202).catch((xhrResult) => {
-      self.status = 'Failed';
+      self.status = Status.FAILED;
       self.errorMessage = `${xhrResult.statusText} : ${xhrResult.responseText}`;
       self.emit('change');
     });
@@ -46,7 +52,7 @@ export default class ImportRace extends EventEmitter {
 
   handleProcessSuccessResponse(xhrResponse) {
     this.taskLocation = xhrResponse.getResponseHeader('Location');
-    this.status = 'Processing';
+    this.status = Status.PROCESSING;
     this.emit('change');
     this.intervalId = setInterval(() => {
       this.checkTask();
@@ -55,11 +61,11 @@ export default class ImportRace extends EventEmitter {
 
   handleTaskCheckSuccessResponse(xhrResponse) {
     if (xhrResponse.responseURL === this.taskLocation) {
-      this.status = 'Still Processing';
+      this.status = Status.PROCESSING;
       this.emit('change');
     } else {
       clearInterval(this.intervalId);
-      this.status = 'Completed';
+      this.status = Status.COMPLETED;
       this.emit('change');
     }
   }
@@ -68,7 +74,7 @@ export default class ImportRace extends EventEmitter {
     xhr.get(this.taskLocation, {}, this.handleTaskCheckSuccessResponse)
       .catch((errMessage) => {
         clearInterval(this.intervalId);
-        this.status = 'Failed';
+        this.status = Status.FAILED;
         this.errorMessage = errMessage;
         this.emit('change');
       });

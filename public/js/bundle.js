@@ -32988,31 +32988,17 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _RaceGroupListContainer = require('./admin_components/RaceGroupListContainer');
+var _Layout = require('./admin_components/Layout');
 
-var _RaceGroupListContainer2 = _interopRequireDefault(_RaceGroupListContainer);
-
-var _RaceListContainer = require('./admin_components/RaceListContainer');
-
-var _RaceListContainer2 = _interopRequireDefault(_RaceListContainer);
-
-var _ImportRaceContainer = require('./admin_components/ImportRaceContainer');
-
-var _ImportRaceContainer2 = _interopRequireDefault(_ImportRaceContainer);
+var _Layout2 = _interopRequireDefault(_Layout);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function AdminApp() {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(_ImportRaceContainer2.default, null),
-    _react2.default.createElement(_RaceGroupListContainer2.default, null),
-    _react2.default.createElement(_RaceListContainer2.default, null)
-  );
+  return _react2.default.createElement(_Layout2.default, null);
 }
 
-},{"./admin_components/ImportRaceContainer":538,"./admin_components/RaceGroupListContainer":541,"./admin_components/RaceListContainer":544,"react":531}],533:[function(require,module,exports){
+},{"./admin_components/Layout":540,"react":531}],533:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -33075,7 +33061,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":532,"./components/App":547,"./components/FilterableRaceResults":550,"./components/Racer":555,"./components/Races/ListContainer":560,"./components/Races/PageLayout":561,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
+},{"./AdminApp":532,"./components/App":549,"./components/FilterableRaceResults":552,"./components/Racer":557,"./components/Races/ListContainer":562,"./components/Races/PageLayout":563,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33357,6 +33343,7 @@ function GetRacesSortedRaceGroup(raceGroupsItems, raceItems) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ImportRace = exports.Status = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -33374,7 +33361,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ImportRace = function (_EventEmitter) {
+var Status = exports.Status = {
+  PROCESSING: Symbol('PROCESSING'),
+  FAILED: Symbol('FAILED'),
+  COMPLETED: Symbol('COMPLETED')
+};
+
+var ImportRace = exports.ImportRace = function (_EventEmitter) {
   _inherits(ImportRace, _EventEmitter);
 
   function ImportRace() {
@@ -33410,7 +33403,7 @@ var ImportRace = function (_EventEmitter) {
   }, {
     key: 'process',
     value: function process() {
-      this.status = 'Submitting';
+      this.status = Status.PROCESSING;
       this.errorMessage = undefined;
       this.emit('change');
       var self = this;
@@ -33422,7 +33415,7 @@ var ImportRace = function (_EventEmitter) {
           raceUrl: this.url
         }
       }, this.handleProcessSuccessResponse, 202).catch(function (xhrResult) {
-        self.status = 'Failed';
+        self.status = Status.FAILED;
         self.errorMessage = xhrResult.statusText + ' : ' + xhrResult.responseText;
         self.emit('change');
       });
@@ -33433,7 +33426,7 @@ var ImportRace = function (_EventEmitter) {
       var _this2 = this;
 
       this.taskLocation = xhrResponse.getResponseHeader('Location');
-      this.status = 'Processing';
+      this.status = Status.PROCESSING;
       this.emit('change');
       this.intervalId = setInterval(function () {
         _this2.checkTask();
@@ -33443,11 +33436,11 @@ var ImportRace = function (_EventEmitter) {
     key: 'handleTaskCheckSuccessResponse',
     value: function handleTaskCheckSuccessResponse(xhrResponse) {
       if (xhrResponse.responseURL === this.taskLocation) {
-        this.status = 'Still Processing';
+        this.status = Status.PROCESSING;
         this.emit('change');
       } else {
         clearInterval(this.intervalId);
-        this.status = 'Completed';
+        this.status = Status.COMPLETED;
         this.emit('change');
       }
     }
@@ -33458,7 +33451,7 @@ var ImportRace = function (_EventEmitter) {
 
       _xhr2.default.get(this.taskLocation, {}, this.handleTaskCheckSuccessResponse).catch(function (errMessage) {
         clearInterval(_this3.intervalId);
-        _this3.status = 'Failed';
+        _this3.status = Status.FAILED;
         _this3.errorMessage = errMessage;
         _this3.emit('change');
       });
@@ -33468,129 +33461,7 @@ var ImportRace = function (_EventEmitter) {
   return ImportRace;
 }(_events.EventEmitter);
 
-exports.default = ImportRace;
-
-},{"./../xhr":565,"events":297}],537:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ImportRaceComponent = function (_React$Component) {
-  _inherits(ImportRaceComponent, _React$Component);
-
-  function ImportRaceComponent(props) {
-    _classCallCheck(this, ImportRaceComponent);
-
-    var _this = _possibleConstructorReturn(this, (ImportRaceComponent.__proto__ || Object.getPrototypeOf(ImportRaceComponent)).call(this, props));
-
-    _this.handleInputChange = _this.handleInputChange.bind(_this);
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.handleReset = _this.handleReset.bind(_this);
-    _this.state = {
-      url: ''
-    };
-    return _this;
-  }
-
-  _createClass(ImportRaceComponent, [{
-    key: 'handleInputChange',
-    value: function handleInputChange(event) {
-      this.setState({
-        url: event.target.value
-      });
-    }
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      event.preventDefault();
-      this.props.onSubmit(this.state.url);
-    }
-  }, {
-    key: 'handleReset',
-    value: function handleReset(event) {
-      event.preventDefault();
-      // reset the component state.
-      this.setState({
-        url: ''
-      });
-      this.props.onReset();
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var display = void 0;
-
-      var form = _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
-        _react2.default.createElement(
-          'label',
-          null,
-          'Url:',
-          _react2.default.createElement('input', { value: this.state.url, type: 'text', name: 'url', onChange: this.handleInputChange })
-        ),
-        _react2.default.createElement('input', { type: 'submit', value: 'Import' })
-      );
-
-      if (!this.props.isSubmitted) {
-        display = form;
-      } else if (this.props.importStatus === 'Failed') {
-        display = _react2.default.createElement(
-          'div',
-          null,
-          this.props.importStatus,
-          ' ',
-          this.props.errorMessage,
-          _react2.default.createElement(
-            'button',
-            { onClick: this.handleReset },
-            'Submit Another'
-          )
-        );
-      } else {
-        display = _react2.default.createElement(
-          'div',
-          null,
-          this.props.importStatus,
-          ' ',
-          this.props.errorMessage
-        );
-      }
-      return display;
-    }
-  }]);
-
-  return ImportRaceComponent;
-}(_react2.default.Component);
-
-exports.default = ImportRaceComponent;
-
-
-ImportRaceComponent.propTypes = {
-  isSubmitted: _react2.default.PropTypes.bool.isRequired,
-  onSubmit: _react2.default.PropTypes.func.isRequired,
-  onReset: _react2.default.PropTypes.func.isRequired,
-  importStatus: _react2.default.PropTypes.string,
-  errorMessage: _react2.default.PropTypes.string
-};
-
-},{"react":531}],538:[function(require,module,exports){
+},{"./../xhr":570,"events":297}],537:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33605,13 +33476,17 @@ var _react2 = _interopRequireDefault(_react);
 
 var _ImportRace = require('./ImportRace');
 
-var _ImportRace2 = _interopRequireDefault(_ImportRace);
+var _ImportRaceListItem = require('./ImportRaceListItem');
 
-var _ImportRaceComponent = require('./ImportRaceComponent');
+var _ImportRaceListItem2 = _interopRequireDefault(_ImportRaceListItem);
 
-var _ImportRaceComponent2 = _interopRequireDefault(_ImportRaceComponent);
+var _ImportRaceForm = require('./ImportRaceForm');
+
+var _ImportRaceForm2 = _interopRequireDefault(_ImportRaceForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33627,13 +33502,13 @@ var _class = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
-    _this.raceImporter = new _ImportRace2.default();
+    _this.raceImporter = new _ImportRace.ImportRace();
     _this.handleSubmit = _this.handleSubmit.bind(_this);
     _this.handleReset = _this.handleReset.bind(_this);
     _this.handleRaceImporterChange = _this.handleRaceImporterChange.bind(_this);
     _this.state = {
-      importStatus: undefined,
-      importErrorText: undefined
+      importJobs: new Map(),
+      importJobsCompleted: false
     };
     return _this;
   }
@@ -33646,40 +33521,150 @@ var _class = function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      this.raceImporter.off('change', this.handleRaceImporterChange);
+      this.raceImporter.removeListener('change', this.handleRaceImporterChange);
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(urls) {
+      var _this2 = this;
+
+      var jobs = new Map();
+      urls.forEach(function (url) {
+        return jobs.set(url, { isCurrent: false, status: 'pending' });
+      });
+      this.setState({
+        importJobs: jobs
+      });
+      setTimeout(function () {
+        return _this2.startNextImportJob();
+      }, 0);
+    }
+  }, {
+    key: 'startNextImportJob',
+    value: function startNextImportJob() {
+      var _this3 = this;
+
+      var arr = [].concat(_toConsumableArray(this.state.importJobs));
+      var nextItem = arr.find(function (el) {
+        return !el[1].isCurrent && el[1].status === 'pending';
+      });
+      if (nextItem === undefined) {
+        // jobs are completed!
+        this.setState({
+          importJobsCompleted: true
+        });
+      } else {
+        nextItem[1].isCurrent = true;
+        this.setState({
+          importJobs: new Map(arr)
+        });
+        this.raceImporter.setUrl(nextItem[0]);
+        setTimeout(function () {
+          return _this3.raceImporter.process();
+        }, 0);
+      }
     }
   }, {
     key: 'handleRaceImporterChange',
     value: function handleRaceImporterChange() {
-      this.setState({
-        importStatus: this.raceImporter.getStatus(),
-        errorMessage: this.raceImporter.getErrorMessage()
+      var _this4 = this;
+
+      // update the current job
+      var arr = [].concat(_toConsumableArray(this.state.importJobs));
+      var currentJob = arr.find(function (el) {
+        return el[1].isCurrent;
       });
-    }
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(url) {
-      this.raceImporter.setUrl(url);
-      this.raceImporter.process();
+
+      if (this.raceImporter.getStatus() === _ImportRace.Status.FAILED || this.raceImporter.getStatus() === _ImportRace.Status.COMPLETED) {
+        // set this job as done and start the next one
+        if (this.raceImporter.getStatus() === _ImportRace.Status.FAILED) {
+          currentJob[1].status = 'failed';
+        } else {
+          currentJob[1].status = 'completed';
+        }
+        currentJob[1].isCurrent = false;
+        this.setState({
+          importJobs: new Map(arr)
+        });
+        setTimeout(function () {
+          return _this4.startNextImportJob();
+        }, 0);
+      } else if (this.raceImporter.getStatus() === _ImportRace.Status.PROCESSING) {
+        if (currentJob[1].status !== 'processing') {
+          currentJob[1].status = 'processing';
+          this.setState({
+            importJobs: new Map(arr)
+          });
+        }
+      }
     }
   }, {
     key: 'handleReset',
     value: function handleReset() {
       this.setState({
-        importStatus: undefined,
-        errorMessage: undefined
+        importJobs: new Map(),
+        importJobsCompleted: false
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_ImportRaceComponent2.default, {
-        isSubmitted: this.state.importStatus !== undefined,
-        onSubmit: this.handleSubmit,
-        onReset: this.handleReset,
-        importStatus: this.state.importStatus,
-        errorMessage: this.state.errorMessage
-      });
+      var _this5 = this;
+
+      var display = void 0;
+      if (this.state.importJobs.size === 0) {
+        display = _react2.default.createElement(_ImportRaceForm2.default, { onSubmit: this.handleSubmit });
+      } else {
+        (function () {
+          var resetButton = void 0;
+          var completedMessage = void 0;
+          if (_this5.state.importJobsCompleted) {
+            resetButton = _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'button',
+                { type: 'button', onClick: _this5.handleReset },
+                'Reset'
+              )
+            );
+            completedMessage = _react2.default.createElement(
+              'div',
+              null,
+              'Import Completed!'
+            );
+          }
+
+          var jobs = [];
+          var arr = [].concat(_toConsumableArray(_this5.state.importJobs));
+          arr.forEach(function (item) {
+            return jobs.push(_react2.default.createElement(_ImportRaceListItem2.default, {
+              key: item[0],
+              url: item[0],
+              status: item[1].status
+            }));
+          });
+
+          display = _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'h3',
+              null,
+              'Importing...'
+            ),
+            _react2.default.createElement(
+              'div',
+              null,
+              jobs
+            ),
+            completedMessage,
+            resetButton
+          );
+        })();
+      }
+
+      return display;
     }
   }]);
 
@@ -33688,7 +33673,217 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./ImportRace":536,"./ImportRaceComponent":537,"react":531}],539:[function(require,module,exports){
+},{"./ImportRace":536,"./ImportRaceForm":538,"./ImportRaceListItem":539,"react":531}],538:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ImportRaceForm = function (_React$Component) {
+  _inherits(ImportRaceForm, _React$Component);
+
+  function ImportRaceForm(props) {
+    _classCallCheck(this, ImportRaceForm);
+
+    var _this = _possibleConstructorReturn(this, (ImportRaceForm.__proto__ || Object.getPrototypeOf(ImportRaceForm)).call(this, props));
+
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+    _this.state = {
+      url: '',
+      error: false
+    };
+    return _this;
+  }
+
+  _createClass(ImportRaceForm, [{
+    key: 'handleInputChange',
+    value: function handleInputChange(event) {
+      this.setState({
+        url: event.target.value,
+        error: false
+      });
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+      var urls = this.state.url;
+
+      if (urls.length === 0) {
+        this.setState({
+          error: true
+        });
+        return;
+      }
+
+      var urlsArray = urls.split('\n');
+      this.props.onSubmit(urlsArray);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'label',
+            { htmlFor: 'import_urls' },
+            'Enter Race Results Urls:'
+          )
+        ),
+        _react2.default.createElement('textarea', {
+          id: 'import_urls',
+          rows: '10',
+          cols: '50',
+          value: this.state.url,
+          onChange: this.handleInputChange
+        }),
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement('input', { type: 'submit', value: 'Import' })
+        )
+      );
+    }
+  }]);
+
+  return ImportRaceForm;
+}(_react2.default.Component);
+
+exports.default = ImportRaceForm;
+
+},{"react":531}],539:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ImportRaceListItem = function ImportRaceListItem(_ref) {
+  var url = _ref.url;
+  var status = _ref.status;
+  return _react2.default.createElement(
+    'div',
+    null,
+    url,
+    ' : ',
+    status
+  );
+};
+
+ImportRaceListItem.propTypes = {
+  url: _react2.default.PropTypes.string.isRequired,
+  status: _react2.default.PropTypes.string.isRequired
+};
+
+exports.default = ImportRaceListItem;
+
+},{"react":531}],540:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Tabs = require('./../components/Tabs');
+
+var _Tabs2 = _interopRequireDefault(_Tabs);
+
+var _TabPane = require('./../components/TabPane');
+
+var _TabPane2 = _interopRequireDefault(_TabPane);
+
+var _RaceGroupListContainer = require('./RaceGroupListContainer');
+
+var _RaceGroupListContainer2 = _interopRequireDefault(_RaceGroupListContainer);
+
+var _RaceListContainer = require('./RaceListContainer');
+
+var _RaceListContainer2 = _interopRequireDefault(_RaceListContainer);
+
+var _ImportRaceContainer = require('./ImportRaceContainer');
+
+var _ImportRaceContainer2 = _interopRequireDefault(_ImportRaceContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class() {
+    _classCallCheck(this, _class);
+
+    return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+  }
+
+  _createClass(_class, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _Tabs2.default,
+        { selected: 0 },
+        _react2.default.createElement(
+          _TabPane2.default,
+          { label: 'Import Race' },
+          _react2.default.createElement(_ImportRaceContainer2.default, null)
+        ),
+        _react2.default.createElement(
+          _TabPane2.default,
+          { label: 'Race Groups' },
+          _react2.default.createElement(_RaceGroupListContainer2.default, null)
+        ),
+        _react2.default.createElement(
+          _TabPane2.default,
+          { label: 'Races' },
+          _react2.default.createElement(_RaceListContainer2.default, null)
+        )
+      );
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"./../components/TabPane":568,"./../components/Tabs":569,"./ImportRaceContainer":537,"./RaceGroupListContainer":543,"./RaceListContainer":546,"react":531}],541:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33769,7 +33964,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":531}],540:[function(require,module,exports){
+},{"react":531}],542:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33809,7 +34004,7 @@ RaceGroupList.propTypes = {
 
 exports.default = RaceGroupList;
 
-},{"./RaceGroupListItem":542,"react":531}],541:[function(require,module,exports){
+},{"./RaceGroupListItem":544,"react":531}],543:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33914,7 +34109,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":552,"./../xhr":565,"./RaceGroupAdd":539,"./RaceGroupList":540,"./Store":546,"react":531}],542:[function(require,module,exports){
+},{"./../components/Loading":554,"./../xhr":570,"./RaceGroupAdd":541,"./RaceGroupList":542,"./Store":548,"react":531}],544:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33961,7 +34156,7 @@ RaceGroupListItem.propTypes = {
 
 exports.default = RaceGroupListItem;
 
-},{"react":531}],543:[function(require,module,exports){
+},{"react":531}],545:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33985,11 +34180,6 @@ var RaceList = function RaceList(_ref) {
   return _react2.default.createElement(
     'div',
     null,
-    _react2.default.createElement(
-      'h2',
-      null,
-      'Race List'
-    ),
     _react2.default.createElement(
       'table',
       null,
@@ -34017,7 +34207,7 @@ RaceList.propTypes = {
 
 exports.default = RaceList;
 
-},{"./RaceListItem":545,"react":531}],544:[function(require,module,exports){
+},{"./RaceListItem":547,"react":531}],546:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34120,7 +34310,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":552,"./RaceList":543,"./Store":546,"react":531}],545:[function(require,module,exports){
+},{"./../components/Loading":554,"./RaceList":545,"./Store":548,"react":531}],547:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34215,7 +34405,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":531}],546:[function(require,module,exports){
+},{"react":531}],548:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34225,11 +34415,11 @@ exports.store = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = require('events');
+
 var _xhr = require('./../xhr');
 
 var _xhr2 = _interopRequireDefault(_xhr);
-
-var _events = require('events');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34247,7 +34437,7 @@ var Store = function (_EventEmitter) {
 
     var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this));
 
-    _this._state = {
+    _this.state = {
       raceGroups: [],
       races: []
     };
@@ -34288,14 +34478,14 @@ var Store = function (_EventEmitter) {
     key: 'createRaceGroup',
     value: function createRaceGroup(name, distance) {
       _xhr2.default.post('/feed/racegroup', {
-        "headers": {
-          "Content-Type": "application/json"
+        headers: {
+          'Content-Type': 'application/json'
         },
-        "data": {
-          "name": name,
-          "distance": distance
+        data: {
+          name: name,
+          distance: distance
         }
-      }).then(function (result) {
+      }).then(function () {
         store.fetchRaceGroups();
       });
     }
@@ -34304,15 +34494,15 @@ var Store = function (_EventEmitter) {
     value: function addRaceToRaceGroup(raceGroupSelf, raceId) {
       var _this2 = this;
 
-      var raceGroup = this._state.raceGroups.find(function (raceGroup) {
-        return raceGroup.self == raceGroupSelf;
+      var foundRaceGroup = this.state.raceGroups.find(function (raceGroup) {
+        return raceGroup.self === raceGroupSelf;
       });
-      _xhr2.default.post(raceGroup["races"], {
-        "headers": {
-          "Content-Type": "application/json"
+      _xhr2.default.post(foundRaceGroup["races"], {
+        headers: {
+          'Content-Type': 'application/json'
         },
-        "data": {
-          "raceId": raceId.toString()
+        data: {
+          raceId: raceId.toString()
         }
       }).then(function (result) {
         if (result["success"]) {
@@ -34326,7 +34516,7 @@ var Store = function (_EventEmitter) {
       var _this3 = this;
 
       _xhr2.default.get('/feed/racegroups').then(function (result) {
-        _this3._state.raceGroups = result["raceGroups"];
+        _this3.state.raceGroups = result['raceGroups'];
         _this3.emitRaceGroupsChange();
       });
     }
@@ -34336,19 +34526,19 @@ var Store = function (_EventEmitter) {
       var _this4 = this;
 
       _xhr2.default.get('/feed/races').then(function (result) {
-        _this4._state.races = result["races"];
+        _this4.state.races = result['races'];
         _this4.emitRacesChange();
       });
     }
   }, {
     key: 'getRaces',
     value: function getRaces() {
-      return this._state.races;
+      return this.state.races;
     }
   }, {
     key: 'getRaceGroups',
     value: function getRaceGroups() {
-      return this._state.raceGroups;
+      return this.state.raceGroups;
     }
   }]);
 
@@ -34357,7 +34547,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":565,"events":297}],547:[function(require,module,exports){
+},{"./../xhr":570,"events":297}],549:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34479,7 +34669,7 @@ var App = function App(props) {
 };
 exports.default = App;
 
-},{"./HeroComponent":551,"react":531,"react-router":329}],548:[function(require,module,exports){
+},{"./HeroComponent":553,"react":531,"react-router":329}],550:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34512,7 +34702,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":565}],549:[function(require,module,exports){
+},{"./../xhr":570}],551:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34824,7 +35014,7 @@ var MenuOption = function (_React$Component2) {
   return MenuOption;
 }(_react2.default.Component);
 
-},{"react":531}],550:[function(require,module,exports){
+},{"react":531}],552:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35041,7 +35231,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":565,"./FilterBar":549,"./Loading":552,"./RaceHeader":553,"./RaceResults":554,"./SelectedFilters":564,"react":531}],551:[function(require,module,exports){
+},{"./../xhr":570,"./FilterBar":551,"./Loading":554,"./RaceHeader":555,"./RaceResults":556,"./SelectedFilters":566,"react":531}],553:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35076,7 +35266,7 @@ function HeroComponent() {
   );
 }
 
-},{"react":531}],552:[function(require,module,exports){
+},{"react":531}],554:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35127,7 +35317,7 @@ var Loading = function (_React$Component) {
 
 exports.default = Loading;
 
-},{"react":531}],553:[function(require,module,exports){
+},{"react":531}],555:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35206,7 +35396,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":534,"react":531}],554:[function(require,module,exports){
+},{"./../DateFormatter":534,"react":531}],556:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35455,7 +35645,7 @@ var RacerRow = function (_React$Component2) {
 
 exports.default = RaceResults;
 
-},{"./../xhr":565,"react":531}],555:[function(require,module,exports){
+},{"./../xhr":570,"react":531}],557:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35647,7 +35837,7 @@ var Racer = function (_React$Component) {
 
 exports.default = Racer;
 
-},{"./../RaceFeedConverter":535,"./../xhr":565,"./FetchData":548,"./RaceHeader":553,"./RacerDetail":556,"./RacerResult":557,"react":531}],556:[function(require,module,exports){
+},{"./../RaceFeedConverter":535,"./../xhr":570,"./FetchData":550,"./RaceHeader":555,"./RacerDetail":558,"./RacerResult":559,"react":531}],558:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35678,7 +35868,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":531}],557:[function(require,module,exports){
+},{"react":531}],559:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35765,7 +35955,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":565,"./RaceResults":554,"react":531}],558:[function(require,module,exports){
+},{"./../xhr":570,"./RaceResults":556,"react":531}],560:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35818,7 +36008,7 @@ DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
 
 exports.default = DayComponent;
 
-},{"./../../DateFormatter":534,"react":531}],559:[function(require,module,exports){
+},{"./../../DateFormatter":534,"react":531}],561:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35847,7 +36037,7 @@ var RaceLink = function RaceLink(item) {
 
 exports.default = RaceLink;
 
-},{"react":531,"react-router":329}],560:[function(require,module,exports){
+},{"react":531,"react-router":329}],562:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36023,7 +36213,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../../RaceFeedConverter":535,"./../FetchData":548,"./../Loading":552,"./DayComponent":558,"./LinkComponent":559,"./YearComponent":563,"react":531}],561:[function(require,module,exports){
+},{"./../../RaceFeedConverter":535,"./../FetchData":550,"./../Loading":554,"./DayComponent":560,"./LinkComponent":561,"./YearComponent":565,"react":531}],563:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36052,7 +36242,7 @@ var _SelectYearComponent2 = _interopRequireDefault(_SelectYearComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ListContainer":560,"./SelectYearComponent":562,"react":531}],562:[function(require,module,exports){
+},{"./ListContainer":562,"./SelectYearComponent":564,"react":531}],564:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36084,7 +36274,7 @@ SelectYearComponent.propTypes = { years: _react2.default.PropTypes.array };
 
 exports.default = SelectYearComponent;
 
-},{"react":531}],563:[function(require,module,exports){
+},{"react":531}],565:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36134,7 +36324,7 @@ var yearPositioningStyle = {
 
 exports.default = YearComponent;
 
-},{"react":531}],564:[function(require,module,exports){
+},{"react":531}],566:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36180,7 +36370,185 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":531}],565:[function(require,module,exports){
+},{"react":531}],567:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class(props) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+    _this.handleClick = _this.handleClick.bind(_this);
+    return _this;
+  }
+
+  _createClass(_class, [{
+    key: 'handleClick',
+    value: function handleClick(event) {
+      event.preventDefault();
+      this.props.onSelected(this.props.index);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var active = this.props.isActive ? 'selected' : '';
+      var cssClasses = 'tab-header ' + active;
+
+      return _react2.default.createElement(
+        'button',
+        { onClick: this.handleClick, className: cssClasses },
+        this.props.text
+      );
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"react":531}],568:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var TabPane = function TabPane(_ref) {
+  var label = _ref.label;
+  var children = _ref.children;
+  return _react2.default.createElement(
+    'div',
+    null,
+    children
+  );
+};
+
+TabPane.propTypes = {
+  label: _react2.default.PropTypes.array.isRequired
+};
+
+exports.default = TabPane;
+
+},{"react":531}],569:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _TabHeader = require('./TabHeader');
+
+var _TabHeader2 = _interopRequireDefault(_TabHeader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class(props) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+    _this.handleClick = _this.handleClick.bind(_this);
+    _this.state = {
+      selected: _this.props.selected
+    };
+    return _this;
+  }
+
+  _createClass(_class, [{
+    key: 'handleClick',
+    value: function handleClick(index) {
+      this.setState({
+        selected: index
+      });
+    }
+  }, {
+    key: 'renderTitles',
+    value: function renderTitles() {
+      function labels(child, index) {
+        return _react2.default.createElement(_TabHeader2.default, {
+          key: index,
+          isActive: this.state.selected === index,
+          text: child.props.label,
+          onSelected: this.handleClick,
+          index: index
+        });
+      }
+      return _react2.default.createElement(
+        'div',
+        { className: 'tab-header-container' },
+        this.props.children.map(labels.bind(this))
+      );
+    }
+  }, {
+    key: 'renderContent',
+    value: function renderContent() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'tab-content' },
+        this.props.children[this.state.selected]
+      );
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'tabs' },
+        this.renderTitles(),
+        this.renderContent()
+      );
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"./TabHeader":567,"react":531}],570:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

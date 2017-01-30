@@ -3,7 +3,6 @@ import RaceListItem from './RaceListItem';
 
 const RaceList = ({ races, raceGroups, onRaceGroupSelectionChange }) => (
   <div>
-    <h2>Race List</h2>
     <table>
       <tbody>
         {

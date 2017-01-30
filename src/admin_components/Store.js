@@ -1,12 +1,13 @@
-import xhr from './../xhr'
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
+import xhr from './../xhr';
+
 
 class Store extends EventEmitter {
   constructor() {
     super();
-    this._state = {
-      raceGroups : [],
-      races : []
+    this.state = {
+      raceGroups: [],
+      races: [],
     };
   }
 
@@ -34,58 +35,58 @@ class Store extends EventEmitter {
     this.emit('racegroups-change');
   }
 
-  createRaceGroup(name, distance){
+  createRaceGroup(name, distance) {
     xhr.post('/feed/racegroup', {
-      "headers" : {
-        "Content-Type" : "application/json"
+      headers : {
+        'Content-Type' : 'application/json'
       },
-      "data" :
-        {
-          "name": name,
-          "distance": distance
-        }
-      }).then((result) => {
+      data: {
+        name: name,
+        distance: distance
+      }
+    }).then(() => {
         store.fetchRaceGroups();
     });
   }
 
-  addRaceToRaceGroup(raceGroupSelf, raceId){
-    const raceGroup = this._state.raceGroups.find(raceGroup => raceGroup.self == raceGroupSelf);
-    xhr.post(raceGroup["races"], {
-        "headers" : {
-          "Content-Type" : "application/json"
-        },
-        "data" : {
-          "raceId": raceId.toString()
-        }
-      }).then((result) => {
-        if (result["success"]){
-          this.fetchRaces();
-        }
+  addRaceToRaceGroup(raceGroupSelf, raceId) {
+    const foundRaceGroup = this.state.raceGroups.find(raceGroup =>
+      raceGroup.self === raceGroupSelf);
+    xhr.post(foundRaceGroup["races"], {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        raceId: raceId.toString(),
+      },
+    }).then((result) => {
+      if (result["success"]) {
+        this.fetchRaces();
+      }
     });
   }
 
-  fetchRaceGroups(){
+  fetchRaceGroups() {
     xhr.get('/feed/racegroups').then((result) => {
-      this._state.raceGroups = result["raceGroups"];
+      this.state.raceGroups = result['raceGroups'];
       this.emitRaceGroupsChange();
     });
   }
 
-  fetchRaces(){
+  fetchRaces() {
     xhr.get('/feed/races').then((result) => {
-      this._state.races = result["races"];
+      this.state.races = result['races'];
       this.emitRacesChange();
     });
   }
 
-  getRaces(){
-    return this._state.races;
+  getRaces() {
+    return this.state.races;
   }
 
-  getRaceGroups(){
-    return this._state.raceGroups;
+  getRaceGroups() {
+    return this.state.raceGroups;
   }
 }
 
-export let store = new Store();
+export const store = new Store();
