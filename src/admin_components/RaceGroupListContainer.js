@@ -34,9 +34,8 @@ export default class extends React.Component {
     }
   }
 
-  handleDelete(raceGroup) {
-    debugger;
-    console.log(raceGroup);
+  handleDelete(raceGroupSelf) {
+    store.deleteRaceGroup(raceGroupSelf);
   }
 
   render() {

@@ -1,11 +1,11 @@
 import React from 'react';
 
 const RaceGroupListItem = ({ raceGroup, onDelete }) => (
-  <div>
-    <div>{raceGroup.name} - {raceGroup.distance}
-      <button onClick={() => onDelete(raceGroup.id)}>Delete</button>
-    </div>
-  </div>
+  <tr>
+    <td>{raceGroup.name}</td>
+    <td>{raceGroup.distance}</td>
+    <td> <button onClick={() => onDelete(raceGroup.self)}>Delete</button></td>
+  </tr>
 );
 
 RaceGroupListItem.propTypes = {

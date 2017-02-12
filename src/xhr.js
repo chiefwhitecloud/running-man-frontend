@@ -18,7 +18,7 @@ export default class XHR {
     ));
   }
 
-  static post(URL, opt = {}, processXHR, expectedStatus = 201) {
+  static post(URL, opt = {}, processXHR = undefined, expectedStatus = 201) {
     const xhr = new XHR('POST');
     return xhr.request(URL, opt, expectedStatus).then((resultXHR) => {
       if (processXHR) {

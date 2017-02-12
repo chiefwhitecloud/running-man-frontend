@@ -37,8 +37,8 @@ class Store extends EventEmitter {
 
   createRaceGroup(name, distance) {
     xhr.post('/feed/racegroup', {
-      headers : {
-        'Content-Type' : 'application/json'
+      headers: {
+        'Content-Type': 'application/json'
       },
       data: {
         name: name,
@@ -59,10 +59,22 @@ class Store extends EventEmitter {
       data: {
         raceId: raceId.toString(),
       },
-    }).then((result) => {
+    }, undefined, 200).then((result) => {
       if (result["success"]) {
         this.fetchRaces();
       }
+    });
+  }
+
+  deleteRaceGroup(raceGroupSelf) {
+    xhr.delete(raceGroupSelf).then(() => {
+      this.fetchRaceGroups();
+    });
+  }
+
+  deleteRace(raceSelf) {
+    xhr.delete(raceSelf).then(() => {
+      this.fetchRaces();
     });
   }
 

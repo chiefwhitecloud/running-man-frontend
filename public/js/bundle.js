@@ -33738,6 +33738,11 @@ var ImportRaceForm = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var labelStyle = {
+        fontFamily: 'sans-serif',
+        fontSize: '12px'
+      };
+
       return _react2.default.createElement(
         'form',
         { onSubmit: this.handleSubmit },
@@ -33746,14 +33751,14 @@ var ImportRaceForm = function (_React$Component) {
           null,
           _react2.default.createElement(
             'label',
-            { htmlFor: 'import_urls' },
+            { style: labelStyle, htmlFor: 'import_urls' },
             'Enter Race Results Urls:'
           )
         ),
         _react2.default.createElement('textarea', {
           id: 'import_urls',
           rows: '10',
-          cols: '50',
+          cols: '100',
           value: this.state.url,
           onChange: this.handleInputChange
         }),
@@ -33856,23 +33861,39 @@ var _class = function (_React$Component) {
   _createClass(_class, [{
     key: 'render',
     value: function render() {
+      var style = {
+        fontFamily: 'sans-serif',
+        fontSize: '14px'
+      };
       return _react2.default.createElement(
         _Tabs2.default,
         { selected: 0 },
         _react2.default.createElement(
           _TabPane2.default,
+          { label: 'Races' },
+          _react2.default.createElement(
+            'div',
+            { style: style },
+            _react2.default.createElement(_RaceListContainer2.default, null)
+          )
+        ),
+        _react2.default.createElement(
+          _TabPane2.default,
           { label: 'Import Race' },
-          _react2.default.createElement(_ImportRaceContainer2.default, null)
+          _react2.default.createElement(
+            'div',
+            { style: style },
+            _react2.default.createElement(_ImportRaceContainer2.default, null)
+          )
         ),
         _react2.default.createElement(
           _TabPane2.default,
           { label: 'Race Groups' },
-          _react2.default.createElement(_RaceGroupListContainer2.default, null)
-        ),
-        _react2.default.createElement(
-          _TabPane2.default,
-          { label: 'Races' },
-          _react2.default.createElement(_RaceListContainer2.default, null)
+          _react2.default.createElement(
+            'div',
+            { style: style },
+            _react2.default.createElement(_RaceGroupListContainer2.default, null)
+          )
         )
       );
     }
@@ -33984,16 +34005,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var RaceGroupList = function RaceGroupList(_ref) {
   var raceGroups = _ref.raceGroups;
   var onDeleteItem = _ref.onDeleteItem;
+
+  var tableStyle = {
+    fontFamily: 'sans-serif',
+    fontSize: '12px'
+  };
+
   return _react2.default.createElement(
-    'div',
-    null,
-    raceGroups.map(function (raceGroup) {
-      return _react2.default.createElement(_RaceGroupListItem2.default, {
-        key: raceGroup.id,
-        onDelete: onDeleteItem,
-        raceGroup: raceGroup
-      });
-    })
+    'table',
+    { style: tableStyle },
+    _react2.default.createElement(
+      'tbody',
+      null,
+      raceGroups.map(function (raceGroup) {
+        return _react2.default.createElement(_RaceGroupListItem2.default, {
+          key: raceGroup.id,
+          onDelete: onDeleteItem,
+          raceGroup: raceGroup
+        });
+      })
+    )
   );
 };
 
@@ -34083,9 +34114,8 @@ var _class = function (_React$Component) {
     }
   }, {
     key: 'handleDelete',
-    value: function handleDelete(raceGroup) {
-      debugger;
-      console.log(raceGroup);
+    value: function handleDelete(raceGroupSelf) {
+      _Store.store.deleteRaceGroup(raceGroupSelf);
     }
   }, {
     key: 'render',
@@ -34126,18 +34156,26 @@ var RaceGroupListItem = function RaceGroupListItem(_ref) {
   var raceGroup = _ref.raceGroup;
   var onDelete = _ref.onDelete;
   return _react2.default.createElement(
-    'div',
+    'tr',
     null,
     _react2.default.createElement(
-      'div',
+      'td',
       null,
-      raceGroup.name,
-      ' - ',
-      raceGroup.distance,
+      raceGroup.name
+    ),
+    _react2.default.createElement(
+      'td',
+      null,
+      raceGroup.distance
+    ),
+    _react2.default.createElement(
+      'td',
+      null,
+      ' ',
       _react2.default.createElement(
         'button',
         { onClick: function onClick() {
-            return onDelete(raceGroup.id);
+            return onDelete(raceGroup.self);
           } },
         'Delete'
       )
@@ -34176,13 +34214,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var RaceList = function RaceList(_ref) {
   var races = _ref.races;
   var raceGroups = _ref.raceGroups;
-  var onRaceGroupSelectionChange = _ref.onRaceGroupSelectionChange;
+  var onRaceGroupChange = _ref.onRaceGroupChange;
+  var onRaceDelete = _ref.onRaceDelete;
   return _react2.default.createElement(
     'div',
     null,
     _react2.default.createElement(
       'table',
-      null,
+      { style: { width: '80%' } },
       _react2.default.createElement(
         'tbody',
         null,
@@ -34191,7 +34230,8 @@ var RaceList = function RaceList(_ref) {
             key: race.id,
             race: race,
             raceGroups: raceGroups,
-            onRaceGroupSelectionChange: onRaceGroupSelectionChange
+            onRaceGroupChange: onRaceGroupChange,
+            onRaceDelete: onRaceDelete
           });
         })
       )
@@ -34202,7 +34242,8 @@ var RaceList = function RaceList(_ref) {
 RaceList.propTypes = {
   races: _react2.default.PropTypes.array.isRequired,
   raceGroups: _react2.default.PropTypes.array.isRequired,
-  onRaceGroupSelectionChange: _react2.default.PropTypes.func.isRequired
+  onRaceGroupChange: _react2.default.PropTypes.func.isRequired,
+  onRaceDelete: _react2.default.PropTypes.func.isRequired
 };
 
 exports.default = RaceList;
@@ -34281,9 +34322,14 @@ var _class = function (_React$Component) {
       }
     }
   }, {
-    key: 'onRaceGroupSelectionChange',
-    value: function onRaceGroupSelectionChange(raceGroupSelf, raceId) {
+    key: 'onRaceGroupChange',
+    value: function onRaceGroupChange(raceGroupSelf, raceId) {
       _Store.store.addRaceToRaceGroup(raceGroupSelf, raceId);
+    }
+  }, {
+    key: 'onRaceDelete',
+    value: function onRaceDelete(raceSelf) {
+      _Store.store.deleteRace(raceSelf);
     }
   }, {
     key: 'render',
@@ -34297,7 +34343,8 @@ var _class = function (_React$Component) {
           _react2.default.createElement(_RaceList2.default, {
             races: this.state.races,
             raceGroups: this.state.raceGroups,
-            onRaceGroupSelectionChange: this.onRaceGroupSelectionChange
+            onRaceGroupChange: this.onRaceGroupChange,
+            onRaceDelete: this.onRaceDelete
           })
         );
       }
@@ -34311,7 +34358,7 @@ var _class = function (_React$Component) {
 exports.default = _class;
 
 },{"./../components/Loading":554,"./RaceList":545,"./Store":548,"react":531}],547:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -34319,7 +34366,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -34340,60 +34387,76 @@ var _class = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
     _this.handleRaceGroupChange = _this.handleRaceGroupChange.bind(_this);
+    _this.handleRaceDelete = _this.handleRaceDelete.bind(_this);
     return _this;
   }
 
   _createClass(_class, [{
-    key: "handleRaceGroupChange",
+    key: 'handleRaceGroupChange',
     value: function handleRaceGroupChange(event) {
       event.preventDefault();
-      this.props.onRaceGroupSelectionChange(event.target.value, this.props.race.id);
+      this.props.onRaceGroupChange(event.target.value, this.props.race.id);
     }
   }, {
-    key: "render",
+    key: 'handleRaceDelete',
+    value: function handleRaceDelete(event) {
+      event.preventDefault();
+      this.props.onRaceDelete(this.props.race.self);
+    }
+  }, {
+    key: 'render',
     value: function render() {
 
-      var selectedValue = undefined;
+      var selectedValue = void 0;
       if (this.props.race.raceGroup) {
         selectedValue = this.props.race.raceGroup;
       }
       return _react2.default.createElement(
-        "tr",
+        'tr',
         null,
         _react2.default.createElement(
-          "td",
-          null,
+          'td',
+          { style: { width: '10%' } },
           this.props.race.date
         ),
         _react2.default.createElement(
-          "td",
-          null,
+          'td',
+          { style: { width: '60%' } },
           this.props.race.name
         ),
         _react2.default.createElement(
-          "td",
-          null,
+          'td',
+          { style: { width: '20%' } },
           _react2.default.createElement(
-            "form",
+            'form',
             null,
             _react2.default.createElement(
-              "label",
+              'label',
               null,
               _react2.default.createElement(
-                "select",
+                'select',
                 { onChange: this.handleRaceGroupChange, value: selectedValue },
-                _react2.default.createElement("option", { key: "notfound" }),
+                _react2.default.createElement('option', { key: 'notfound' }),
                 this.props.raceGroups.map(function (raceGroup) {
                   return _react2.default.createElement(
-                    "option",
+                    'option',
                     { value: raceGroup.self, key: raceGroup.id },
                     raceGroup["name"],
-                    " - ",
+                    ' - ',
                     raceGroup["distance"]
                   );
                 })
               )
             )
+          )
+        ),
+        _react2.default.createElement(
+          'td',
+          { style: { width: '10%' } },
+          _react2.default.createElement(
+            'button',
+            { onClick: this.handleRaceDelete },
+            'Delete'
           )
         )
       );
@@ -34504,30 +34567,48 @@ var Store = function (_EventEmitter) {
         data: {
           raceId: raceId.toString()
         }
-      }).then(function (result) {
+      }, undefined, 200).then(function (result) {
         if (result["success"]) {
           _this2.fetchRaces();
         }
       });
     }
   }, {
-    key: 'fetchRaceGroups',
-    value: function fetchRaceGroups() {
+    key: 'deleteRaceGroup',
+    value: function deleteRaceGroup(raceGroupSelf) {
       var _this3 = this;
 
+      _xhr2.default.delete(raceGroupSelf).then(function () {
+        _this3.fetchRaceGroups();
+      });
+    }
+  }, {
+    key: 'deleteRace',
+    value: function deleteRace(raceSelf) {
+      var _this4 = this;
+
+      _xhr2.default.delete(raceSelf).then(function () {
+        _this4.fetchRaces();
+      });
+    }
+  }, {
+    key: 'fetchRaceGroups',
+    value: function fetchRaceGroups() {
+      var _this5 = this;
+
       _xhr2.default.get('/feed/racegroups').then(function (result) {
-        _this3.state.raceGroups = result['raceGroups'];
-        _this3.emitRaceGroupsChange();
+        _this5.state.raceGroups = result['raceGroups'];
+        _this5.emitRaceGroupsChange();
       });
     }
   }, {
     key: 'fetchRaces',
     value: function fetchRaces() {
-      var _this4 = this;
+      var _this6 = this;
 
       _xhr2.default.get('/feed/races').then(function (result) {
-        _this4.state.races = result['races'];
-        _this4.emitRacesChange();
+        _this6.state.races = result['races'];
+        _this6.emitRacesChange();
       });
     }
   }, {
@@ -36638,7 +36719,7 @@ var XHR = function () {
     key: 'post',
     value: function post(URL) {
       var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var processXHR = arguments[2];
+      var processXHR = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
       var expectedStatus = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 201;
 
       var xhr = new XHR('POST');

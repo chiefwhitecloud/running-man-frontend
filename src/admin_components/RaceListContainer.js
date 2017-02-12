@@ -35,8 +35,12 @@ export default class extends React.Component {
     }
   }
 
-  onRaceGroupSelectionChange(raceGroupSelf, raceId) {
+  onRaceGroupChange(raceGroupSelf, raceId) {
     store.addRaceToRaceGroup(raceGroupSelf, raceId);
+  }
+
+  onRaceDelete(raceSelf) {
+    store.deleteRace(raceSelf);
   }
 
   render() {
@@ -47,7 +51,8 @@ export default class extends React.Component {
         <RaceList
           races={this.state.races}
           raceGroups={this.state.raceGroups}
-          onRaceGroupSelectionChange={this.onRaceGroupSelectionChange}
+          onRaceGroupChange={this.onRaceGroupChange}
+          onRaceDelete={this.onRaceDelete}
         />
       </div>);
     }

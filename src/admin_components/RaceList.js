@@ -1,9 +1,9 @@
 import React from 'react';
 import RaceListItem from './RaceListItem';
 
-const RaceList = ({ races, raceGroups, onRaceGroupSelectionChange }) => (
+const RaceList = ({ races, raceGroups, onRaceGroupChange, onRaceDelete }) => (
   <div>
-    <table>
+    <table style={{ width: '80%' }}>
       <tbody>
         {
         races.map(race => (
@@ -11,7 +11,8 @@ const RaceList = ({ races, raceGroups, onRaceGroupSelectionChange }) => (
             key={race.id}
             race={race}
             raceGroups={raceGroups}
-            onRaceGroupSelectionChange={onRaceGroupSelectionChange}
+            onRaceGroupChange={onRaceGroupChange}
+            onRaceDelete={onRaceDelete}
           />))
         }
       </tbody>
@@ -22,7 +23,8 @@ const RaceList = ({ races, raceGroups, onRaceGroupSelectionChange }) => (
 RaceList.propTypes = {
   races: React.PropTypes.array.isRequired,
   raceGroups: React.PropTypes.array.isRequired,
-  onRaceGroupSelectionChange: React.PropTypes.func.isRequired,
+  onRaceGroupChange: React.PropTypes.func.isRequired,
+  onRaceDelete: React.PropTypes.func.isRequired,
 };
 
 export default RaceList;

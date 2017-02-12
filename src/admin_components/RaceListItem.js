@@ -4,23 +4,30 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     this.handleRaceGroupChange = this.handleRaceGroupChange.bind(this);
+    this.handleRaceDelete = this.handleRaceDelete.bind(this);
   }
 
   handleRaceGroupChange(event) {
     event.preventDefault();
-    this.props.onRaceGroupSelectionChange(event.target.value, this.props.race.id);
+    this.props.onRaceGroupChange(event.target.value, this.props.race.id);
   }
+
+  handleRaceDelete(event) {
+    event.preventDefault();
+    this.props.onRaceDelete(this.props.race.self);
+  }
+
   render() {
 
-    let selectedValue = undefined;
+    let selectedValue;
     if (this.props.race.raceGroup){
       selectedValue = this.props.race.raceGroup;
     }
     return (
       <tr>
-        <td>{this.props.race.date}</td>
-        <td>{this.props.race.name}</td>
-        <td>
+        <td style={{ width: '10%' }}>{this.props.race.date}</td>
+        <td style={{ width: '60%' }}>{this.props.race.name}</td>
+        <td style={{ width: '20%' }}>
           <form>
             <label>
               <select onChange={this.handleRaceGroupChange} value={selectedValue}>
@@ -32,6 +39,7 @@ export default class extends React.Component {
             </label>
           </form>
         </td>
+        <td style={{ width: '10%' }}><button onClick={this.handleRaceDelete}>Delete</button></td>
       </tr>
     );
   }

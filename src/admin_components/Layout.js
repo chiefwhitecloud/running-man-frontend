@@ -7,16 +7,20 @@ import ImportRaceContainer from './ImportRaceContainer';
 
 export default class extends React.Component {
   render() {
+    const style = {
+      fontFamily: 'sans-serif',
+      fontSize: '14px',
+    }
     return (
       <Tabs selected={0}>
+        <TabPane label={'Races'}>
+          <div style={style}><RaceListContainer /></div>
+        </TabPane>
         <TabPane label={'Import Race'}>
-          <ImportRaceContainer />
+          <div style={style}><ImportRaceContainer /></div>
         </TabPane>
         <TabPane label={'Race Groups'}>
-          <RaceGroupListContainer />
-        </TabPane>
-        <TabPane label={'Races'}>
-          <RaceListContainer />
+          <div style={style}><RaceGroupListContainer /></div>
         </TabPane>
       </Tabs>
     );
