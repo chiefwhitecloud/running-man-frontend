@@ -1,44 +1,41 @@
-import React from 'react'
-import RaceResults from './RaceResults'
-import xhr from './../xhr'
+import React from 'react';
+import RaceResults from './RaceResults';
+import xhr from './../xhr';
 
 export default class RacerResult extends React.Component {
   constructor(props) {
-   super(props);
-   this.state = {
+    super(props);
+    this.state = {
       race: {},
       results: [],
-      isLoading: true
-   };
-   let raceMeta;
+      isLoading: true,
+    };
 
-   let querystringStartPos = 1;
+    let querystringStartPos = 1;
 
-   if (this.props.racerResult.position <= 10){
-     querystringStartPos = 1;
-   }
-   else{
-     querystringStartPos = this.props.racerResult.position - 10;
-   }
+    if (this.props.racerResult.position <= 10) {
+      querystringStartPos = 1;
+    } else {
+      querystringStartPos = this.props.racerResult.position - 10;
+    }
 
-   xhr.get(this.props.race["results"] + "?startPos=" + querystringStartPos + "&num=" + 20).then((raceResults) => {
-
-     this.setState({
-       results : raceResults["results"],
-       isLoading: false
-     });
-   });
+    xhr.get(this.props.race["results"] + `?startPos=${querystringStartPos}&num=20`).then((raceResults) => {
+      this.setState({
+        results: raceResults["results"],
+        isLoading: false,
+      });
+    });
   }
-  render() {
 
-    if (this.state.isLoading){
+  render() {
+    if (this.state.isLoading) {
       return <div>Loading</div>;
     }
-    else{
-      return <div>
+
+    return (
+      <div>
         <RaceResults results={this.state.results} selectedRacerId={this.props.racerResult["racerId"]} />
       </div>
-    }
-
+    );
   }
 }

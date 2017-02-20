@@ -33023,9 +33023,9 @@ var _FilterableRaceResults = require('./components/FilterableRaceResults');
 
 var _FilterableRaceResults2 = _interopRequireDefault(_FilterableRaceResults);
 
-var _Racer = require('./components/Racer');
+var _RacerContainer = require('./components/RacerContainer');
 
-var _Racer2 = _interopRequireDefault(_Racer);
+var _RacerContainer2 = _interopRequireDefault(_RacerContainer);
 
 var _App = require('./components/App');
 
@@ -33046,22 +33046,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     _react2.default.createElement(_reactRouter.IndexRoute, { component: _ListContainer2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/races', component: _PageLayout2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/race/:raceId', component: _FilterableRaceResults2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/racer/:racerId', component: _Racer2.default })
+    _react2.default.createElement(_reactRouter.Route, { path: '/racer/:racerId', component: _RacerContainer2.default })
   ),
   _react2.default.createElement(_reactRouter.Route, { path: '/admin', component: _AdminApp2.default })
 ), document.getElementById('rrContent'));
 
-document.body.style.margin = "0px";
-document.body.style.padding = "0px";
-document.body.style.fontFamily = "Verdana";
-document.body.style.fontSize = "18px";
-document.body.style.backgroundColor = "#eaf0f2";
+document.body.style.margin = '0px';
+document.body.style.padding = '0px';
+document.body.style.fontFamily = 'Verdana';
+document.body.style.fontSize = '18px';
+document.body.style.backgroundColor = '#eaf0f2';
 
 if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && Object.keys(window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers).length) {
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":532,"./components/App":549,"./components/FilterableRaceResults":552,"./components/Racer":557,"./components/Races/ListContainer":562,"./components/Races/PageLayout":563,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
+},{"./AdminApp":532,"./components/App":549,"./components/FilterableRaceResults":552,"./components/RacerContainer":557,"./components/Races/ListContainer":562,"./components/Races/PageLayout":563,"babel-polyfill":1,"react":531,"react-dom":299,"react-router":329}],534:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35415,28 +35415,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var RaceHeader = function RaceHeader(props) {
   var containerStyle = {
-    backgroundColor: "#c6dae2",
-    borderBottom: "2px solid #a2a2a2",
-    borderSizing: "border-box",
-    padding: "50px",
-    marginTop: "50px"
+    backgroundColor: '#c6dae2',
+    borderBottom: '2px solid #a2a2a2',
+    borderSizing: 'border-box',
+    padding: '50px',
+    marginTop: '50px'
   };
 
   var nameStyle = {
-    fontSize: "36px",
-    fontFamily: "sans-serif",
-    float: "left"
+    fontSize: '36px',
+    fontFamily: 'sans-serif',
+    float: 'left'
   };
 
   var yearStyle = {
-    fontSize: "36px",
-    fontFamily: "sans-serif",
-    float: "right"
+    fontSize: '36px',
+    fontFamily: 'sans-serif',
+    float: 'right'
   };
 
   var dateStyle = {
-    fontSize: "14px",
-    fontFamily: "sans-serif"
+    fontSize: '14px',
+    fontFamily: 'sans-serif'
   };
 
   return _react2.default.createElement(
@@ -35455,7 +35455,7 @@ var RaceHeader = function RaceHeader(props) {
         { style: yearStyle },
         (0, _DateFormatter.Year)(props.date)
       ),
-      _react2.default.createElement('div', { style: { clear: "both" } })
+      _react2.default.createElement('div', { style: { clear: 'both' } })
     ),
     _react2.default.createElement(
       'div',
@@ -35757,10 +35757,6 @@ var _FetchData = require('./FetchData');
 
 var _RaceFeedConverter = require('./../RaceFeedConverter');
 
-var _xhr = require('./../xhr');
-
-var _xhr2 = _interopRequireDefault(_xhr);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -35769,35 +35765,70 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Racer = function (_React$Component) {
-  _inherits(Racer, _React$Component);
+var RacerContainer = function (_React$Component) {
+  _inherits(RacerContainer, _React$Component);
 
-  function Racer(props) {
-    _classCallCheck(this, Racer);
+  function RacerContainer(props) {
+    _classCallCheck(this, RacerContainer);
 
-    var _this = _possibleConstructorReturn(this, (Racer.__proto__ || Object.getPrototypeOf(Racer)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (RacerContainer.__proto__ || Object.getPrototypeOf(RacerContainer)).call(this, props));
 
-    _this.racer_ = {};
-    _this.racerProfile_ = {};
+    _this.racer = {};
+    _this.racerProfile = {};
+    _this.handleRaceResultExpanded = _this.handleRaceResultExpanded.bind(_this);
     _this.state = {
       racer: {},
       results: [],
-      isLoading: true
+      isLoading: true,
+      expandedResults: []
     };
-    _this.doRaceFecthing_(_this.props);
     return _this;
   }
 
-  _createClass(Racer, [{
-    key: 'doRaceFecthing_',
-    value: function doRaceFecthing_(props) {
+  _createClass(RacerContainer, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.doRaceFetching(this.props);
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.params.racerId !== this.props.params.racerId) {
+        this.setState({
+          isLoading: true,
+          expandedResults: []
+        });
+        this.doRaceFetching(nextProps);
+      }
+    }
+  }, {
+    key: 'handleRaceResultExpanded',
+    value: function handleRaceResultExpanded(raceId) {
+      if (this.state.expandedResults.includes(raceId)) {
+        var expanded = this.state.expandedResults.filter(function (item) {
+          return item !== raceId;
+        });
+        this.setState({
+          expandedResults: expanded
+        });
+      } else {
+        var _expanded = this.state.expandedResults;
+        _expanded.push(raceId);
+        this.setState({
+          expandedResults: _expanded
+        });
+      }
+    }
+  }, {
+    key: 'doRaceFetching',
+    value: function doRaceFetching(props) {
       var _this2 = this;
 
       (0, _FetchData.getRacer)(props.params.racerId).then(function (racer) {
-        _this2.racer_ = racer;
+        _this2.racer = racer;
         return racer;
       }).then(function (racer) {
-        return (0, _FetchData.doRequests)([racer["profile"], racer["results"], _FetchData.getRaceGroups]);
+        return (0, _FetchData.doRequests)([racer.profile, racer.results, _FetchData.getRaceGroups]);
       }).then(function (results) {
         var _results = _slicedToArray(results, 3);
 
@@ -35805,32 +35836,21 @@ var Racer = function (_React$Component) {
         var racerResults = _results[1];
         var raceGroupList = _results[2];
 
-        //convert from object to array.
 
-        var raceItems = Object.keys(racerResults["races"]).map(function (k) {
-          return racerResults["races"][k];
+        var raceItems = Object.keys(racerResults.races).map(function (k) {
+          return racerResults.races[k];
         });
 
-        var raceGroups = (0, _RaceFeedConverter.GetRacesSortedRaceGroup)(raceGroupList["raceGroups"], raceItems);
+        var raceGroups = (0, _RaceFeedConverter.GetRacesSortedRaceGroup)(raceGroupList.raceGroups, raceItems);
 
         _this2.setState({
           racerProfile: racerProfile,
-          races: racerResults["races"],
-          results: racerResults["results"],
+          races: racerResults.races,
+          results: racerResults.results,
           raceGroups: raceGroups,
           isLoading: false
         });
       });
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.params.racerId != this.props.params.racerId) {
-        this.setState({
-          isLoading: true
-        });
-        this.doRaceFecthing_(nextProps);
-      }
     }
   }, {
     key: 'render',
@@ -35840,60 +35860,84 @@ var Racer = function (_React$Component) {
       var raceGroups = [];
 
       if (this.state.raceGroups) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = this.state.raceGroups[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _step$value = _slicedToArray(_step.value, 2);
-
-            var raceGroupId = _step$value[0];
-            var raceGroup = _step$value[1];
-
-            var races = raceGroup.races.map(function (race) {
-              var result = _this3.state.results.find(function (result) {
-                return result["raceId"] == race["id"];
-              });
-              return _react2.default.createElement(
-                'div',
-                { key: race["id"] },
-                race["date"],
-                ' ',
-                race["name"],
-                ' ',
-                result["position"],
-                ' ',
-                result["time"]
-              );
+        this.state.raceGroups.forEach(function (raceGroupItem) {
+          var races = [];
+          raceGroupItem.races.forEach(function (race) {
+            var foundResult = _this3.state.results.find(function (result) {
+              return result.raceId === race.id;
             });
-            raceGroups.push(_react2.default.createElement(
-              'div',
-              { key: raceGroupId },
+            var expandedItem = _this3.state.expandedResults.find(function (expandedId) {
+              return expandedId === race.id;
+            });
+
+            races.push(_react2.default.createElement(
+              'tr',
+              { key: race.id },
               _react2.default.createElement(
-                'div',
+                'td',
                 null,
-                raceGroup.raceGroup["name"],
-                ' ',
-                raceGroup.raceGroup["distance"]
+                race.date
               ),
-              races
+              _react2.default.createElement(
+                'td',
+                null,
+                race.name
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                foundResult.position
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                foundResult.time
+              ),
+              _react2.default.createElement(
+                'td',
+                { style: { textAlign: 'right' } },
+                _react2.default.createElement(
+                  'button',
+                  { onClick: function onClick() {
+                      return _this3.handleRaceResultExpanded(race.id);
+                    } },
+                  expandedItem === undefined ? 'Show Details' : 'Hide Details'
+                )
+              )
             ));
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
+
+            if (expandedItem !== undefined) {
+              races.push(_react2.default.createElement(
+                'tr',
+                { key: 'expanded' + race.id },
+                _react2.default.createElement(
+                  'td',
+                  { colSpan: '5' },
+                  _react2.default.createElement(_RacerResult2.default, { racerResult: foundResult, race: race })
+                )
+              ));
             }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
+          });
+
+          raceGroups.push(_react2.default.createElement(
+            'div',
+            { key: raceGroupItem.raceGroup.id },
+            _react2.default.createElement(
+              'div',
+              null,
+              raceGroupItem.raceGroup.name
+            ),
+            _react2.default.createElement(
+              'table',
+              { style: { width: '100%' } },
+              _react2.default.createElement(
+                'tbody',
+                null,
+                races
+              )
+            )
+          ));
+        });
       }
 
       if (this.state.isLoading) {
@@ -35902,23 +35946,23 @@ var Racer = function (_React$Component) {
           null,
           'Loading'
         );
-      } else {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(_RacerDetail2.default, { name: this.state.racerProfile.name }),
-          raceGroups
-        );
       }
+
+      return _react2.default.createElement(
+        'div',
+        { style: { fontFamily: 'monospace', fontSize: '14px' } },
+        _react2.default.createElement(_RacerDetail2.default, { name: this.state.racerProfile.name }),
+        raceGroups
+      );
     }
   }]);
 
-  return Racer;
+  return RacerContainer;
 }(_react2.default.Component);
 
-exports.default = Racer;
+exports.default = RacerContainer;
 
-},{"./../RaceFeedConverter":535,"./../xhr":570,"./FetchData":550,"./RaceHeader":555,"./RacerDetail":558,"./RacerResult":559,"react":531}],558:[function(require,module,exports){
+},{"./../RaceFeedConverter":535,"./FetchData":550,"./RaceHeader":555,"./RacerDetail":558,"./RacerResult":559,"react":531}],558:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35991,7 +36035,6 @@ var RacerResult = function (_React$Component) {
       results: [],
       isLoading: true
     };
-    var raceMeta = void 0;
 
     var querystringStartPos = 1;
 
@@ -36001,8 +36044,7 @@ var RacerResult = function (_React$Component) {
       querystringStartPos = _this.props.racerResult.position - 10;
     }
 
-    _xhr2.default.get(_this.props.race["results"] + "?startPos=" + querystringStartPos + "&num=" + 20).then(function (raceResults) {
-
+    _xhr2.default.get(_this.props.race["results"] + ('?startPos=' + querystringStartPos + '&num=20')).then(function (raceResults) {
       _this.setState({
         results: raceResults["results"],
         isLoading: false
@@ -36014,20 +36056,19 @@ var RacerResult = function (_React$Component) {
   _createClass(RacerResult, [{
     key: 'render',
     value: function render() {
-
       if (this.state.isLoading) {
         return _react2.default.createElement(
           'div',
           null,
           'Loading'
         );
-      } else {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(_RaceResults2.default, { results: this.state.results, selectedRacerId: this.props.racerResult["racerId"] })
-        );
       }
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(_RaceResults2.default, { results: this.state.results, selectedRacerId: this.props.racerResult["racerId"] })
+      );
     }
   }]);
 
