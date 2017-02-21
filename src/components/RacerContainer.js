@@ -2,6 +2,7 @@ import React from 'react';
 import RaceHeader from './RaceHeader';
 import RacerResult from './RacerResult';
 import RacerDetail from './RacerDetail';
+import ExpandButton from './ExpandButton';
 import { getRacer, doRequests, getRaceGroups } from './FetchData';
 import { GetRacesSortedRaceGroup, GetRaceMapByYear } from './../RaceFeedConverter';
 
@@ -88,9 +89,7 @@ export default class RacerContainer extends React.Component {
               <td>{foundResult.position}</td>
               <td>{foundResult.time}</td>
               <td style={{ textAlign: 'right' }}>
-                <button onClick={() => this.handleRaceResultExpanded(race.id)}>
-                  { expandedItem === undefined ? 'Show Details' : 'Hide Details' }
-                </button>
+                <ExpandButton handleClick={this.handleRaceResultExpanded} raceId={race.id} />
               </td>
             </tr>);
 
