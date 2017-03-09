@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --reporter spec",
     "build": "browserify -g [envify --NODE_ENV 'development'] -t [babelify] src/App.js > public/js/bundle.js && cp src/style.css public/css/.",
-    "production-build": "browserify -g [envify --NODE_ENV 'production'] -t [babelify] src/App.js > public/js/bundle.js"
+    "production-build": "browserify -g [envify --NODE_ENV 'production'] -t [babelify] src/App.js | uglifyjs -mc > public/js/bundle.js"
   },
   "author": "",
   "license": "ISC",
@@ -25,7 +25,8 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "uglifyjs": "^2.4.10"
   },
   "dependencies": {
     "body-parser": "1.X",
