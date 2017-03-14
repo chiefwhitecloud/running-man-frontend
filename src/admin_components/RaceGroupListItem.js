@@ -10,7 +10,7 @@ const RaceGroupListItem = ({ raceGroup, onDelete }) => (
 
 RaceGroupListItem.propTypes = {
   raceGroup: React.PropTypes.shape({
-    id: React.PropTypes.number.isRequired,
+    id: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,
     distance: React.PropTypes.string.isRequired,
   }).isRequired,

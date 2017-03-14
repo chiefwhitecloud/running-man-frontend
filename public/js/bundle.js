@@ -36855,7 +36855,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":593,"./components/App":610,"./components/FilterableRaceResults":614,"./components/RacerContainer":620,"./components/Races/ListContainer":625,"./components/Races/PageLayout":626,"babel-polyfill":1,"react":592,"react-dom":360,"react-router":390}],595:[function(require,module,exports){
+},{"./AdminApp":593,"./components/App":611,"./components/FilterableRaceResults":615,"./components/RacerContainer":621,"./components/Races/ListContainer":626,"./components/Races/PageLayout":627,"babel-polyfill":1,"react":592,"react-dom":360,"react-router":390}],595:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37255,7 +37255,7 @@ var ImportRace = exports.ImportRace = function (_EventEmitter) {
   return ImportRace;
 }(_events.EventEmitter);
 
-},{"./../xhr":633,"events":297}],598:[function(require,module,exports){
+},{"./../xhr":634,"events":297}],598:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37698,7 +37698,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/TabPane":631,"./../components/Tabs":632,"./ImportRaceContainer":598,"./RaceGroupListContainer":604,"./RaceListContainer":607,"react":592}],602:[function(require,module,exports){
+},{"./../components/TabPane":632,"./../components/Tabs":633,"./ImportRaceContainer":598,"./RaceGroupListContainer":604,"./RaceListContainer":607,"react":592}],602:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37933,7 +37933,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":616,"./../xhr":633,"./RaceGroupAdd":602,"./RaceGroupList":603,"./Store":609,"react":592}],605:[function(require,module,exports){
+},{"./../components/Loading":617,"./../xhr":634,"./RaceGroupAdd":602,"./RaceGroupList":603,"./Store":610,"react":592}],605:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37979,7 +37979,7 @@ var RaceGroupListItem = function RaceGroupListItem(_ref) {
 
 RaceGroupListItem.propTypes = {
   raceGroup: _react2.default.PropTypes.shape({
-    id: _react2.default.PropTypes.number.isRequired,
+    id: _react2.default.PropTypes.string.isRequired,
     name: _react2.default.PropTypes.string.isRequired,
     distance: _react2.default.PropTypes.string.isRequired
   }).isRequired,
@@ -38042,7 +38042,7 @@ RaceList.propTypes = {
 
 exports.default = RaceList;
 
-},{"./RaceListItem":608,"react":592}],607:[function(require,module,exports){
+},{"./RaceListItem":609,"react":592}],607:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38063,9 +38063,17 @@ var _RaceList = require('./RaceList');
 
 var _RaceList2 = _interopRequireDefault(_RaceList);
 
+var _RaceListFilterComponent = require('./RaceListFilterComponent');
+
+var _RaceListFilterComponent2 = _interopRequireDefault(_RaceListFilterComponent);
+
+var _RaceFeedConverter = require('./../RaceFeedConverter');
+
 var _Store = require('./Store');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -38082,10 +38090,12 @@ var _class = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
 
     _this.onStoreChange = _this.onStoreChange.bind(_this);
+    _this.onFilterChange = _this.onFilterChange.bind(_this);
     _this.state = {
       races: null,
       raceGroups: null,
-      isFetching: true
+      isFetching: true,
+      filter: 'all'
     };
     return _this;
   }
@@ -38121,6 +38131,13 @@ var _class = function (_React$Component) {
       _Store.store.addRaceToRaceGroup(raceGroupSelf, raceId);
     }
   }, {
+    key: 'onFilterChange',
+    value: function onFilterChange(filter) {
+      this.setState({
+        filter: filter
+      });
+    }
+  }, {
     key: 'onRaceDelete',
     value: function onRaceDelete(raceSelf) {
       _Store.store.deleteRace(raceSelf);
@@ -38128,14 +38145,34 @@ var _class = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       if (this.state.isFetching) {
         return _react2.default.createElement(_Loading2.default, null);
       } else if (this.state.races != null && this.state.raceGroups != null) {
+        var mapByYears = (0, _RaceFeedConverter.GetRaceMapByYear)(this.state.races);
+
+        var races = this.state.races;
+
+        if (this.state.filter === 'noracegroup') {
+          races = races.filter(function (race) {
+            return race.raceGroup === undefined;
+          });
+        } else if (this.state.filter.startsWith('year-')) {
+          (function () {
+            var year = _this2.state.filter.substr(-4);
+            races = races.filter(function (race) {
+              return race.date.startsWith(year);
+            });
+          })();
+        }
+
         return _react2.default.createElement(
           'div',
           null,
+          _react2.default.createElement(_RaceListFilterComponent2.default, { years: [].concat(_toConsumableArray(mapByYears.keys())), onSelectionChange: this.onFilterChange }),
           _react2.default.createElement(_RaceList2.default, {
-            races: this.state.races,
+            races: races,
             raceGroups: this.state.raceGroups,
             onRaceGroupChange: this.onRaceGroupChange,
             onRaceDelete: this.onRaceDelete
@@ -38151,7 +38188,81 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":616,"./RaceList":606,"./Store":609,"react":592}],608:[function(require,module,exports){
+},{"./../RaceFeedConverter":596,"./../components/Loading":617,"./RaceList":606,"./RaceListFilterComponent":608,"./Store":610,"react":592}],608:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _class = function (_React$Component) {
+  _inherits(_class, _React$Component);
+
+  function _class(props) {
+    _classCallCheck(this, _class);
+
+    var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+
+    _this.state = { selectedValue: 'all' };
+    _this.handleChange = _this.handleChange.bind(_this);
+    return _this;
+  }
+
+  _createClass(_class, [{
+    key: 'handleChange',
+    value: function handleChange(event) {
+      this.setState({ selectedValue: event.target.value });
+      this.props.onSelectionChange(event.target.value);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var years = this.props.years.map(function (year) {
+        return _react2.default.createElement(
+          'option',
+          { value: 'year-' + year, key: year },
+          year
+        );
+      });
+
+      return _react2.default.createElement(
+        'select',
+        { onChange: this.handleChange, value: this.state.selectedValue },
+        _react2.default.createElement(
+          'option',
+          { value: 'all' },
+          'All'
+        ),
+        _react2.default.createElement(
+          'option',
+          { value: 'noracegroup' },
+          'No Race Group Assigned'
+        ),
+        years
+      );
+    }
+  }]);
+
+  return _class;
+}(_react2.default.Component);
+
+exports.default = _class;
+
+},{"react":592}],609:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38262,7 +38373,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],609:[function(require,module,exports){
+},{"react":592}],610:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38422,7 +38533,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":633,"events":297}],610:[function(require,module,exports){
+},{"./../xhr":634,"events":297}],611:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38544,7 +38655,7 @@ var App = function App(props) {
 };
 exports.default = App;
 
-},{"./HeroComponent":615,"react":592,"react-router":390}],611:[function(require,module,exports){
+},{"./HeroComponent":616,"react":592,"react-router":390}],612:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38630,7 +38741,7 @@ var ExpandButton = function (_React$Component) {
 
 exports.default = (0, _radium2.default)(ExpandButton);
 
-},{"radium":310,"react":592}],612:[function(require,module,exports){
+},{"radium":310,"react":592}],613:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38663,7 +38774,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":633}],613:[function(require,module,exports){
+},{"./../xhr":634}],614:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38975,7 +39086,7 @@ var MenuOption = function (_React$Component2) {
   return MenuOption;
 }(_react2.default.Component);
 
-},{"react":592}],614:[function(require,module,exports){
+},{"react":592}],615:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39192,7 +39303,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":633,"./FilterBar":613,"./Loading":616,"./RaceHeader":617,"./RaceResultsTable":618,"./SelectedFilters":629,"react":592}],615:[function(require,module,exports){
+},{"./../xhr":634,"./FilterBar":614,"./Loading":617,"./RaceHeader":618,"./RaceResultsTable":619,"./SelectedFilters":630,"react":592}],616:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39227,7 +39338,7 @@ function HeroComponent() {
   );
 }
 
-},{"react":592}],616:[function(require,module,exports){
+},{"react":592}],617:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39278,7 +39389,7 @@ var Loading = function (_React$Component) {
 
 exports.default = Loading;
 
-},{"react":592}],617:[function(require,module,exports){
+},{"react":592}],618:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39357,7 +39468,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":595,"react":592}],618:[function(require,module,exports){
+},{"./../DateFormatter":595,"react":592}],619:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39487,7 +39598,7 @@ RaceResultsTable.contextTypes = {
 
 exports.default = RaceResultsTable;
 
-},{"./RaceResultsTableRow":619,"react":592}],619:[function(require,module,exports){
+},{"./RaceResultsTableRow":620,"react":592}],620:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39622,7 +39733,7 @@ var RaceResultTableRow = function (_React$Component) {
 
 exports.default = RaceResultTableRow;
 
-},{"react":592}],620:[function(require,module,exports){
+},{"react":592}],621:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39872,7 +39983,7 @@ RacerContainer.contextTypes = {
   router: _react2.default.PropTypes.object.isRequired
 };
 
-},{"./../RaceFeedConverter":596,"./ExpandButton":611,"./FetchData":612,"./RaceHeader":617,"./RacerDetail":621,"./RacerResult":622,"react":592}],621:[function(require,module,exports){
+},{"./../RaceFeedConverter":596,"./ExpandButton":612,"./FetchData":613,"./RaceHeader":618,"./RacerDetail":622,"./RacerResult":623,"react":592}],622:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39903,7 +40014,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":592}],622:[function(require,module,exports){
+},{"react":592}],623:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39987,7 +40098,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":633,"./RaceResultsTable":618,"react":592}],623:[function(require,module,exports){
+},{"./../xhr":634,"./RaceResultsTable":619,"react":592}],624:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40040,7 +40151,7 @@ DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
 
 exports.default = DayComponent;
 
-},{"./../../DateFormatter":595,"react":592}],624:[function(require,module,exports){
+},{"./../../DateFormatter":595,"react":592}],625:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40069,7 +40180,7 @@ var RaceLink = function RaceLink(item) {
 
 exports.default = RaceLink;
 
-},{"react":592,"react-router":390}],625:[function(require,module,exports){
+},{"react":592,"react-router":390}],626:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40245,7 +40356,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../../RaceFeedConverter":596,"./../FetchData":612,"./../Loading":616,"./DayComponent":623,"./LinkComponent":624,"./YearComponent":628,"react":592}],626:[function(require,module,exports){
+},{"./../../RaceFeedConverter":596,"./../FetchData":613,"./../Loading":617,"./DayComponent":624,"./LinkComponent":625,"./YearComponent":629,"react":592}],627:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40274,7 +40385,7 @@ var _SelectYearComponent2 = _interopRequireDefault(_SelectYearComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ListContainer":625,"./SelectYearComponent":627,"react":592}],627:[function(require,module,exports){
+},{"./ListContainer":626,"./SelectYearComponent":628,"react":592}],628:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40306,7 +40417,7 @@ SelectYearComponent.propTypes = { years: _react2.default.PropTypes.array };
 
 exports.default = SelectYearComponent;
 
-},{"react":592}],628:[function(require,module,exports){
+},{"react":592}],629:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40356,7 +40467,7 @@ var yearPositioningStyle = {
 
 exports.default = YearComponent;
 
-},{"react":592}],629:[function(require,module,exports){
+},{"react":592}],630:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40402,7 +40513,7 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":592}],630:[function(require,module,exports){
+},{"react":592}],631:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40460,7 +40571,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],631:[function(require,module,exports){
+},{"react":592}],632:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40489,7 +40600,7 @@ TabPane.propTypes = {
 
 exports.default = TabPane;
 
-},{"react":592}],632:[function(require,module,exports){
+},{"react":592}],633:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40580,7 +40691,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./TabHeader":630,"react":592}],633:[function(require,module,exports){
+},{"./TabHeader":631,"react":592}],634:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
