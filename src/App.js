@@ -21,12 +21,6 @@ render((
   </Router>
 ), document.getElementById('rrContent'));
 
-document.body.style.margin = '0px';
-document.body.style.padding = '0px';
-document.body.style.fontFamily = 'Verdana';
-document.body.style.fontSize = '18px';
-document.body.style.backgroundColor = '#eaf0f2';
-
 if (
   process.env.NODE_ENV === 'production' &&
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__ &&

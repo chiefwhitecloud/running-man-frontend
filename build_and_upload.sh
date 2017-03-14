@@ -1,12 +1,10 @@
 #!/bin/bash
 GIT_COMMIT_ID=$(git rev-parse --short HEAD)
 
-echo $GIT_COMMIT_ID
-
 aws s3 ls s3://running-man.com/$GIT_COMMIT_ID >/dev/null 2>&1
 
 if [[ $? -eq 0 ]]; then
-    echo "s3 bukcet already exists"
+    echo "s3 bucket already exists"
     exit 1;
 fi
 

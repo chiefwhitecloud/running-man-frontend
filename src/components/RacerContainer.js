@@ -7,7 +7,7 @@ import { getRacer, doRequests, getRaceGroups } from './FetchData';
 import { GetRacesSortedRaceGroup, GetRaceMapByYear } from './../RaceFeedConverter';
 
 export default class RacerContainer extends React.Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
     this.racer = {};
     this.racerProfile = {};
@@ -32,6 +32,10 @@ export default class RacerContainer extends React.Component {
       });
       this.doRaceFetching(nextProps);
     }
+  }
+
+  handleRaceClick(raceId) {
+    this.context.router.push(`/race/${raceId}`);
   }
 
   handleRaceResultExpanded(raceId) {
@@ -85,7 +89,7 @@ export default class RacerContainer extends React.Component {
           races.push(
             <tr key={race.id}>
               <td>{race.date}</td>
-              <td>{race.name}</td>
+              <td><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
               <td>{foundResult.position}</td>
               <td>{foundResult.time}</td>
               <td style={{ textAlign: 'right' }}>
@@ -125,3 +129,7 @@ export default class RacerContainer extends React.Component {
     </div>);
   }
 }
+
+RacerContainer.contextTypes = {
+  router: React.PropTypes.object.isRequired,
+};

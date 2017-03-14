@@ -1,5 +1,5 @@
 import React from 'react'
-import RaceResults from './RaceResults'
+import RaceResultsTable from './RaceResultsTable'
 import RaceHeader from './RaceHeader'
 import FilterBar from './FilterBar'
 import Loading from './Loading'
@@ -91,7 +91,7 @@ export default class FilterableRaceResults extends React.Component {
           <SelectedFilters selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
           <FilterBar ageCategories={this.ageCategories_} handle={this.handleFilterRequest.bind(this)} selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
         </RaceHeader>
-        <RaceResults results={this.state.results} />
+        <RaceResultsTable results={this.state.results} />
       </div>
     }
 

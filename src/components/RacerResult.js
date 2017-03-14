@@ -1,5 +1,5 @@
 import React from 'react';
-import RaceResults from './RaceResults';
+import RaceResultsTable from './RaceResultsTable';
 import xhr from './../xhr';
 
 export default class RacerResult extends React.Component {
@@ -34,7 +34,7 @@ export default class RacerResult extends React.Component {
 
     return (
       <div>
-        <RaceResults results={this.state.results} selectedRacerId={this.props.racerResult["racerId"]} />
+        <RaceResultsTable results={this.state.results} selectedRacerId={this.props.racerResult["racerId"]} />
       </div>
     );
   }

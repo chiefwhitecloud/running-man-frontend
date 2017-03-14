@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers js:babel-register --require babel-polyfill --reporter spec",
-    "build": "browserify -g [envify --NODE_ENV 'development'] -t [babelify] src/App.js > public/js/bundle.js && cp src/style.css public/css/.",
+    "build": "browserify -g [envify --NODE_ENV 'development'] -t [babelify] src/App.js > public/js/bundle.js && ./node_modules/less/bin/lessc src/css/style.less public/css/style.css",
     "production-build": "browserify -g [envify --NODE_ENV 'production'] -t [babelify] src/App.js | uglifyjs -mc > public/js/bundle.js"
   },
   "author": "",
@@ -25,6 +25,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
+    "less": "^2.7.2",
     "mocha": "^3.2.0",
     "uglifyjs": "^2.4.10"
   },
