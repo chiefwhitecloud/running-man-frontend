@@ -16,11 +16,14 @@ export default class extends React.Component {
     const years = this.props.years.map(year => <option value={`year-${year}`} key={year}>{year}</option>);
 
     return (
-      <select onChange={this.handleChange} value={this.state.selectedValue}>
-        <option value="all">All</option>
-        <option value="noracegroup">No Race Group Assigned</option>
-        {years}
-      </select>
+      <div className="admin-racelist-filter">
+        <span>Filter: </span>
+        <select onChange={this.handleChange} value={this.state.selectedValue}>
+          <option value="all">All</option>
+          <option value="noracegroup">No Race Group Assigned</option>
+          {years}
+        </select>
+      </div>
     );
   }
 }

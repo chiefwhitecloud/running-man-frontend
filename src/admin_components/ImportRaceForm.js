@@ -34,14 +34,9 @@ export default class ImportRaceForm extends React.Component {
   }
 
   render() {
-    const labelStyle = {
-      fontFamily: 'sans-serif',
-      fontSize: '12px',
-    };
-
     return (<form onSubmit={this.handleSubmit}>
       <div>
-        <label style={labelStyle} htmlFor="import_urls">Enter Race Results Urls:</label>
+        <label htmlFor="import_urls">Enter Race Results Urls:</label>
       </div>
       <textarea
         id="import_urls"

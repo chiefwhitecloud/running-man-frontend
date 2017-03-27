@@ -37532,11 +37532,6 @@ var ImportRaceForm = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var labelStyle = {
-        fontFamily: 'sans-serif',
-        fontSize: '12px'
-      };
-
       return _react2.default.createElement(
         'form',
         { onSubmit: this.handleSubmit },
@@ -37545,7 +37540,7 @@ var ImportRaceForm = function (_React$Component) {
           null,
           _react2.default.createElement(
             'label',
-            { style: labelStyle, htmlFor: 'import_urls' },
+            { htmlFor: 'import_urls' },
             'Enter Race Results Urls:'
           )
         ),
@@ -37655,10 +37650,6 @@ var _class = function (_React$Component) {
   _createClass(_class, [{
     key: 'render',
     value: function render() {
-      var style = {
-        fontFamily: 'sans-serif',
-        fontSize: '14px'
-      };
       return _react2.default.createElement(
         _Tabs2.default,
         { selected: 0 },
@@ -37667,7 +37658,7 @@ var _class = function (_React$Component) {
           { label: 'Races' },
           _react2.default.createElement(
             'div',
-            { style: style },
+            null,
             _react2.default.createElement(_RaceListContainer2.default, null)
           )
         ),
@@ -37676,7 +37667,7 @@ var _class = function (_React$Component) {
           { label: 'Import Race' },
           _react2.default.createElement(
             'div',
-            { style: style },
+            null,
             _react2.default.createElement(_ImportRaceContainer2.default, null)
           )
         ),
@@ -37685,7 +37676,7 @@ var _class = function (_React$Component) {
           { label: 'Race Groups' },
           _react2.default.createElement(
             'div',
-            { style: style },
+            null,
             _react2.default.createElement(_RaceGroupListContainer2.default, null)
           )
         )
@@ -38266,7 +38257,30 @@ var RaceList = function RaceList(_ref) {
     null,
     _react2.default.createElement(
       'table',
-      { style: { width: '80%' } },
+      null,
+      _react2.default.createElement(
+        'thead',
+        null,
+        _react2.default.createElement(
+          'tr',
+          null,
+          _react2.default.createElement(
+            'th',
+            null,
+            'Date'
+          ),
+          _react2.default.createElement(
+            'th',
+            null,
+            'Name'
+          ),
+          _react2.default.createElement(
+            'th',
+            null,
+            'Race Group'
+          )
+        )
+      ),
       _react2.default.createElement(
         'tbody',
         null,
@@ -38491,19 +38505,28 @@ var _class = function (_React$Component) {
       });
 
       return _react2.default.createElement(
-        'select',
-        { onChange: this.handleChange, value: this.state.selectedValue },
+        'div',
+        { className: 'admin-racelist-filter' },
         _react2.default.createElement(
-          'option',
-          { value: 'all' },
-          'All'
+          'span',
+          null,
+          'Filter: '
         ),
         _react2.default.createElement(
-          'option',
-          { value: 'noracegroup' },
-          'No Race Group Assigned'
-        ),
-        years
+          'select',
+          { onChange: this.handleChange, value: this.state.selectedValue },
+          _react2.default.createElement(
+            'option',
+            { value: 'all' },
+            'All'
+          ),
+          _react2.default.createElement(
+            'option',
+            { value: 'noracegroup' },
+            'No Race Group Assigned'
+          ),
+          years
+        )
       );
     }
   }]);

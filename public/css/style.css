@@ -2,8 +2,8 @@ html,
 body {
   margin: 0px;
   padding: 0px;
-  font-family: 'Verdana';
-  font-size: 18px;
+  font-family: 'sans-serif';
+  font-size: 14px;
   background-color: #ffffff;
 }
 .loader,
@@ -65,22 +65,10 @@ body {
     height: 5em;
   }
 }
-.tab-content {
-  background-color: white;
-  padding: 40px;
-}
-button.tab-header {
-  background-color: white;
-  border: 0px;
-  padding: 10px;
-  border-bottom: 1px solid lightgray;
-  margin: 0px;
-}
-button.tab-header.selected {
-  border-top: 1px solid red;
-  border-right: 1px solid lightgray;
-  border-left: 1px solid lightgray;
-  border-bottom: 1px solid white;
+.admin-racelist-filter {
+  text-align: right;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 table a:link {
   color: #666;
@@ -168,4 +156,20 @@ table tr:hover td {
   background: #f7f7f7;
   background: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#fbfbfb));
   background: -moz-linear-gradient(top, #f7f7f7, #fbfbfb);
+}
+.tab-content {
+  background-color: #f7f7f7;
+  padding: 40px;
+}
+.tab-header {
+  background-color: white;
+  border: 0px;
+  padding: 10px;
+  margin: 0px;
+}
+.tab-header.selected {
+  border-top: 1px solid red;
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  background-color: #f7f7f7;
 }

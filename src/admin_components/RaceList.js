@@ -3,7 +3,14 @@ import RaceListItem from './RaceListItem';
 
 const RaceList = ({ races, raceGroups, onRaceGroupChange, onRaceDelete }) => (
   <div>
-    <table style={{ width: '80%' }}>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Race Group</th>
+        </tr>
+      </thead>
       <tbody>
         {
         races.map(race => (
