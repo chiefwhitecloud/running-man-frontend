@@ -35,17 +35,18 @@ class Store extends EventEmitter {
     this.emit('racegroups-change');
   }
 
-  createRaceGroup(name, distance) {
+  createRaceGroup(name, distance, distanceUnit) {
     xhr.post('/feed/racegroup', {
       headers: {
         'Content-Type': 'application/json'
       },
       data: {
-        name: name,
-        distance: distance
+        name,
+        distance,
+        distanceUnit,
       }
     }).then(() => {
-        store.fetchRaceGroups();
+      store.fetchRaceGroups();
     });
   }
 
@@ -72,6 +73,37 @@ class Store extends EventEmitter {
     });
   }
 
+  enableEditRaceGroup(raceGroupSelf) {
+    const editRaceGroup = this.getRaceGroupBySelf(raceGroupSelf);
+    editRaceGroup.isEditting = true;
+    this.emitRaceGroupsChange();
+  }
+
+  cancelEditRaceGroup(raceGroupSelf) {
+    const editRaceGroup = this.getRaceGroupBySelf(raceGroupSelf);
+    delete editRaceGroup.isEditting;
+    this.emitRaceGroupsChange();
+  }
+
+  updateRaceGroup(raceGroupSelf, obj) {
+    const raceGroup = this.getRaceGroupBySelf(raceGroupSelf);
+    delete raceGroup.isEditting;
+    raceGroup.name = obj.name;
+    raceGroup.distance = obj.distance;
+    raceGroup.distanceUnit = obj.distanceUnit;
+    raceGroup.isUpdating = true;
+    this.emitRaceGroupsChange();
+
+    xhr.put(raceGroupSelf, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: obj,
+    }, undefined, 200).then(() => {
+      this.fetchRaceGroups();
+    });
+  }
+
   deleteRace(raceSelf) {
     xhr.delete(raceSelf).then(() => {
       this.fetchRaces();
@@ -80,7 +112,7 @@ class Store extends EventEmitter {
 
   fetchRaceGroups() {
     xhr.get('/feed/racegroups').then((result) => {
-      this.state.raceGroups = result['raceGroups'];
+      this.state.raceGroups = result.raceGroups;
       this.emitRaceGroupsChange();
     });
   }
@@ -90,6 +122,10 @@ class Store extends EventEmitter {
       this.state.races = result['races'];
       this.emitRacesChange();
     });
+  }
+
+  getRaceGroupBySelf(selfPath) {
+    return this.state.raceGroups.find(rg => rg.self === selfPath);
   }
 
   getRaces() {

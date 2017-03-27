@@ -1,10 +1,12 @@
 import React from 'react';
 
-const RaceGroupListItem = ({ raceGroup, onDelete }) => (
+const RaceGroupListItem = ({ raceGroup, onDelete, onEnableEdit }) => (
   <tr>
     <td>{raceGroup.name}</td>
     <td>{raceGroup.distance}</td>
-    <td> <button onClick={() => onDelete(raceGroup.self)}>Delete</button></td>
+    <td>{raceGroup.distanceUnit}</td>
+    <td><button onClick={() => onDelete(raceGroup.self)}>Delete</button></td>
+    <td><button onClick={() => onEnableEdit(raceGroup.self)}>Edit</button></td>
   </tr>
 );
 
@@ -15,6 +17,7 @@ RaceGroupListItem.propTypes = {
     distance: React.PropTypes.string.isRequired,
   }).isRequired,
   onDelete: React.PropTypes.func.isRequired,
+  onEnableEdit: React.PropTypes.func.isRequired,
 };
 
 export default RaceGroupListItem;
