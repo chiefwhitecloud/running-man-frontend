@@ -6,7 +6,7 @@ const DayComponent = ({ raceDate, children }) => {
     <div style={{float:"left", width:"50px", textAlign:"center", boxSizing:"border-box", padding:"8px", fontFamily:"sans-serif"}}>
       <div style={{fontSize:"14px"}}>{ShortMonthName(raceDate).toUpperCase()}</div>
       <div style={{fontSize:"24px"}}>{DayOfMonth(raceDate)}</div>
-      <div style={{fontSize:"12px", color:"#777777"}}>{Year(raceDate).toUpperCase()}</div>
+      <div style={{fontSize:"12px", color:"#777777"}}>{Year(raceDate)}</div>
     </div>
     <div style={{float:"right", width:"338px", boxSizing:"border-box", padding:"10px"}}>{children}</div>
     <div style={{clear:"both"}} />

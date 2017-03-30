@@ -36856,7 +36856,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
 }
 
 },{"./AdminApp":593,"./components/App":612,"./components/FilterableRaceResults":616,"./components/RacerContainer":622,"./components/Races/ListContainer":627,"./components/Races/PageLayout":628,"babel-polyfill":1,"react":592,"react-dom":360,"react-router":390}],595:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -36867,78 +36867,79 @@ exports.Year = Year;
 exports.ShortMonthName = ShortMonthName;
 
 function dayOfWeek(num) {
-
   switch (num) {
     case 0:
-      return "Sunday";
+      return 'Sunday';
     case 1:
-      return "Monday";
+      return 'Monday';
     case 2:
-      return "Tuesday";
+      return 'Tuesday';
     case 3:
-      return "Wednesday";
+      return 'Wednesday';
     case 4:
-      return "Thursday";
+      return 'Thursday';
     case 5:
-      return "Friday";
+      return 'Friday';
     case 6:
-      return "Saturday";
+      return 'Saturday';
     default:
-      return "";
+      return '';
   }
 }
 
 function getMonth(num) {
-
   switch (num) {
     case 0:
-      return "January";
+      return 'January';
     case 1:
-      return "February";
+      return 'February';
     case 2:
-      return "March";
+      return 'March';
     case 3:
-      return "April";
+      return 'April';
     case 4:
-      return "May";
+      return 'May';
     case 5:
-      return "June";
+      return 'June';
     case 6:
-      return "July";
+      return 'July';
     case 7:
-      return "August";
+      return 'August';
     case 8:
-      return "September";
+      return 'September';
     case 9:
-      return "October";
+      return 'October';
     case 10:
-      return "November";
+      return 'November';
     case 11:
-      return "December";
+      return 'December';
+    default:
+      return '';
   }
 }
 
 function getDateObject(date) {
   var regex = /^(\d{4})-(\d{2})-(\d{2})/;
   var result = regex.exec(date);
-  return new Date(Date.UTC(parseInt(result[1], 10), parseInt(result[2], 10) - 1, parseInt(result[3], 10), 0, 0, 0));
+  var year = parseInt(result[1], 10);
+  var month = parseInt(result[2], 10) - 1;
+  var day = parseInt(result[3], 10);
+  return new Date(Date.UTC(year, month, day, 0, 0, 0));
 }
 
 function LongDateFormat(date) {
   var d = getDateObject(date);
-  return dayOfWeek(d.getUTCDay()) + ', ' + getMonth(d.getUTCMonth()) + ' ' + d.getUTCDate();
+  return dayOfWeek(d.getUTCDay()) + ' , ' + getMonth(d.getUTCMonth()) + ' ' + d.getUTCDate();
 }
 
 function DayOfMonth(date) {
-  var regex = /^(\d{4})-(\d{2})-(\d{2})/;
-  var result = regex.exec(date);
-  return result[3];
+  var d = getDateObject(date);
+  return d.getUTCDate();
 }
 
 function Year(date) {
-  var regex = /^(\d{4})-(\d{2})-(\d{2})/;
-  var result = regex.exec(date);
-  return result[1];
+  var d = getDateObject(date);
+  return d.getUTCFullYear();
 }
 
 function ShortMonthName(date) {
@@ -36973,12 +36974,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 */
 
 function GetRaceMapByYear(raceItems) {
-
   var raceMap = new Map();
   var yearRegEx = /^\d{4}/;
 
-  //create a map with year as the key and value as an array
-  //of race items from the server
+  // create a map with year as the key and value as an array
+  // of race items from the server
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
   var _iteratorError = undefined;
@@ -36999,7 +36999,7 @@ function GetRaceMapByYear(raceItems) {
       }
     }
 
-    //group same races on same day
+    // group same races on same day
   } catch (err) {
     _didIteratorError = true;
     _iteratorError = err;
@@ -40454,7 +40454,7 @@ var DayComponent = function DayComponent(_ref) {
       _react2.default.createElement(
         'div',
         { style: { fontSize: "12px", color: "#777777" } },
-        (0, _DateFormatter.Year)(raceDate).toUpperCase()
+        (0, _DateFormatter.Year)(raceDate)
       )
     ),
     _react2.default.createElement(
@@ -40490,7 +40490,7 @@ var RaceLink = function RaceLink(item) {
     { key: item.id },
     _react2.default.createElement(
       _reactRouter.Link,
-      { to: "/race/" + item.id, style: { textDecoration: "none", display: "block", marginBottom: "5px" } },
+      { to: '/race/' + item.id, style: { textDecoration: 'none', display: 'block', marginBottom: '5px' } },
       item.name
     )
   );

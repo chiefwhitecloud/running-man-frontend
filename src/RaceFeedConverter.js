@@ -11,13 +11,12 @@
 *
 */
 
-export function GetRaceMapByYear (raceItems) {
+export function GetRaceMapByYear(raceItems) {
+  const raceMap = new Map();
+  const yearRegEx = /^\d{4}/;
 
-  let raceMap = new Map();
-  let yearRegEx = /^\d{4}/;
-
-  //create a map with year as the key and value as an array
-  //of race items from the server
+  // create a map with year as the key and value as an array
+  // of race items from the server
   for (var value of raceItems) {
     let results = yearRegEx.exec(value["date"])
     if (results.length == 1){
@@ -32,7 +31,7 @@ export function GetRaceMapByYear (raceItems) {
     }
   }
 
-  //group same races on same day
+  // group same races on same day
   for (var [year, value] of raceMap) {
     let racesForYear = raceMap.get(year);
     let raceYearMap = new Map();
@@ -57,8 +56,6 @@ export function GetRaceMapByYear (raceItems) {
   return raceMap;
 }
 
-
-
 /*
 * Creates a map from the race groups from the server.
 *
@@ -74,7 +71,7 @@ export function GetRaceMapByYear (raceItems) {
 *
 */
 
-export function GetRacesSortedRaceGroup (raceGroupsItems, raceItems) {
+export function GetRacesSortedRaceGroup(raceGroupsItems, raceItems) {
 
   let raceMap = new Map();
   let raceGroupMap = new Map();
@@ -89,7 +86,7 @@ export function GetRacesSortedRaceGroup (raceGroupsItems, raceItems) {
     if (race["raceGroup"] == undefined){
       return;
     }
-    
+
     let raceGroup = raceGroupsItems.find(function(raceGroup) {
       return race["raceGroup"] == raceGroup["self"];
     });
