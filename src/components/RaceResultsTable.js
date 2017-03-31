@@ -7,21 +7,30 @@ class RaceResultsTable extends React.Component {
     this.handleRowClick = this.handleRowClick.bind(this);
   }
   handleRowClick(evt) {
-    this.context.router.push('/racer/'+evt);
+    this.context.router.push(`/racer/${evt}`);
   }
   render() {
     let chipHeader = null;
+    let paceHeader = null;
 
     if (this.props.results[0] && this.props.results[0].chipTime) {
       // display the chip time for the row.
       chipHeader = <th style={{textAlign: 'right'}}>Chip</th>;
     }
 
+    if (this.props.results[0] && this.props.results[0].pace) {
+      // display the chip time for the row.
+      paceHeader = <th style={{textAlign: 'right'}}>Pace</th>;
+    }
+
     const results = this.props.results.map(result =>
       <RaceResultsTableRow
         key={result.racerId.toString()}
-        result={result} selectedRacerId={this.props.selectedRacerId}
-        handleClick={this.handleRowClick} showChipTime={chipHeader != null}
+        result={result}
+        selectedRacerId={this.props.selectedRacerId}
+        handleClick={this.handleRowClick}
+        showChipTime={chipHeader != null}
+        showPace={paceHeader != null}
       />
     );
 
@@ -33,6 +42,7 @@ class RaceResultsTable extends React.Component {
             <th style={{ textAlign: 'right' }}>Bib</th>
             <th style={{ textAlign: 'left' }}>Name</th>
             <th style={{ textAlign: 'right' }}>Time</th>
+            {paceHeader}
             {chipHeader}
             <th>Cat</th>
             <th>Age</th>

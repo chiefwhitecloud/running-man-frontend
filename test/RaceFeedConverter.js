@@ -34,12 +34,12 @@ describe('Race Feed Converter', function() {
   });
 
   describe('#GetRacesSortedRaceGroup()', function() {
-    it('should be present', function(done) {
+    it('should be present', (done) => {
       assert.ok(typeof GetRacesSortedRaceGroup === 'function');
       done();
     });
-    it('should return a map grouped by racegroup id', function(done) {
-      let races = GetRacesSortedRaceGroup(raceGroupItems, raceItems);
+    it('should return a map grouped by racegroup id', (done) => {
+      const races = GetRacesSortedRaceGroup(raceGroupItems, raceItems);
       assert.ok(races.get(14));
       assert.equal(1, races.size);
       done();

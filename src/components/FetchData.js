@@ -1,4 +1,4 @@
-import XHR from './../xhr'
+import XHR from './../xhr';
 
 export const GetRaces = () => XHR.get('/feed/races');
 

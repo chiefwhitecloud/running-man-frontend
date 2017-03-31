@@ -1,99 +1,113 @@
-import React from 'react'
-import RaceResultsTable from './RaceResultsTable'
-import RaceHeader from './RaceHeader'
-import FilterBar from './FilterBar'
-import Loading from './Loading'
-import SelectedFilters from './SelectedFilters'
-import xhr from './../xhr'
+import React from 'react';
+import RaceResultsTable from './RaceResultsTable';
+import RaceHeader from './RaceHeader';
+import FilterBar from './FilterBar';
+import Loading from './Loading';
+import SelectedFilters from './SelectedFilters';
+import xhr from './../xhr';
+import { GetPace } from './../RaceTimeConverter';
+import { doRequests } from './FetchData';
 
 export default class FilterableRaceResults extends React.Component {
   constructor(props) {
-   super(props);
-   this.raceResults_ = [];
-   this.state = {
+    super(props);
+    this.raceResults = [];
+    this.raceGroup = undefined;
+    this.state = {
       race: {},
       results: [],
       isLoading: true,
-      selectedAgeCategoryKeys: []
-   };
-   let raceMeta;
-   xhr.get('/feed/race/' + this.props.params.raceId).then((race) => {
-     return race;
-   }).then((race) => {
-     raceMeta = race;
-     return xhr.get(race["results"]);
-   }).then((raceResults) => {
+      selectedAgeCategoryKeys: [],
+    };
+    let raceMeta;
+    xhr.get(`/feed/race/${this.props.params.raceId}`).then((race) => {
+      raceMeta = race;
+      const requests = [race["results"]];
+      if (race['raceGroup'] !== undefined) {
+        requests.push(race['raceGroup']);
+      }
+      return doRequests(requests);
+    }).then((results) => {
+      const [raceResults, raceGroup] = results;
 
-     let ageCategories = new Map();
+      const ageCategories = new Map();
+      for (const result of raceResults["results"]) {
+        if (!ageCategories.has(result.sex)) {
+          ageCategories.set(result.sex, {
+            key: result.sex,
+            sex: result.sex,
+            ageCategory: undefined,
+          });
+        }
 
-     for (const result of raceResults["results"]) {
-       if (!ageCategories.has(result.sex)){
-         ageCategories.set(result.sex, {
-           key: result.sex,
-           sex: result.sex,
-           ageCategory: undefined
-         });
-       }
+        const key = `${result.sex} - ${result.ageCategory}`;
 
-       let key = result.sex + ' - ' + result.ageCategory;
+        if (!ageCategories.has(key)) {
+          ageCategories.set(key, {
+            key,
+            sex: result.sex,
+            ageCategory: result.ageCategory,
+          });
+        }
+      }
 
-       if (!ageCategories.has(key)){
-         ageCategories.set(key, {
-           key: key,
-           sex: result.sex,
-           ageCategory: result.ageCategory
-         });
-       }
-     }
+      this.raceResults = raceResults["results"];
+      this.raceGroup = raceGroup;
 
-     this.raceResults_ = raceResults["results"];
+      this.raceResults.forEach( result => {
+        result.pace = GetPace(result.time, this.raceGroup.distance);
+      });
 
-     this.ageCategories_ = ageCategories;
+      this.ageCategories = ageCategories;
 
-     this.setState({
-       race : raceMeta,
-       results : raceResults["results"],
-       selectedAgeCategory: undefined,
-       isLoading: false,
-       selectedAgeCategoryKeys: []
-     });
-   });
+      this.setState({
+        race: raceMeta,
+        results: raceResults["results"],
+        selectedAgeCategory: undefined,
+        isLoading: false,
+        selectedAgeCategoryKeys: []
+      });
+    });
   }
-  handleFilterRequest(info){
 
+  handleFilterRequest(info) {
     let selected = this.state.selectedAgeCategoryKeys;
 
     selected.push(info.key);
 
     let results = [];
-    for (const result of this.raceResults_) {
-      for (const filterKey of selected){
-        const ageCat = this.ageCategories_.get(filterKey)
-        if (result.sex == ageCat.sex && ((ageCat.ageCategory != undefined && result.ageCategory == ageCat.ageCategory) || ageCat.ageCategory == undefined)){
+    for (const result of this.raceResults) {
+      for (const filterKey of selected) {
+        const ageCat = this.ageCategories.get(filterKey)
+        if (result.sex === ageCat.sex &&
+          ((ageCat.ageCategory !== undefined && result.ageCategory === ageCat.ageCategory)
+          || ageCat.ageCategory === undefined)) {
           results.push(result);
         }
       }
     }
 
     this.setState({
-      results: results,
-      selectedAgeCategoryKeys: selected
+      results,
+      selectedAgeCategoryKeys: selected,
     });
   }
-  render() {
 
-    if (this.state.isLoading){
+  render() {
+    if (this.state.isLoading) {
       return <Loading />;
     }
-    else{
-      return <div>
-        <RaceHeader name={this.state.race.name}  date={this.state.race.date}>
-          <SelectedFilters selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
-          <FilterBar ageCategories={this.ageCategories_} handle={this.handleFilterRequest.bind(this)} selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
-        </RaceHeader>
-        <RaceResultsTable results={this.state.results} />
-      </div>
-    }
 
+    return (<div>
+      <RaceHeader name={this.state.race.name} date={this.state.race.date}>
+        <SelectedFilters selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys} />
+        <FilterBar
+          ageCategories={this.ageCategories}
+          handle={this.handleFilterRequest.bind(this)}
+          selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys}
+        />
+      </RaceHeader>
+      <RaceResultsTable results={this.state.results} />
+    </div>);
   }
 }

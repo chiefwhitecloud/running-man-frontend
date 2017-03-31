@@ -36798,7 +36798,7 @@ function AdminApp() {
   return _react2.default.createElement(_Layout2.default, null);
 }
 
-},{"./admin_components/Layout":601,"react":592}],594:[function(require,module,exports){
+},{"./admin_components/Layout":602,"react":592}],594:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -36855,7 +36855,7 @@ if ("development" === 'production' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__ && O
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__._renderers = {};
 }
 
-},{"./AdminApp":593,"./components/App":612,"./components/FilterableRaceResults":616,"./components/RacerContainer":622,"./components/Races/ListContainer":627,"./components/Races/PageLayout":628,"babel-polyfill":1,"react":592,"react-dom":360,"react-router":390}],595:[function(require,module,exports){
+},{"./AdminApp":593,"./components/App":613,"./components/FilterableRaceResults":617,"./components/RacerContainer":623,"./components/Races/ListContainer":628,"./components/Races/PageLayout":629,"babel-polyfill":1,"react":592,"react-dom":360,"react-router":390}],595:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37137,6 +37137,54 @@ function GetRacesSortedRaceGroup(raceGroupsItems, raceItems) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.GetSeconds = GetSeconds;
+exports.GetPaceInSeconds = GetPaceInSeconds;
+exports.GetPace = GetPace;
+function convertToSeconds(value, position) {
+  switch (position) {
+    case 0:
+      // seconds
+      return value;
+    case 1:
+      // minutes
+      return value * 60;
+    case 2:
+      // hours
+      return value * 60 * 60;
+    default:
+      return 0;
+  }
+}
+
+function GetSeconds(time) {
+  var totalSeconds = 0;
+  var partsArray = time.split(':');
+  partsArray.reverse();
+  partsArray.forEach(function (num, index) {
+    var v = parseInt(num, 10);
+    totalSeconds += convertToSeconds(v, index);
+  });
+  return totalSeconds;
+}
+
+function GetPaceInSeconds(time, distance) {
+  var seconds = GetSeconds(time);
+  return seconds / parseInt(distance, 10);
+}
+
+function GetPace(time, distance) {
+  var paceInSeconds = GetPaceInSeconds(time, distance);
+  var minutes = Math.floor(paceInSeconds / 60);
+  var seconds = parseInt(paceInSeconds - minutes * 60, 10).toString().padStart(2, '0');
+  return minutes + ':' + seconds;
+}
+
+},{}],598:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.ImportRace = exports.Status = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -37255,7 +37303,7 @@ var ImportRace = exports.ImportRace = function (_EventEmitter) {
   return ImportRace;
 }(_events.EventEmitter);
 
-},{"./../xhr":635,"events":297}],598:[function(require,module,exports){
+},{"./../xhr":636,"events":297}],599:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37467,7 +37515,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./ImportRace":597,"./ImportRaceForm":599,"./ImportRaceListItem":600,"react":592}],599:[function(require,module,exports){
+},{"./ImportRace":598,"./ImportRaceForm":600,"./ImportRaceListItem":601,"react":592}],600:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37565,7 +37613,7 @@ var ImportRaceForm = function (_React$Component) {
 
 exports.default = ImportRaceForm;
 
-},{"react":592}],600:[function(require,module,exports){
+},{"react":592}],601:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37597,7 +37645,7 @@ ImportRaceListItem.propTypes = {
 
 exports.default = ImportRaceListItem;
 
-},{"react":592}],601:[function(require,module,exports){
+},{"react":592}],602:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37689,7 +37737,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/TabPane":633,"./../components/Tabs":634,"./ImportRaceContainer":598,"./RaceGroupListContainer":604,"./RaceListContainer":608,"react":592}],602:[function(require,module,exports){
+},{"./../components/TabPane":634,"./../components/Tabs":635,"./ImportRaceContainer":599,"./RaceGroupListContainer":605,"./RaceListContainer":609,"react":592}],603:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37799,7 +37847,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],603:[function(require,module,exports){
+},{"react":592}],604:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37885,7 +37933,7 @@ RaceGroupList.propTypes = {
 
 exports.default = RaceGroupList;
 
-},{"./RaceGroupListItem":605,"./RaceGroupListItemEdit":606,"react":592}],604:[function(require,module,exports){
+},{"./RaceGroupListItem":606,"./RaceGroupListItemEdit":607,"react":592}],605:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38009,7 +38057,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/Loading":618,"./RaceGroupAdd":602,"./RaceGroupList":603,"./Store":611,"react":592}],605:[function(require,module,exports){
+},{"./../components/Loading":619,"./RaceGroupAdd":603,"./RaceGroupList":604,"./Store":612,"react":592}],606:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38081,7 +38129,7 @@ RaceGroupListItem.propTypes = {
 
 exports.default = RaceGroupListItem;
 
-},{"react":592}],606:[function(require,module,exports){
+},{"react":592}],607:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38230,7 +38278,7 @@ RaceGroupListItemEdit.propTypes = {
   onUpdateRaceGroup: _react2.default.PropTypes.func.isRequired
 };
 
-},{"react":592}],607:[function(require,module,exports){
+},{"react":592}],608:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38307,7 +38355,7 @@ RaceList.propTypes = {
 
 exports.default = RaceList;
 
-},{"./RaceListItem":610,"react":592}],608:[function(require,module,exports){
+},{"./RaceListItem":611,"react":592}],609:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38453,7 +38501,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../RaceFeedConverter":596,"./../components/Loading":618,"./RaceList":607,"./RaceListFilterComponent":609,"./Store":611,"react":592}],609:[function(require,module,exports){
+},{"./../RaceFeedConverter":596,"./../components/Loading":619,"./RaceList":608,"./RaceListFilterComponent":610,"./Store":612,"react":592}],610:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38536,7 +38584,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],610:[function(require,module,exports){
+},{"react":592}],611:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38647,7 +38695,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],611:[function(require,module,exports){
+},{"react":592}],612:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38851,7 +38899,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":635,"events":297}],612:[function(require,module,exports){
+},{"./../xhr":636,"events":297}],613:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38973,7 +39021,7 @@ var App = function App(props) {
 };
 exports.default = App;
 
-},{"./HeroComponent":617,"react":592,"react-router":390}],613:[function(require,module,exports){
+},{"./HeroComponent":618,"react":592,"react-router":390}],614:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39059,7 +39107,7 @@ var ExpandButton = function (_React$Component) {
 
 exports.default = (0, _radium2.default)(ExpandButton);
 
-},{"radium":310,"react":592}],614:[function(require,module,exports){
+},{"radium":310,"react":592}],615:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39092,7 +39140,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":635}],615:[function(require,module,exports){
+},{"./../xhr":636}],616:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39404,12 +39452,14 @@ var MenuOption = function (_React$Component2) {
   return MenuOption;
 }(_react2.default.Component);
 
-},{"react":592}],616:[function(require,module,exports){
+},{"react":592}],617:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -39441,6 +39491,10 @@ var _xhr = require('./../xhr');
 
 var _xhr2 = _interopRequireDefault(_xhr);
 
+var _RaceTimeConverter = require('./../RaceTimeConverter');
+
+var _FetchData = require('./FetchData');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39457,7 +39511,8 @@ var FilterableRaceResults = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (FilterableRaceResults.__proto__ || Object.getPrototypeOf(FilterableRaceResults)).call(this, props));
 
-    _this.raceResults_ = [];
+    _this.raceResults = [];
+    _this.raceGroup = undefined;
     _this.state = {
       race: {},
       results: [],
@@ -39466,14 +39521,20 @@ var FilterableRaceResults = function (_React$Component) {
     };
     var raceMeta = void 0;
     _xhr2.default.get('/feed/race/' + _this.props.params.raceId).then(function (race) {
-      return race;
-    }).then(function (race) {
       raceMeta = race;
-      return _xhr2.default.get(race["results"]);
-    }).then(function (raceResults) {
+      var requests = [race["results"]];
+      if (race['raceGroup'] !== undefined) {
+        requests.push(race['raceGroup']);
+      }
+      return (0, _FetchData.doRequests)(requests);
+    }).then(function (results) {
+      var _results = _slicedToArray(results, 2);
+
+      var raceResults = _results[0];
+      var raceGroup = _results[1];
+
 
       var ageCategories = new Map();
-
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -39515,9 +39576,14 @@ var FilterableRaceResults = function (_React$Component) {
         }
       }
 
-      _this.raceResults_ = raceResults["results"];
+      _this.raceResults = raceResults["results"];
+      _this.raceGroup = raceGroup;
 
-      _this.ageCategories_ = ageCategories;
+      _this.raceResults.forEach(function (result) {
+        result.pace = (0, _RaceTimeConverter.GetPace)(result.time, _this.raceGroup.distance);
+      });
+
+      _this.ageCategories = ageCategories;
 
       _this.setState({
         race: raceMeta,
@@ -39533,7 +39599,6 @@ var FilterableRaceResults = function (_React$Component) {
   _createClass(FilterableRaceResults, [{
     key: 'handleFilterRequest',
     value: function handleFilterRequest(info) {
-
       var selected = this.state.selectedAgeCategoryKeys;
 
       selected.push(info.key);
@@ -39544,7 +39609,7 @@ var FilterableRaceResults = function (_React$Component) {
       var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator2 = this.raceResults_[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        for (var _iterator2 = this.raceResults[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var result = _step2.value;
           var _iteratorNormalCompletion3 = true;
           var _didIteratorError3 = false;
@@ -39554,8 +39619,8 @@ var FilterableRaceResults = function (_React$Component) {
             for (var _iterator3 = selected[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
               var filterKey = _step3.value;
 
-              var ageCat = this.ageCategories_.get(filterKey);
-              if (result.sex == ageCat.sex && (ageCat.ageCategory != undefined && result.ageCategory == ageCat.ageCategory || ageCat.ageCategory == undefined)) {
+              var ageCat = this.ageCategories.get(filterKey);
+              if (result.sex === ageCat.sex && (ageCat.ageCategory !== undefined && result.ageCategory === ageCat.ageCategory || ageCat.ageCategory === undefined)) {
                 results.push(result);
               }
             }
@@ -39597,22 +39662,25 @@ var FilterableRaceResults = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-
       if (this.state.isLoading) {
         return _react2.default.createElement(_Loading2.default, null);
-      } else {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            _RaceHeader2.default,
-            { name: this.state.race.name, date: this.state.race.date },
-            _react2.default.createElement(_SelectedFilters2.default, { selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys }),
-            _react2.default.createElement(_FilterBar2.default, { ageCategories: this.ageCategories_, handle: this.handleFilterRequest.bind(this), selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys })
-          ),
-          _react2.default.createElement(_RaceResultsTable2.default, { results: this.state.results })
-        );
       }
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _RaceHeader2.default,
+          { name: this.state.race.name, date: this.state.race.date },
+          _react2.default.createElement(_SelectedFilters2.default, { selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys }),
+          _react2.default.createElement(_FilterBar2.default, {
+            ageCategories: this.ageCategories,
+            handle: this.handleFilterRequest.bind(this),
+            selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys
+          })
+        ),
+        _react2.default.createElement(_RaceResultsTable2.default, { results: this.state.results })
+      );
     }
   }]);
 
@@ -39621,7 +39689,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../xhr":635,"./FilterBar":615,"./Loading":618,"./RaceHeader":619,"./RaceResultsTable":620,"./SelectedFilters":631,"react":592}],617:[function(require,module,exports){
+},{"./../RaceTimeConverter":597,"./../xhr":636,"./FetchData":615,"./FilterBar":616,"./Loading":619,"./RaceHeader":620,"./RaceResultsTable":621,"./SelectedFilters":632,"react":592}],618:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39656,7 +39724,7 @@ function HeroComponent() {
   );
 }
 
-},{"react":592}],618:[function(require,module,exports){
+},{"react":592}],619:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39707,7 +39775,7 @@ var Loading = function (_React$Component) {
 
 exports.default = Loading;
 
-},{"react":592}],619:[function(require,module,exports){
+},{"react":592}],620:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39786,7 +39854,7 @@ RaceHeader.propTypes = {
 
 exports.default = RaceHeader;
 
-},{"./../DateFormatter":595,"react":592}],620:[function(require,module,exports){
+},{"./../DateFormatter":595,"react":592}],621:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39834,6 +39902,7 @@ var RaceResultsTable = function (_React$Component) {
       var _this2 = this;
 
       var chipHeader = null;
+      var paceHeader = null;
 
       if (this.props.results[0] && this.props.results[0].chipTime) {
         // display the chip time for the row.
@@ -39844,11 +39913,23 @@ var RaceResultsTable = function (_React$Component) {
         );
       }
 
+      if (this.props.results[0] && this.props.results[0].pace) {
+        // display the chip time for the row.
+        paceHeader = _react2.default.createElement(
+          'th',
+          { style: { textAlign: 'right' } },
+          'Pace'
+        );
+      }
+
       var results = this.props.results.map(function (result) {
         return _react2.default.createElement(_RaceResultsTableRow2.default, {
           key: result.racerId.toString(),
-          result: result, selectedRacerId: _this2.props.selectedRacerId,
-          handleClick: _this2.handleRowClick, showChipTime: chipHeader != null
+          result: result,
+          selectedRacerId: _this2.props.selectedRacerId,
+          handleClick: _this2.handleRowClick,
+          showChipTime: chipHeader != null,
+          showPace: paceHeader != null
         });
       });
 
@@ -39884,6 +39965,7 @@ var RaceResultsTable = function (_React$Component) {
                 { style: { textAlign: 'right' } },
                 'Time'
               ),
+              paceHeader,
               chipHeader,
               _react2.default.createElement(
                 'th',
@@ -39916,7 +39998,7 @@ RaceResultsTable.contextTypes = {
 
 exports.default = RaceResultsTable;
 
-},{"./RaceResultsTableRow":621,"react":592}],621:[function(require,module,exports){
+},{"./RaceResultsTableRow":622,"react":592}],622:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39988,11 +40070,21 @@ var RaceResultTableRow = function (_React$Component) {
     value: function render() {
       var chipCell = null;
 
+      var paceCell = null;
+
       if (this.props.showChipTime) {
         chipCell = _react2.default.createElement(
           'td',
           { style: chipTimeStyle },
           this.props.result.chipTime
+        );
+      }
+
+      if (this.props.showPace) {
+        paceCell = _react2.default.createElement(
+          'td',
+          { style: chipTimeStyle },
+          this.props.result.pace
         );
       }
 
@@ -40025,6 +40117,7 @@ var RaceResultTableRow = function (_React$Component) {
           { style: TimeRowStyle },
           this.props.result.time
         ),
+        paceCell,
         chipCell,
         _react2.default.createElement(
           'td',
@@ -40051,7 +40144,7 @@ var RaceResultTableRow = function (_React$Component) {
 
 exports.default = RaceResultTableRow;
 
-},{"react":592}],622:[function(require,module,exports){
+},{"react":592}],623:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40066,10 +40159,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _RaceHeader = require('./RaceHeader');
-
-var _RaceHeader2 = _interopRequireDefault(_RaceHeader);
-
 var _RacerResult = require('./RacerResult');
 
 var _RacerResult2 = _interopRequireDefault(_RacerResult);
@@ -40081,6 +40170,8 @@ var _RacerDetail2 = _interopRequireDefault(_RacerDetail);
 var _ExpandButton = require('./ExpandButton');
 
 var _ExpandButton2 = _interopRequireDefault(_ExpandButton);
+
+var _RaceTimeConverter = require('./../RaceTimeConverter');
 
 var _FetchData = require('./FetchData');
 
@@ -40200,6 +40291,7 @@ var RacerContainer = function (_React$Component) {
             var foundResult = _this3.state.results.find(function (result) {
               return result.raceId === race.id;
             });
+            foundResult.pace = (0, _RaceTimeConverter.GetPace)(foundResult.time, raceGroupItem.raceGroup['distance']);
             var expandedItem = _this3.state.expandedResults.find(function (expandedId) {
               return expandedId === race.id;
             });
@@ -40235,6 +40327,11 @@ var RacerContainer = function (_React$Component) {
               ),
               _react2.default.createElement(
                 'td',
+                null,
+                foundResult.pace
+              ),
+              _react2.default.createElement(
+                'td',
                 { style: { textAlign: 'right' } },
                 _react2.default.createElement(_ExpandButton2.default, { handleClick: _this3.handleRaceResultExpanded, raceId: race.id })
               )
@@ -40246,7 +40343,7 @@ var RacerContainer = function (_React$Component) {
                 { key: 'expanded' + race.id },
                 _react2.default.createElement(
                   'td',
-                  { colSpan: '5' },
+                  { colSpan: '6' },
                   _react2.default.createElement(_RacerResult2.default, { racerResult: foundResult, race: race })
                 )
               ));
@@ -40301,7 +40398,7 @@ RacerContainer.contextTypes = {
   router: _react2.default.PropTypes.object.isRequired
 };
 
-},{"./../RaceFeedConverter":596,"./ExpandButton":613,"./FetchData":614,"./RaceHeader":619,"./RacerDetail":623,"./RacerResult":624,"react":592}],623:[function(require,module,exports){
+},{"./../RaceFeedConverter":596,"./../RaceTimeConverter":597,"./ExpandButton":614,"./FetchData":615,"./RacerDetail":624,"./RacerResult":625,"react":592}],624:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40332,7 +40429,7 @@ RacerDetail.propTypes = {
 
 exports.default = RacerDetail;
 
-},{"react":592}],624:[function(require,module,exports){
+},{"react":592}],625:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40416,7 +40513,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":635,"./RaceResultsTable":620,"react":592}],625:[function(require,module,exports){
+},{"./../xhr":636,"./RaceResultsTable":621,"react":592}],626:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40469,7 +40566,7 @@ DayComponent.propTypes = { raceDate: _react2.default.PropTypes.string };
 
 exports.default = DayComponent;
 
-},{"./../../DateFormatter":595,"react":592}],626:[function(require,module,exports){
+},{"./../../DateFormatter":595,"react":592}],627:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40498,7 +40595,7 @@ var RaceLink = function RaceLink(item) {
 
 exports.default = RaceLink;
 
-},{"react":592,"react-router":390}],627:[function(require,module,exports){
+},{"react":592,"react-router":390}],628:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40674,7 +40771,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../../RaceFeedConverter":596,"./../FetchData":614,"./../Loading":618,"./DayComponent":625,"./LinkComponent":626,"./YearComponent":630,"react":592}],628:[function(require,module,exports){
+},{"./../../RaceFeedConverter":596,"./../FetchData":615,"./../Loading":619,"./DayComponent":626,"./LinkComponent":627,"./YearComponent":631,"react":592}],629:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40703,7 +40800,7 @@ var _SelectYearComponent2 = _interopRequireDefault(_SelectYearComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ListContainer":627,"./SelectYearComponent":629,"react":592}],629:[function(require,module,exports){
+},{"./ListContainer":628,"./SelectYearComponent":630,"react":592}],630:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40735,7 +40832,7 @@ SelectYearComponent.propTypes = { years: _react2.default.PropTypes.array };
 
 exports.default = SelectYearComponent;
 
-},{"react":592}],630:[function(require,module,exports){
+},{"react":592}],631:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40785,7 +40882,7 @@ var yearPositioningStyle = {
 
 exports.default = YearComponent;
 
-},{"react":592}],631:[function(require,module,exports){
+},{"react":592}],632:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40831,7 +40928,7 @@ var SelectedFilters = function (_React$Component) {
 
 exports.default = SelectedFilters;
 
-},{"react":592}],632:[function(require,module,exports){
+},{"react":592}],633:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40889,7 +40986,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":592}],633:[function(require,module,exports){
+},{"react":592}],634:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40918,7 +41015,7 @@ TabPane.propTypes = {
 
 exports.default = TabPane;
 
-},{"react":592}],634:[function(require,module,exports){
+},{"react":592}],635:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41009,7 +41106,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./TabHeader":632,"react":592}],635:[function(require,module,exports){
+},{"./TabHeader":633,"react":592}],636:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

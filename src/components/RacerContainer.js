@@ -1,8 +1,8 @@
 import React from 'react';
-import RaceHeader from './RaceHeader';
 import RacerResult from './RacerResult';
 import RacerDetail from './RacerDetail';
 import ExpandButton from './ExpandButton';
+import { GetPace } from './../RaceTimeConverter';
 import { getRacer, doRequests, getRaceGroups } from './FetchData';
 import { GetRacesSortedRaceGroup, GetRaceMapByYear } from './../RaceFeedConverter';
 
@@ -84,6 +84,7 @@ export default class RacerContainer extends React.Component {
         const races = [];
         raceGroupItem.races.forEach((race) => {
           const foundResult = this.state.results.find(result => result.raceId === race.id);
+          foundResult.pace = GetPace(foundResult.time, raceGroupItem.raceGroup['distance']);
           const expandedItem = this.state.expandedResults.find(expandedId => expandedId === race.id);
 
           races.push(
@@ -92,6 +93,7 @@ export default class RacerContainer extends React.Component {
               <td><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
               <td>{foundResult.position}</td>
               <td>{foundResult.time}</td>
+              <td>{foundResult.pace}</td>
               <td style={{ textAlign: 'right' }}>
                 <ExpandButton handleClick={this.handleRaceResultExpanded} raceId={race.id} />
               </td>
@@ -100,7 +102,7 @@ export default class RacerContainer extends React.Component {
           if (expandedItem !== undefined) {
             races.push(
               <tr key={`expanded${race.id}`}>
-                <td colSpan="5">
+                <td colSpan="6">
                   <RacerResult racerResult={foundResult} race={race} />
                 </td>
               </tr>);
