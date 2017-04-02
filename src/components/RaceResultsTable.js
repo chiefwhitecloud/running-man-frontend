@@ -15,15 +15,15 @@ class RaceResultsTable extends React.Component {
 
     if (this.props.results[0] && this.props.results[0].chipTime) {
       // display the chip time for the row.
-      chipHeader = <th style={{textAlign: 'right'}}>Chip</th>;
+      chipHeader = <th className={'table table__header'} style={{textAlign: 'right'}}>Chip</th>;
     }
 
     if (this.props.results[0] && this.props.results[0].pace) {
       // display the chip time for the row.
-      paceHeader = <th style={{textAlign: 'right'}}>Pace</th>;
+      paceHeader = <th className={'table table__header'} style={{textAlign: 'right'}}>Pace</th>;
     }
 
-    const results = this.props.results.map(result =>
+    const results = this.props.results.map((result, index) =>
       <RaceResultsTableRow
         key={result.racerId.toString()}
         result={result}
@@ -31,21 +31,22 @@ class RaceResultsTable extends React.Component {
         handleClick={this.handleRowClick}
         showChipTime={chipHeader != null}
         showPace={paceHeader != null}
+        isEvenNumbered={index % 2 === 0}
       />
     );
 
     return (<div>
-      <table>
+      <table className={'table table--fullresults'}>
         <thead style={{ fontWeight: 'bold' }}>
           <tr>
-            <th style={{ maxWidth: '25px', padding: '5px', textAlign: 'right' }}>Place</th>
-            <th style={{ textAlign: 'right' }}>Bib</th>
-            <th style={{ textAlign: 'left' }}>Name</th>
-            <th style={{ textAlign: 'right' }}>Time</th>
+            <th className={'table table__header'} style={{ maxWidth: '25px', padding: '5px', textAlign: 'right' }}>Place</th>
+            <th className={'table table__header'} style={{ textAlign: 'right' }}>Bib</th>
+            <th className={'table table__header'} style={{ textAlign: 'left' }}>Name</th>
+            <th className={'table table__header'} style={{ textAlign: 'right' }}>Time</th>
             {paceHeader}
             {chipHeader}
-            <th>Cat</th>
-            <th>Age</th>
+            <th className={'table table__header'}>Cat</th>
+            <th className={'table table__header'}>Age</th>
           </tr>
         </thead>
         <tbody>

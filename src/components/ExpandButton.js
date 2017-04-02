@@ -25,9 +25,10 @@ class ExpandButton extends React.Component {
         backgroundColor: 'black',
         border: 0,
         borderRadius: 4,
-        width: '30px',
-        height: '30px',
+        width: '20px',
+        height: '20px',
         color: 'white',
+        fontSize: '12px',
         padding: '0.5em',
         ':hover': {
           backgroundColor: 'red',
@@ -36,7 +37,7 @@ class ExpandButton extends React.Component {
     };
 
     if (this.state.isExpanded) {
-      styles.base.fontSize = '18px';
+      styles.base.fontSize = '12px';
       styles.base.padding = '0px';
     }
 

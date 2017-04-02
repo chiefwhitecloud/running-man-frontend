@@ -70,92 +70,90 @@ body {
   margin-bottom: 10px;
   box-sizing: border-box;
 }
-table a:link {
+.table a:link {
   color: #666;
   text-decoration: none;
 }
-table a:visited {
+.table a:visited {
   color: #666;
   text-decoration: none;
 }
-table a:active,
-table a:hover {
+.table a:active,
+.table a:hover {
   color: #bd5a35;
   text-decoration: underline;
 }
-table {
-  color: #666;
-  text-shadow: 1px 1px 0px #fff;
-  background: #eaebec;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border-collapse: collapse;
-  text-transform: 'uppercase';
+.table {
   width: 100%;
+  color: #666;
+  background: #eaebec;
+  border-collapse: collapse;
   font-size: 14px;
-  font-family: 'monospace';
+  font-family: monospace;
 }
-table th {
+.table__header {
+  width: auto;
   padding: 21px 25px 22px 25px;
   border-top: 1px solid #fafafa;
   border-bottom: 1px solid #e0e0e0;
-  background: #ededed;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-  background: -moz-linear-gradient(top, #ededed, #ebebeb);
+  background-color: #ededed;
+  background: -webkit-linear-gradient(#ededed, #ebebeb);
+  background: -o-linear-gradient(#ededed, #ebebeb);
+  background: -moz-linear-gradient(#ededed, #ebebeb);
+  background: linear-gradient(#ededed, #ebebeb);
 }
-table th:first-child {
-  text-align: left;
-  padding-left: 20px;
-}
-table tr:first-child th:first-child {
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-top-left-radius: 3px;
-}
-table tr:first-child th:last-child {
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-top-right-radius: 3px;
-}
-table tr {
+.table__row {
   text-align: center;
   padding-left: 20px;
   border-bottom: 1px solid #e0e0e0;
-  border-top: 1px solid #e0e0e0;
   border-collapse: collapse;
 }
-table td:first-child {
-  text-align: left;
-  padding-left: 20px;
-  border-left: 0;
+.table__row:hover {
+  background-color: #f7f7f7;
+  background: -webkit-linear-gradient(#f7f7f7, #fbfbfb);
+  background: -o-linear-gradient(#f7f7f7, #fbfbfb);
+  background: -moz-linear-gradient(#f7f7f7, #fbfbfb);
+  background: linear-gradient(#f7f7f7, #fbfbfb);
 }
-table td {
-  padding: 18px;
+.table__cell {
+  width: auto;
+  text-align: left;
+  border-left: 0;
+  padding: 12px;
   background: #ffffff;
 }
-table tr.even td {
-  background: #f6f6f6;
-  background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
-  background: -moz-linear-gradient(top, #f8f8f8, #f6f6f6);
+.table__cell--even {
+  background-color: #fbfbfb;
+  background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
+  background: -o-linear-gradient(#fbfbfb, #f8f8f8);
+  background: -moz-linear-gradient(#fbfbfb, #f8f8f8);
+  background: linear-gradient(#fbfbfb, #f8f8f8);
 }
-table tr:last-child td {
-  border-bottom: 0;
+.table__cell--highlighted {
+  background-color: #f8f8f8;
+  background: -webkit-linear-gradient(#f8f8f8, #f6f6f6);
+  background: -o-linear-gradient(#f8f8f8, #f6f6f6);
+  background: -moz-linear-gradient(#f8f8f8, #f6f6f6);
+  background: linear-gradient(#f8f8f8, #f6f6f6);
 }
-table tr:last-child td:first-child {
-  -moz-border-radius-bottomleft: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  border-bottom-left-radius: 3px;
+.table--fullresults {
+  text-transform: uppercase;
 }
-table tr:last-child td:last-child {
-  -moz-border-radius-bottomright: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  border-bottom-right-radius: 3px;
+.table--fullresults .table__cell--highlighted {
+  background-color: #f9f2b2;
+  background: -webkit-linear-gradient(#f9f2b2, #f5ea83);
+  background: -o-linear-gradient(#f9f2b2, #f5ea83);
+  background: -moz-linear-gradient(#f9f2b2, #f5ea83);
+  background: linear-gradient(#f9f2b2, #f5ea83);
 }
-table tr:hover td {
-  background: #f7f7f7;
-  background: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#fbfbfb));
-  background: -moz-linear-gradient(top, #f7f7f7, #fbfbfb);
+.table--racer-results .table__header {
+  padding: 10px;
+  text-align: left;
+}
+.table--racer-results .table__cell--race-group-name {
+  font-size: 30px;
+  font-family: sans-serif;
+  padding: 30px 0px 12px 0px;
 }
 .tab-content {
   background-color: #f7f7f7;

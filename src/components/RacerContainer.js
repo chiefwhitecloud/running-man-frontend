@@ -7,7 +7,7 @@ import { getRacer, doRequests, getRaceGroups } from './FetchData';
 import { GetRacesSortedRaceGroup, GetRaceMapByYear } from './../RaceFeedConverter';
 
 export default class RacerContainer extends React.Component {
-  constructor(props, context) {
+  constructor(props) {
     super(props);
     this.racer = {};
     this.racerProfile = {};
@@ -88,13 +88,13 @@ export default class RacerContainer extends React.Component {
           const expandedItem = this.state.expandedResults.find(expandedId => expandedId === race.id);
 
           races.push(
-            <tr key={race.id}>
-              <td>{race.date}</td>
-              <td><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
-              <td>{foundResult.position}</td>
-              <td>{foundResult.time}</td>
-              <td>{foundResult.pace}</td>
-              <td style={{ textAlign: 'right' }}>
+            <tr className="table table__row" key={race.id}>
+              <td className="table table__cell">{race.date}</td>
+              <td className="table table__cell"><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
+              <td className="table table__cell">{foundResult.position}</td>
+              <td className="table table__cell">{foundResult.time}</td>
+              <td className="table table__cell">{foundResult.pace}</td>
+              <td className="table table__cell" style={{ textAlign: 'right' }}>
                 <ExpandButton handleClick={this.handleRaceResultExpanded} raceId={race.id} />
               </td>
             </tr>);
@@ -102,7 +102,7 @@ export default class RacerContainer extends React.Component {
           if (expandedItem !== undefined) {
             races.push(
               <tr key={`expanded${race.id}`}>
-                <td colSpan="6">
+                <td className="table table__cell" colSpan="6">
                   <RacerResult racerResult={foundResult} race={race} />
                 </td>
               </tr>);
@@ -110,14 +110,21 @@ export default class RacerContainer extends React.Component {
         });
 
         raceGroups.push(
-          <div key={raceGroupItem.raceGroup.id}>
-            <div>{raceGroupItem.raceGroup.name}</div>
-            <table style={{ width: '100%' }}>
-              <tbody>
-                {races}
-              </tbody>
-            </table>
-          </div>);
+          <tr className="table table__row" key={`raceGroup-${raceGroupItem.raceGroup.id}`}>
+            <td className="table table__cell table__cell--race-group-name" colSpan="6">{raceGroupItem.raceGroup.name}</td>
+          </tr>);
+
+        raceGroups.push(
+          <tr className="table table__row" key={`raceGroupHeader-${raceGroupItem.raceGroup.id}`}>
+            <td className="table table__header">Date</td>
+            <td className="table table__header">Race Name</td>
+            <td className="table table__header">Place</td>
+            <td className="table table__header">Time</td>
+            <td className="table table__header">Pace</td>
+            <td className="table table__header">&nbsp;</td>
+          </tr>);
+
+        races.map(race => raceGroups.push(race));
       });
     }
 
@@ -125,9 +132,13 @@ export default class RacerContainer extends React.Component {
       return <div>Loading</div>;
     }
 
-    return (<div style={{ fontFamily: 'monospace', fontSize: '14px' }}>
+    return (<div>
       <RacerDetail name={this.state.racerProfile.name} />
-      {raceGroups}
+      <table className="table table--racer-results">
+        <tbody>
+          {raceGroups}
+        </tbody>
+      </table>
     </div>);
   }
 }

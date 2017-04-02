@@ -20,13 +20,6 @@ export default class RaceResultTableRow extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.selectedRacerCss = {
-      backgroundColor: '#2196f3',
-      height: 30,
-      ':hover': {
-        background: 'red',
-      },
-    };
   }
   shouldComponentUpdate() {
     return false;
@@ -40,23 +33,35 @@ export default class RaceResultTableRow extends React.Component {
 
     let paceCell = null;
 
-    if (this.props.showChipTime){
-      chipCell = <td style={chipTimeStyle}>{this.props.result.chipTime}</td>;
+    const rowIsEven = this.props.isEvenNumbered ? 'table__cell--even' : '';
+    const rowIsSelected = this.props.selectedRacerId === this.props.result.racerId ? 'table__cell--highlighted' : '';
+    const cellClassName = `table table__cell ${rowIsEven} ${rowIsSelected}`;
+
+    if (this.props.showChipTime) {
+      chipCell = (
+        <td className={cellClassName} style={chipTimeStyle}>
+          {this.props.result.chipTime}
+        </td>
+      );
     }
 
-    if (this.props.showPace){
-      paceCell = <td style={chipTimeStyle}>{this.props.result.pace}</td>;
+    if (this.props.showPace) {
+      paceCell = (
+        <td className={cellClassName} style={chipTimeStyle}>
+          {this.props.result.pace}
+        </td>
+      );
     }
 
-    return (<tr key={this.props.result.racerId.toString()} style={this.props.selectedRacerId == this.props.result.racerId ? this.selectedRacerCss : null}>
-      <td style={PositionRowStyle}>{this.props.result.position}</td>
-      <td style={PositionRowStyle}>{this.props.result.bibNumber}</td>
-      <td style={NameRowStyle}><a href="#" onClick={this.handleClick}>{this.props.result.name}</a> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
-      <td style={TimeRowStyle}>{this.props.result.time}</td>
+    return (<tr className={'table table__row'} key={this.props.result.racerId}>
+      <td className={cellClassName} style={PositionRowStyle}>{this.props.result.position}</td>
+      <td className={cellClassName} style={PositionRowStyle}>{this.props.result.bibNumber}</td>
+      <td className={cellClassName} style={NameRowStyle}><a href="#" onClick={this.handleClick}>{this.props.result.name}</a> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
+      <td className={cellClassName} style={TimeRowStyle}>{this.props.result.time}</td>
       {paceCell}
       {chipCell}
-      <td>{this.props.result.sex} ({this.props.result.sexPosition})</td>
-      <td>{this.props.result.ageCategory} ({this.props.result.ageCategoryPosition})</td>
+      <td className={cellClassName}>{this.props.result.sex} ({this.props.result.sexPosition})</td>
+      <td className={cellClassName}>{this.props.result.ageCategory} ({this.props.result.ageCategoryPosition})</td>
     </tr>);
  }
 }
