@@ -1,0 +1,51 @@
+.round-button {
+	width: 20px;
+	height: 20px;
+	background: white;
+  .border-radius(10px);
+  border: 1px solid #757575;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &::after {
+    content: none;
+    position: absolute;
+    display: block;
+  }
+  &::before {
+    content: none;
+    position: absolute;
+    display: block;
+  }
+
+  &--collapsed::after {
+    content: " ";
+    position: absolute;
+    display: block;
+    background-color: #b0dcff;
+    height: 12px;
+    margin-top: -6px;
+    top: 50%;
+    left: 7px;
+    right: 7px;
+    z-index: 9;
+  }
+  &--collapsed::before, &--expanded::before {
+    content: " ";
+    position: absolute;
+    display: block;
+    background-color: #b0dcff;
+    width: 12px;
+    margin-left: -6px;
+    left: 50%;
+    top: 7px;
+    bottom: 7px;
+    z-index: 9;
+  }
+
+}
+
+.round-button:focus {
+  outline:0;
+}

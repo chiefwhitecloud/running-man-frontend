@@ -1,13 +1,13 @@
 import React from 'react';
 
-const RacerDetail = (props) => (
+const RacerDetail = props => (
   <div>
-    <div>{props.name}</div>
+    <div className={'header header--racer'}>{props.name}</div>
   </div>
 );
 
 RacerDetail.propTypes = {
-  name: React.PropTypes.string.isRequired
+  name: React.PropTypes.string.isRequired,
 };
 
 export default RacerDetail;

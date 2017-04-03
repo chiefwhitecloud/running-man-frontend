@@ -1,7 +1,6 @@
-import Radium from 'radium';
 import React from 'react';
 
-class ExpandButton extends React.Component {
+export default class ExpandButton extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -19,34 +18,11 @@ class ExpandButton extends React.Component {
   }
 
   render() {
-    const styles = {
-      base: {
-        cursor: 'pointer',
-        backgroundColor: 'black',
-        border: 0,
-        borderRadius: 4,
-        width: '20px',
-        height: '20px',
-        color: 'white',
-        fontSize: '12px',
-        padding: '0.5em',
-        ':hover': {
-          backgroundColor: 'red',
-        },
-      },
-    };
-
-    if (this.state.isExpanded) {
-      styles.base.fontSize = '12px';
-      styles.base.padding = '0px';
-    }
+    const modCss = this.state.isExpanded ? 'round-button--expanded' : 'round-button--collapsed';
+    const buttonClassName = `round-button ${modCss}`;
 
     return (
-      <button style={styles.base} onClick={this.handleClick}>
-        { this.state.isExpanded ? String.fromCharCode(9660) : String.fromCharCode(9664) }
-      </button>
+      <button className={buttonClassName} onClick={this.handleClick} />
     );
   }
 }
-
-export default Radium(ExpandButton);

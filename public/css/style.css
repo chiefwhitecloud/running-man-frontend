@@ -2,7 +2,7 @@ html,
 body {
   margin: 0px;
   padding: 0px;
-  font-family: 'sans-serif';
+  font-family: sans-serif;
   font-size: 14px;
   background-color: #ffffff;
 }
@@ -170,4 +170,61 @@ body {
   border-right: 1px solid lightgray;
   border-left: 1px solid lightgray;
   background-color: #f7f7f7;
+}
+.round-button {
+  width: 20px;
+  height: 20px;
+  background: white;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #757575;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.round-button::after {
+  content: none;
+  position: absolute;
+  display: block;
+}
+.round-button::before {
+  content: none;
+  position: absolute;
+  display: block;
+}
+.round-button--collapsed::after {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: #b0dcff;
+  height: 12px;
+  margin-top: -6px;
+  top: 50%;
+  left: 7px;
+  right: 7px;
+  z-index: 9;
+}
+.round-button--collapsed::before,
+.round-button--expanded::before {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: #b0dcff;
+  width: 12px;
+  margin-left: -6px;
+  left: 50%;
+  top: 7px;
+  bottom: 7px;
+  z-index: 9;
+}
+.round-button:focus {
+  outline: 0;
+}
+.header--racer {
+  font-size: 40px;
+  margin-top: 20px;
 }
