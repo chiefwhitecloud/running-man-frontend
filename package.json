@@ -32,7 +32,6 @@
   "dependencies": {
     "body-parser": "1.X",
     "express": "4.X",
-    "radium": "^0.18.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-router": "^2.8.1"
