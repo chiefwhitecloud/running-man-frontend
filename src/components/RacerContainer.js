@@ -88,13 +88,13 @@ export default class RacerContainer extends React.Component {
           const expandedItem = this.state.expandedResults.find(expandedId => expandedId === race.id);
 
           races.push(
-            <tr className="table table__row" key={race.id}>
-              <td className="table table__cell">{race.date}</td>
-              <td className="table table__cell"><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
-              <td className="table table__cell">{foundResult.position}</td>
-              <td className="table table__cell">{foundResult.time}</td>
-              <td className="table table__cell">{foundResult.pace}</td>
-              <td className="table table__cell" style={{ textAlign: 'right' }}>
+            <tr className="table__row" key={race.id}>
+              <td className="table__cell">{race.date}</td>
+              <td className="table__cell"><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
+              <td className="table__cell">{foundResult.position}</td>
+              <td className="table__cell">{foundResult.time}</td>
+              <td className="table__cell">{foundResult.pace}</td>
+              <td className="table__cell" style={{ textAlign: 'right' }}>
                 <ExpandButton handleClick={this.handleRaceResultExpanded} raceId={race.id} />
               </td>
             </tr>);
@@ -102,7 +102,7 @@ export default class RacerContainer extends React.Component {
           if (expandedItem !== undefined) {
             races.push(
               <tr key={`expanded${race.id}`}>
-                <td className="table table__cell" colSpan="6">
+                <td className="table__cell" colSpan="6">
                   <RacerResult racerResult={foundResult} race={race} />
                 </td>
               </tr>);
@@ -110,18 +110,18 @@ export default class RacerContainer extends React.Component {
         });
 
         raceGroups.push(
-          <tr className="table table__row" key={`raceGroup-${raceGroupItem.raceGroup.id}`}>
-            <td className="table table__cell table__cell--race-group-name" colSpan="6">{raceGroupItem.raceGroup.name}</td>
+          <tr className="table__row" key={`raceGroup-${raceGroupItem.raceGroup.id}`}>
+            <td className="table__cell table__cell--race-group-name" colSpan="6">{raceGroupItem.raceGroup.name}</td>
           </tr>);
 
         raceGroups.push(
-          <tr className="table table__row" key={`raceGroupHeader-${raceGroupItem.raceGroup.id}`}>
-            <td className="table table__header">Date</td>
-            <td className="table table__header">Race Name</td>
-            <td className="table table__header">Place</td>
-            <td className="table table__header">Time</td>
-            <td className="table table__header">Pace</td>
-            <td className="table table__header">&nbsp;</td>
+          <tr className="table__row" key={`raceGroupHeader-${raceGroupItem.raceGroup.id}`}>
+            <td className="table__header">Date</td>
+            <td className="table__header">Race Name</td>
+            <td className="table__header">Place</td>
+            <td className="table__header">Time</td>
+            <td className="table__header">Pace</td>
+            <td className="table__header">&nbsp;</td>
           </tr>);
 
         races.map(race => raceGroups.push(race));

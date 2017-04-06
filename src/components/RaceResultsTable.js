@@ -15,12 +15,12 @@ class RaceResultsTable extends React.Component {
 
     if (this.props.results[0] && this.props.results[0].chipTime) {
       // display the chip time for the row.
-      chipHeader = <th className={'table table__header'} style={{textAlign: 'right'}}>Chip</th>;
+      chipHeader = <th className={'table__header'} style={{textAlign: 'right'}}>Chip</th>;
     }
 
     if (this.props.results[0] && this.props.results[0].pace) {
       // display the chip time for the row.
-      paceHeader = <th className={'table table__header'} style={{textAlign: 'right'}}>Pace</th>;
+      paceHeader = <th className={'table__header'} style={{textAlign: 'right'}}>Pace</th>;
     }
 
     const results = this.props.results.map((result, index) =>
@@ -39,14 +39,14 @@ class RaceResultsTable extends React.Component {
       <table className={'table table--fullresults'}>
         <thead style={{ fontWeight: 'bold' }}>
           <tr>
-            <th className={'table table__header'} style={{ maxWidth: '25px', padding: '5px', textAlign: 'right' }}>Place</th>
-            <th className={'table table__header'} style={{ textAlign: 'right' }}>Bib</th>
-            <th className={'table table__header'} style={{ textAlign: 'left' }}>Name</th>
-            <th className={'table table__header'} style={{ textAlign: 'right' }}>Time</th>
+            <th className={'table__header'} style={{ maxWidth: '25px', padding: '5px', textAlign: 'right' }}>Place</th>
+            <th className={'table__header'} style={{ textAlign: 'right' }}>Bib</th>
+            <th className={'table__header'} style={{ textAlign: 'left' }}>Name</th>
+            <th className={'table__header'} style={{ textAlign: 'right' }}>Time</th>
             {paceHeader}
             {chipHeader}
-            <th className={'table table__header'}>Cat</th>
-            <th className={'table table__header'}>Age</th>
+            <th className={'table__header'}>Cat</th>
+            <th className={'table__header'}>Age</th>
           </tr>
         </thead>
         <tbody>

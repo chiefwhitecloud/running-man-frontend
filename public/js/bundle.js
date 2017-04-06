@@ -35862,7 +35862,7 @@ var RaceResultsTable = function (_React$Component) {
         // display the chip time for the row.
         chipHeader = _react2.default.createElement(
           'th',
-          { className: 'table table__header', style: { textAlign: 'right' } },
+          { className: 'table__header', style: { textAlign: 'right' } },
           'Chip'
         );
       }
@@ -35871,7 +35871,7 @@ var RaceResultsTable = function (_React$Component) {
         // display the chip time for the row.
         paceHeader = _react2.default.createElement(
           'th',
-          { className: 'table table__header', style: { textAlign: 'right' } },
+          { className: 'table__header', style: { textAlign: 'right' } },
           'Pace'
         );
       }
@@ -35902,34 +35902,34 @@ var RaceResultsTable = function (_React$Component) {
               null,
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header', style: { maxWidth: '25px', padding: '5px', textAlign: 'right' } },
+                { className: 'table__header', style: { maxWidth: '25px', padding: '5px', textAlign: 'right' } },
                 'Place'
               ),
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header', style: { textAlign: 'right' } },
+                { className: 'table__header', style: { textAlign: 'right' } },
                 'Bib'
               ),
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header', style: { textAlign: 'left' } },
+                { className: 'table__header', style: { textAlign: 'left' } },
                 'Name'
               ),
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header', style: { textAlign: 'right' } },
+                { className: 'table__header', style: { textAlign: 'right' } },
                 'Time'
               ),
               paceHeader,
               chipHeader,
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header' },
+                { className: 'table__header' },
                 'Cat'
               ),
               _react2.default.createElement(
                 'th',
-                { className: 'table table__header' },
+                { className: 'table__header' },
                 'Age'
               )
             )
@@ -36022,7 +36022,7 @@ var RaceResultTableRow = function (_React$Component) {
 
       var rowIsEven = this.props.isEvenNumbered ? 'table__cell--even' : '';
       var rowIsSelected = this.props.selectedRacerId === this.props.result.racerId ? 'table__cell--highlighted' : '';
-      var cellClassName = 'table table__cell ' + rowIsEven + ' ' + rowIsSelected;
+      var cellClassName = 'table__cell ' + rowIsEven + ' ' + rowIsSelected;
 
       if (this.props.showChipTime) {
         chipCell = _react2.default.createElement(
@@ -36042,7 +36042,7 @@ var RaceResultTableRow = function (_React$Component) {
 
       return _react2.default.createElement(
         'tr',
-        { className: 'table table__row', key: this.props.result.racerId },
+        { className: 'table__row', key: this.props.result.racerId },
         _react2.default.createElement(
           'td',
           { className: cellClassName, style: PositionRowStyle },
@@ -36248,15 +36248,15 @@ var RacerContainer = function (_React$Component) {
 
             races.push(_react2.default.createElement(
               'tr',
-              { className: 'table table__row', key: race.id },
+              { className: 'table__row', key: race.id },
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell' },
+                { className: 'table__cell' },
                 race.date
               ),
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell' },
+                { className: 'table__cell' },
                 _react2.default.createElement(
                   'a',
                   { href: '#', onClick: function onClick(evt) {
@@ -36267,22 +36267,22 @@ var RacerContainer = function (_React$Component) {
               ),
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell' },
+                { className: 'table__cell' },
                 foundResult.position
               ),
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell' },
+                { className: 'table__cell' },
                 foundResult.time
               ),
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell' },
+                { className: 'table__cell' },
                 foundResult.pace
               ),
               _react2.default.createElement(
                 'td',
-                { className: 'table table__cell', style: { textAlign: 'right' } },
+                { className: 'table__cell', style: { textAlign: 'right' } },
                 _react2.default.createElement(_ExpandButton2.default, { handleClick: _this3.handleRaceResultExpanded, raceId: race.id })
               )
             ));
@@ -36293,7 +36293,7 @@ var RacerContainer = function (_React$Component) {
                 { key: 'expanded' + race.id },
                 _react2.default.createElement(
                   'td',
-                  { className: 'table table__cell', colSpan: '6' },
+                  { className: 'table__cell', colSpan: '6' },
                   _react2.default.createElement(_RacerResult2.default, { racerResult: foundResult, race: race })
                 )
               ));
@@ -36302,45 +36302,45 @@ var RacerContainer = function (_React$Component) {
 
           raceGroups.push(_react2.default.createElement(
             'tr',
-            { className: 'table table__row', key: 'raceGroup-' + raceGroupItem.raceGroup.id },
+            { className: 'table__row', key: 'raceGroup-' + raceGroupItem.raceGroup.id },
             _react2.default.createElement(
               'td',
-              { className: 'table table__cell table__cell--race-group-name', colSpan: '6' },
+              { className: 'table__cell table__cell--race-group-name', colSpan: '6' },
               raceGroupItem.raceGroup.name
             )
           ));
 
           raceGroups.push(_react2.default.createElement(
             'tr',
-            { className: 'table table__row', key: 'raceGroupHeader-' + raceGroupItem.raceGroup.id },
+            { className: 'table__row', key: 'raceGroupHeader-' + raceGroupItem.raceGroup.id },
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               'Date'
             ),
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               'Race Name'
             ),
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               'Place'
             ),
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               'Time'
             ),
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               'Pace'
             ),
             _react2.default.createElement(
               'td',
-              { className: 'table table__header' },
+              { className: 'table__header' },
               '\xA0'
             )
           ));

@@ -35,7 +35,7 @@ export default class RaceResultTableRow extends React.Component {
 
     const rowIsEven = this.props.isEvenNumbered ? 'table__cell--even' : '';
     const rowIsSelected = this.props.selectedRacerId === this.props.result.racerId ? 'table__cell--highlighted' : '';
-    const cellClassName = `table table__cell ${rowIsEven} ${rowIsSelected}`;
+    const cellClassName = `table__cell ${rowIsEven} ${rowIsSelected}`;
 
     if (this.props.showChipTime) {
       chipCell = (
@@ -53,7 +53,7 @@ export default class RaceResultTableRow extends React.Component {
       );
     }
 
-    return (<tr className={'table table__row'} key={this.props.result.racerId}>
+    return (<tr className={'table__row'} key={this.props.result.racerId}>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.position}</td>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.bibNumber}</td>
       <td className={cellClassName} style={NameRowStyle}><a href="#" onClick={this.handleClick}>{this.props.result.name}</a> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
