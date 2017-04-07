@@ -66,10 +66,16 @@ export default class extends React.Component {
       } else if (this.state.filter.startsWith('year-')) {
         const year = this.state.filter.substr(-4);
         races = races.filter(race => race.date.startsWith(year));
+      } else if (this.state.filter.startsWith('http')) {
+        races = races.filter(race => race.raceGroup === this.state.filter);
       }
 
       return (<div>
-        <FilterComponent years={[...mapByYears.keys()]} onSelectionChange={this.onFilterChange} />
+        <FilterComponent
+          years={[...mapByYears.keys()]}
+          raceGroups={this.state.raceGroups}
+          onSelectionChange={this.onFilterChange}
+        />
         <RaceList
           races={races}
           raceGroups={this.state.raceGroups}

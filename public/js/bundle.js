@@ -34445,6 +34445,8 @@ var _class = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       if (this.state.isFetching) {
         return _react2.default.createElement(_Loading2.default, null);
       } else if (this.state.races != null && this.state.raceGroups != null) {
@@ -34461,12 +34463,20 @@ var _class = function (_React$Component) {
           races = races.filter(function (race) {
             return race.date.startsWith(year);
           });
+        } else if (this.state.filter.startsWith('http')) {
+          races = races.filter(function (race) {
+            return race.raceGroup === _this2.state.filter;
+          });
         }
 
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_RaceListFilterComponent2.default, { years: [].concat(_toConsumableArray(mapByYears.keys())), onSelectionChange: this.onFilterChange }),
+          _react2.default.createElement(_RaceListFilterComponent2.default, {
+            years: [].concat(_toConsumableArray(mapByYears.keys())),
+            raceGroups: this.state.raceGroups,
+            onSelectionChange: this.onFilterChange
+          }),
           _react2.default.createElement(_RaceList2.default, {
             races: races,
             raceGroups: this.state.raceGroups,
@@ -34534,6 +34544,13 @@ var _class = function (_React$Component) {
           year
         );
       });
+      var raceGroups = this.props.raceGroups.map(function (raceGroup) {
+        return _react2.default.createElement(
+          'option',
+          { value: '' + raceGroup.self, key: raceGroup.id },
+          raceGroup.name
+        );
+      });
 
       return _react2.default.createElement(
         'div',
@@ -34556,7 +34573,8 @@ var _class = function (_React$Component) {
             { value: 'noracegroup' },
             'No Race Group Assigned'
           ),
-          years
+          years,
+          raceGroups
         )
       );
     }
@@ -36996,7 +37014,7 @@ var TabPane = function TabPane(_ref) {
 };
 
 TabPane.propTypes = {
-  label: _react2.default.PropTypes.array.isRequired
+  label: _react2.default.PropTypes.string.isRequired
 };
 
 exports.default = TabPane;

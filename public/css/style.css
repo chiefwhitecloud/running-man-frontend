@@ -162,6 +162,7 @@ body {
   border: 0px;
   padding: 10px;
   margin: 0px;
+  cursor: pointer;
 }
 .tab__header:focus {
   outline: 0;

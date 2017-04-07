@@ -7,7 +7,7 @@ const TabPane = ({ label, children }) => (
 );
 
 TabPane.propTypes = {
-  label: React.PropTypes.array.isRequired,
+  label: React.PropTypes.string.isRequired,
 };
 
 export default TabPane;

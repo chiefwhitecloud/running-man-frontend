@@ -14,6 +14,7 @@ export default class extends React.Component {
 
   render() {
     const years = this.props.years.map(year => <option value={`year-${year}`} key={year}>{year}</option>);
+    const raceGroups = this.props.raceGroups.map(raceGroup => <option value={`${raceGroup.self}`} key={raceGroup.id}>{raceGroup.name}</option>);
 
     return (
       <div className="admin-racelist-filter">
@@ -22,6 +23,7 @@ export default class extends React.Component {
           <option value="all">All</option>
           <option value="noracegroup">No Race Group Assigned</option>
           {years}
+          {raceGroups}
         </select>
       </div>
     );
