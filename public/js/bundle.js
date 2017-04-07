@@ -36956,8 +36956,8 @@ var _class = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var active = this.props.isActive ? 'selected' : '';
-      var cssClasses = 'tab-header ' + active;
+      var active = this.props.isActive ? 'tab__header--selected' : '';
+      var cssClasses = 'tab__header ' + active;
 
       return _react2.default.createElement(
         'button',
@@ -37071,7 +37071,7 @@ var _class = function (_React$Component) {
     value: function renderContent() {
       return _react2.default.createElement(
         'div',
-        { className: 'tab-content' },
+        { className: 'tab__content' },
         this.props.children[this.state.selected]
       );
     }

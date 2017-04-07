@@ -1,5 +1,8 @@
 .tabs {
 
+}
+
+.tab {
   &__content{
     background-color: #f7f7f7;
     padding: 40px;
@@ -10,6 +13,9 @@
     border: 0px;
     padding: 10px;
     margin: 0px;
+    &:focus {
+      outline:0;
+    }
   }
 
   &__header--selected {
@@ -18,5 +24,4 @@
     border-left: 1px solid lightgray;
     background-color: #f7f7f7;
   }
-
 }
