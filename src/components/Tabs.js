@@ -37,7 +37,7 @@ export default class extends React.Component {
 
   renderContent() {
     return (
-      <div className="tab-content">
+      <div className="tab__content">
         {this.props.children[this.state.selected]}
       </div>
     );

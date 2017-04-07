@@ -12,8 +12,8 @@ export default class extends React.Component {
   }
 
   render() {
-    const active = this.props.isActive ? 'selected' : '';
-    const cssClasses = `tab-header ${active}`;
+    const active = this.props.isActive ? 'tab__header--selected' : '';
+    const cssClasses = `tab__header ${active}`;
 
     return (
       <button onClick={this.handleClick} className={cssClasses} >
