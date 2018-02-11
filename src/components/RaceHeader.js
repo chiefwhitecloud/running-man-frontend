@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { LongDateFormat, Year } from './../DateFormatter';
 
 const RaceHeader = (props) => {
@@ -42,8 +44,8 @@ const RaceHeader = (props) => {
 };
 
 RaceHeader.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  date: React.PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
 };
 
 export default RaceHeader;

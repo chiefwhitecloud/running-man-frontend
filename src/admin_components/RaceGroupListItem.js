@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const RaceGroupListItem = ({ raceGroup, onDelete, onEnableEdit }) => (
   <tr>
@@ -11,13 +12,13 @@ const RaceGroupListItem = ({ raceGroup, onDelete, onEnableEdit }) => (
 );
 
 RaceGroupListItem.propTypes = {
-  raceGroup: React.PropTypes.shape({
-    id: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    distance: React.PropTypes.string.isRequired,
+  raceGroup: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    distance: PropTypes.string.isRequired,
   }).isRequired,
-  onDelete: React.PropTypes.func.isRequired,
-  onEnableEdit: React.PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEnableEdit: PropTypes.func.isRequired,
 };
 
 export default RaceGroupListItem;

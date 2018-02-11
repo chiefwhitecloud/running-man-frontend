@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class FilterBar extends React.Component {
   constructor(props) {
@@ -109,8 +110,8 @@ export default class FilterBar extends React.Component {
 }
 
 FilterBar.propTypes = {
-  selectedAgeCategoryKeys: React.PropTypes.array,
-  handle: React.PropTypes.func.isRequired,
+  selectedAgeCategoryKeys: PropTypes.array,
+  handle: PropTypes.func.isRequired,
   ageCategories: function(props, propName) {
     const m = props[propName];
     if (!m) { return new Error(`Required property ${propName} not supplied`); }

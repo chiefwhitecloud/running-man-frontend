@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 
 export default class ImportRaceComponent extends React.Component {
   constructor(props) {
@@ -35,9 +35,9 @@ export default class ImportRaceComponent extends React.Component {
 
 
 ImportRaceComponent.propTypes = {
-  isSubmitted: React.PropTypes.bool.isRequired,
-  onSubmit: React.PropTypes.func.isRequired,
-  onReset: React.PropTypes.func.isRequired,
-  importStatus: React.PropTypes.string,
-  errorMessage: React.PropTypes.string,
+  isSubmitted: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
+  importStatus: PropTypes.string,
+  errorMessage: PropTypes.string,
 }

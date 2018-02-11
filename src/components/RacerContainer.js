@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import RacerResult from './RacerResult';
@@ -142,5 +143,5 @@ export default class RacerContainer extends React.Component {
 }
 
 RacerContainer.contextTypes = {
-  router: React.PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
 };

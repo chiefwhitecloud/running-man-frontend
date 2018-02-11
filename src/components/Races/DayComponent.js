@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { DayOfMonth, ShortMonthName, Year } from './../../DateFormatter'
 
 const DayComponent = ({ raceDate, children }) => {
@@ -12,6 +14,6 @@ const DayComponent = ({ raceDate, children }) => {
     <div style={{clear:"both"}} />
   </div>;
 };
-DayComponent.propTypes = { raceDate: React.PropTypes.string };
+DayComponent.propTypes = { raceDate: PropTypes.string };
 
 export default DayComponent;

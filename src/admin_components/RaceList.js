@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import RaceListItem from './RaceListItem';
 
 const RaceList = ({ races, raceGroups, onRaceGroupChange, onRaceDelete }) => (
@@ -13,14 +15,14 @@ const RaceList = ({ races, raceGroups, onRaceGroupChange, onRaceDelete }) => (
       </thead>
       <tbody>
         {
-        races.map(race => (
-          <RaceListItem
-            key={race.id}
-            race={race}
-            raceGroups={raceGroups}
-            onRaceGroupChange={onRaceGroupChange}
-            onRaceDelete={onRaceDelete}
-          />))
+          races.map(race => (
+            <RaceListItem
+              key={race.id}
+              race={race}
+              raceGroups={raceGroups}
+              onRaceGroupChange={onRaceGroupChange}
+              onRaceDelete={onRaceDelete}
+            />))
         }
       </tbody>
     </table>
@@ -28,10 +30,10 @@ const RaceList = ({ races, raceGroups, onRaceGroupChange, onRaceDelete }) => (
 );
 
 RaceList.propTypes = {
-  races: React.PropTypes.array.isRequired,
-  raceGroups: React.PropTypes.array.isRequired,
-  onRaceGroupChange: React.PropTypes.func.isRequired,
-  onRaceDelete: React.PropTypes.func.isRequired,
+  races: PropTypes.array.isRequired,
+  raceGroups: PropTypes.array.isRequired,
+  onRaceGroupChange: PropTypes.func.isRequired,
+  onRaceDelete: PropTypes.func.isRequired,
 };
 
 export default RaceList;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import RaceGroupListItem from './RaceGroupListItem';
 import RaceGroupListItemEdit from './RaceGroupListItemEdit';
@@ -36,11 +37,11 @@ const RaceGroupList = ({ raceGroups, onDelete, onEnableEdit, onCancelEdit, onUpd
 );
 
 RaceGroupList.propTypes = {
-  raceGroups: React.PropTypes.array.isRequired,
-  onDelete: React.PropTypes.func.isRequired,
-  onEnableEdit: React.PropTypes.func.isRequired,
-  onCancelEdit: React.PropTypes.func.isRequired,
-  onUpdate: React.PropTypes.func.isRequired,
+  raceGroups: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEnableEdit: PropTypes.func.isRequired,
+  onCancelEdit: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default RaceGroupList;

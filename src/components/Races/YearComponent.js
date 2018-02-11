@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const YearComponent = ({ year }) => {
   return <div style={containerStyle}>
     <div style={yearPositioningStyle}>{year}</div>
   </div>;
 };
-YearComponent.propTypes = { year: React.PropTypes.string.isRequired };
+YearComponent.propTypes = { year: PropTypes.string.isRequired };
 
 const containerStyle = {
   position:"relative",

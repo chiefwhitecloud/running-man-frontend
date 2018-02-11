@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const ImportRaceListItem = ({ url, status }) => (
   <div>
@@ -7,8 +8,8 @@ const ImportRaceListItem = ({ url, status }) => (
 );
 
 ImportRaceListItem.propTypes = {
-  url: React.PropTypes.string.isRequired,
-  status: React.PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 export default ImportRaceListItem;

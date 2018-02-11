@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const RacerDetail = props => (
   <div>
@@ -7,7 +8,7 @@ const RacerDetail = props => (
 );
 
 RacerDetail.propTypes = {
-  name: React.PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default RacerDetail;

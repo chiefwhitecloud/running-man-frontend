@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const TabPane = ({ label, children }) => (
   <div>
@@ -7,7 +8,7 @@ const TabPane = ({ label, children }) => (
 );
 
 TabPane.propTypes = {
-  label: React.PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 export default TabPane;

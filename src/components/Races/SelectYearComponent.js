@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const SelectYearComponent = ({years}) => {
   return <div>
@@ -7,6 +8,6 @@ const SelectYearComponent = ({years}) => {
     })}
   </div>;
 };
-SelectYearComponent.propTypes = { years: React.PropTypes.array };
+SelectYearComponent.propTypes = { years: PropTypes.array };
 
 export default SelectYearComponent;

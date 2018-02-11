@@ -8,13 +8,13 @@ import AdminApp from '../AdminApp';
 
 const containerStyle = {
   maxWidth: '1200px',
-  margin: '0px auto',
+  margin: '40px auto 0px auto',
 };
 
 const App = () => (
   <div>
     <Switch>
-      <Route exact path={'/'} component={() => <div><HeroComponent /><div style={Object.assign(containerStyle, { marginTop: '40px' })}><RaceListContainer /></div></div>} />
+      <Route exact path={'/'} component={() => <div><HeroComponent /><div style={containerStyle}><RaceListContainer /></div></div>} />
       <Route path={'/admin'} component={AdminApp} />
       <Route path={'*'} component={() => <div><TopNavBar /><Main /></div>} />
     </Switch>

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class RaceGroupListItemEdit extends React.Component {
   constructor(props) {
@@ -70,13 +71,13 @@ export default class RaceGroupListItemEdit extends React.Component {
 }
 
 RaceGroupListItemEdit.propTypes = {
-  raceGroup: React.PropTypes.shape({
-    self: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    distance: React.PropTypes.string.isRequired,
-    distanceUnit: React.PropTypes.string.isRequired,
+  raceGroup: PropTypes.shape({
+    self: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    distance: PropTypes.string.isRequired,
+    distanceUnit: PropTypes.string.isRequired,
   }).isRequired,
-  onCancelEdit: React.PropTypes.func.isRequired,
-  onUpdateRaceGroup: React.PropTypes.func.isRequired,
+  onCancelEdit: PropTypes.func.isRequired,
+  onUpdateRaceGroup: PropTypes.func.isRequired,
 };
