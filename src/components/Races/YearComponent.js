@@ -5,7 +5,7 @@ const YearComponent = ({ year }) => {
     <div style={yearPositioningStyle}>{year}</div>
   </div>;
 };
-YearComponent.propTypes = { year: React.PropTypes.string };
+YearComponent.propTypes = { year: React.PropTypes.string.isRequired };
 
 const containerStyle = {
   position:"relative",

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import RacerResult from './RacerResult';
 import RacerDetail from './RacerDetail';
 import ExpandButton from './ExpandButton';
@@ -34,10 +36,6 @@ export default class RacerContainer extends React.Component {
     }
   }
 
-  handleRaceClick(raceId) {
-    this.context.router.push(`/race/${raceId}`);
-  }
-
   handleRaceResultExpanded(raceId) {
     if (this.state.expandedResults.includes(raceId)) {
       const expanded = this.state.expandedResults.filter(item => item !== raceId);
@@ -54,7 +52,7 @@ export default class RacerContainer extends React.Component {
   }
 
   doRaceFetching(props) {
-    getRacer(props.params.racerId).then((racer) => {
+    getRacer(props.match.params.racerId).then((racer) => {
       this.racer = racer;
       return racer;
     })
@@ -90,7 +88,7 @@ export default class RacerContainer extends React.Component {
           races.push(
             <tr className="table__row" key={race.id}>
               <td className="table__cell">{race.date}</td>
-              <td className="table__cell"><a href="#" onClick={(evt) => { evt.preventDefault(); this.handleRaceClick(race.id); }}>{race.name}</a></td>
+              <td className="table__cell"><Link to={`/race/${race.id}`}>{race.name}</Link></td>
               <td className="table__cell">{foundResult.position}</td>
               <td className="table__cell">{foundResult.time}</td>
               <td className="table__cell">{foundResult.pace}</td>

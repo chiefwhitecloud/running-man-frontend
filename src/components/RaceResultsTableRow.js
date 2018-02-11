@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const PositionRowStyle = {
   textAlign: 'right',
@@ -19,14 +20,9 @@ const chipTimeStyle = {
 export default class RaceResultTableRow extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
   }
   shouldComponentUpdate() {
     return false;
-  }
-  handleClick(e) {
-    e.preventDefault();
-    this.props.handleClick(this.props.result.racerId);
   }
   render() {
     let chipCell = null;
@@ -56,7 +52,7 @@ export default class RaceResultTableRow extends React.Component {
     return (<tr className={'table__row'} key={this.props.result.racerId}>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.position}</td>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.bibNumber}</td>
-      <td className={cellClassName} style={NameRowStyle}><a href="#" onClick={this.handleClick}>{this.props.result.name}</a> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
+      <td className={cellClassName} style={NameRowStyle}><Link to={`/racer/${this.props.result.racerId}`}>{this.props.result.name}</Link> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
       <td className={cellClassName} style={TimeRowStyle}>{this.props.result.time}</td>
       {paceCell}
       {chipCell}

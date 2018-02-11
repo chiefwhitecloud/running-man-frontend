@@ -4,10 +4,6 @@ import RaceResultsTableRow from './RaceResultsTableRow';
 class RaceResultsTable extends React.Component {
   constructor(props) {
     super(props);
-    this.handleRowClick = this.handleRowClick.bind(this);
-  }
-  handleRowClick(evt) {
-    this.context.router.push(`/racer/${evt}`);
   }
   render() {
     let chipHeader = null;
@@ -28,7 +24,6 @@ class RaceResultsTable extends React.Component {
         key={result.racerId.toString()}
         result={result}
         selectedRacerId={this.props.selectedRacerId}
-        handleClick={this.handleRowClick}
         showChipTime={chipHeader != null}
         showPace={paceHeader != null}
         isEvenNumbered={index % 2 === 0}

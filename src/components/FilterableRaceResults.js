@@ -20,7 +20,7 @@ export default class FilterableRaceResults extends React.Component {
       selectedAgeCategoryKeys: [],
     };
     let raceMeta;
-    xhr.get(`/feed/race/${this.props.params.raceId}`).then((race) => {
+    xhr.get(`/feed/race/${props.match.params.raceId}`).then((race) => {
       raceMeta = race;
       const requests = [race["results"]];
       if (race['raceGroup'] !== undefined) {
