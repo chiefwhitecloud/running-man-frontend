@@ -1,5 +1,4 @@
 import React from 'react';
-import RaceResultsTable from './RaceResultsTable';
 import RaceHeader from './RaceHeader';
 import FilterBar from './FilterBar';
 import Loading from './Loading';
@@ -7,6 +6,8 @@ import SelectedFilters from './SelectedFilters';
 import xhr from './../xhr';
 import { GetPace } from './../RaceTimeConverter';
 import { doRequests } from './FetchData';
+import ScrollPosition from './ScrollPosition';
+import SimpleResults from './SimpleResults';
 
 export default class FilterableRaceResults extends React.Component {
   constructor(props) {
@@ -107,7 +108,13 @@ export default class FilterableRaceResults extends React.Component {
           selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys}
         />
       </RaceHeader>
-      <RaceResultsTable results={this.state.results} />
+      <ScrollPosition
+        itemHeight={42}
+        items={this.state.results}
+        render={(totalHeight, heightOffset, results) => (
+          (<SimpleResults totalHeight={totalHeight} results={results} heightOffset={heightOffset} />)
+        )}
+      />
     </div>);
   }
 }

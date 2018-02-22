@@ -87,13 +87,13 @@ export default class RacerContainer extends React.Component {
           const expandedItem = this.state.expandedResults.find(expandedId => expandedId === race.id);
 
           races.push(
-            <tr className="table__row" key={race.id}>
-              <td className="table__cell">{race.date}</td>
-              <td className="table__cell"><Link to={`/race/${race.id}`}>{race.name}</Link></td>
-              <td className="table__cell">{foundResult.position}</td>
-              <td className="table__cell">{foundResult.time}</td>
-              <td className="table__cell">{foundResult.pace}</td>
-              <td className="table__cell" style={{ textAlign: 'right' }}>
+            <tr className="rrtable__row" key={race.id}>
+              <td className="rrtable__cell">{race.date}</td>
+              <td className="rrtable__cell"><Link to={`/race/${race.id}`}>{race.name}</Link></td>
+              <td className="rrtable__cell">{foundResult.position}</td>
+              <td className="rrtable__cell">{foundResult.time}</td>
+              <td className="rrtable__cell">{foundResult.pace}</td>
+              <td className="rrtable__cell" style={{ textAlign: 'right' }}>
                 <ExpandButton handleClick={this.handleRaceResultExpanded} raceId={race.id} />
               </td>
             </tr>);
@@ -101,7 +101,7 @@ export default class RacerContainer extends React.Component {
           if (expandedItem !== undefined) {
             races.push(
               <tr key={`expanded${race.id}`}>
-                <td className="table__cell" colSpan="6">
+                <td className="rrtable__cell" colSpan="6">
                   <RacerResult racerResult={foundResult} race={race} />
                 </td>
               </tr>);
@@ -109,18 +109,18 @@ export default class RacerContainer extends React.Component {
         });
 
         raceGroups.push(
-          <tr className="table__row" key={`raceGroup-${raceGroupItem.raceGroup.id}`}>
-            <td className="table__cell table__cell--race-group-name" colSpan="6">{raceGroupItem.raceGroup.name}</td>
+          <tr className="rrtable__row" key={`raceGroup-${raceGroupItem.raceGroup.id}`}>
+            <td className="rrtable__cell rrtable__cell--race-group-name" colSpan="6">{raceGroupItem.raceGroup.name}</td>
           </tr>);
 
         raceGroups.push(
-          <tr className="table__row" key={`raceGroupHeader-${raceGroupItem.raceGroup.id}`}>
-            <td className="table__header">Date</td>
-            <td className="table__header">Race Name</td>
-            <td className="table__header">Place</td>
-            <td className="table__header">Time</td>
-            <td className="table__header">Pace</td>
-            <td className="table__header">&nbsp;</td>
+          <tr className="rrtable__row" key={`raceGroupHeader-${raceGroupItem.raceGroup.id}`}>
+            <td className="rrtable__header">Date</td>
+            <td className="rrtable__header">Race Name</td>
+            <td className="rrtable__header">Place</td>
+            <td className="rrtable__header">Time</td>
+            <td className="rrtable__header">Pace</td>
+            <td className="rrtable__header">&nbsp;</td>
           </tr>);
 
         races.map(race => raceGroups.push(race));
@@ -133,7 +133,7 @@ export default class RacerContainer extends React.Component {
 
     return (<div>
       <RacerDetail name={this.state.racerProfile.name} />
-      <table className="table table--racer-results">
+      <table className="rrtable rrtable--racer-results">
         <tbody>
           {raceGroups}
         </tbody>

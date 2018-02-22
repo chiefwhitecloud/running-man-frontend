@@ -18,9 +18,6 @@ const chipTimeStyle = {
 };
 
 export default class RaceResultTableRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   shouldComponentUpdate() {
     return false;
   }
@@ -29,9 +26,9 @@ export default class RaceResultTableRow extends React.Component {
 
     let paceCell = null;
 
-    const rowIsEven = this.props.isEvenNumbered ? 'table__cell--even' : '';
-    const rowIsSelected = this.props.selectedRacerId === this.props.result.racerId ? 'table__cell--highlighted' : '';
-    const cellClassName = `table__cell ${rowIsEven} ${rowIsSelected}`;
+    const rowIsEven = this.props.isEvenNumbered ? 'rrtable__cell--even' : '';
+    const rowIsSelected = this.props.selectedRacerId === this.props.result.racerId ? 'rrtable__cell--highlighted' : '';
+    const cellClassName = `rrtable__cell ${rowIsEven} ${rowIsSelected}`;
 
     if (this.props.showChipTime) {
       chipCell = (
@@ -49,7 +46,7 @@ export default class RaceResultTableRow extends React.Component {
       );
     }
 
-    return (<tr className={'table__row'} key={this.props.result.racerId}>
+    return (<tr className={'rrtable__row'} key={this.props.result.racerId}>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.position}</td>
       <td className={cellClassName} style={PositionRowStyle}>{this.props.result.bibNumber}</td>
       <td className={cellClassName} style={NameRowStyle}><Link to={`/racer/${this.props.result.racerId}`}>{this.props.result.name}</Link> {this.props.result.club != undefined ? '(' + this.props.result.club + ')' : '' }</td>
