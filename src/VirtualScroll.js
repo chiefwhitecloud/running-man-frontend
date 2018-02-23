@@ -41,10 +41,11 @@ export function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOf
     return [];
   }
 
-  const numOfItemsThatCanBeRendered = GetNumberOfItemsThatFit(heightAvailable, itemHeight);
+  let numOfItemsThatCanBeRendered = GetNumberOfItemsThatFit(heightAvailable, itemHeight);
 
   if (heightOffset === 0) {
     if (itemArray.length <= numOfItemsThatCanBeRendered) {
+      // return all the items
       return itemArray.slice(0, itemArray.length - 1);
     }
 
@@ -53,6 +54,13 @@ export function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOf
 
   // heightOffset is greater than 0... the top of the list is off the page
   const numOfItemsOffThePage = Math.floor(heightOffset / itemHeight);
+
+  if ((heightOffset % itemHeight) > 0) {
+    // didn't divide evenly
+    console.log('here');
+    numOfItemsThatCanBeRendered += 1;
+  }
+
   const startPosition = numOfItemsOffThePage;
   const endPosition = startPosition + (numOfItemsThatCanBeRendered);
 
@@ -87,18 +95,4 @@ export function GetVisibleListitemHeightOffset(elementHeight, elementYFromTopOfW
   }
 
   return offset;
-
-  // the top of the element is off the screen
-  //const remainingElementHeight =
-  //  elementHeight - (Math.round(scrollPositionY) - elementYFromTopOfWindow);
-
-  //if (remainingElementHeight <= windowHeight) {
-  //  return remainingElementHeight >= 0 ? remainingElementHeight : 0;
-  //}
-
-  //if (offset > elementHeight)
-
-
-
-  //return offset;
 }

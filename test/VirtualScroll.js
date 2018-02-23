@@ -66,16 +66,21 @@ describe('Virtual Scroll', () => {
         ['1']);
       assert.deepEqual(GetVisibleItems(items, itemHeight, 30, 0),
         ['1', '2']);
-      assert.deepEqual(GetVisibleItems(items, itemHeight, 40, 10),
-        ['1', '2']);
-      assert.deepEqual(GetVisibleItems(items, itemHeight, 40, 30),
-        ['2', '3', '4']);
       assert.deepEqual(GetVisibleItems(items, itemHeight, 100, 100),
         ['6', '7', '8', '9', '10']);
       assert.deepEqual(GetVisibleItems(items, itemHeight, 60, 140),
         ['8', '9', '10']);
       assert.deepEqual(GetVisibleItems(items, itemHeight, 0, 200),
         []);
+      done();
+    });
+
+    it('should return items that are half visible', (done) => {
+      assert.deepEqual(GetVisibleItems(items, itemHeight, 40, 30),
+        ['2', '3', '4'], 'should display 1/2 of 2, all of 3 and 1/2 of 4');
+
+      assert.deepEqual(GetVisibleItems(items, itemHeight, 40, 10),
+        ['1', '2', '3'], 'should display 1/2 of 1, all of 2 and 1/2 of 3');
       done();
     });
   });

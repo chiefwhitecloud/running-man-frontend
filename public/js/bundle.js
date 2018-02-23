@@ -30059,7 +30059,7 @@ function GetPace(time, distance) {
 }
 
 },{}],398:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -30112,6 +30112,7 @@ function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOffset) {
 
   if (heightOffset === 0) {
     if (itemArray.length <= numOfItemsThatCanBeRendered) {
+      // return all the items
       return itemArray.slice(0, itemArray.length - 1);
     }
 
@@ -30120,6 +30121,13 @@ function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOffset) {
 
   // heightOffset is greater than 0... the top of the list is off the page
   var numOfItemsOffThePage = Math.floor(heightOffset / itemHeight);
+
+  if (heightOffset % itemHeight > 0) {
+    // didn't divide evenly
+    console.log('here');
+    numOfItemsThatCanBeRendered += 1;
+  }
+
   var startPosition = numOfItemsOffThePage;
   var endPosition = startPosition + numOfItemsThatCanBeRendered;
 
@@ -30151,19 +30159,6 @@ function GetVisibleListitemHeightOffset(elementHeight, elementYFromTopOfWindow, 
   }
 
   return offset;
-
-  // the top of the element is off the screen
-  //const remainingElementHeight =
-  //  elementHeight - (Math.round(scrollPositionY) - elementYFromTopOfWindow);
-
-  //if (remainingElementHeight <= windowHeight) {
-  //  return remainingElementHeight >= 0 ? remainingElementHeight : 0;
-  //}
-
-  //if (offset > elementHeight)
-
-
-  //return offset;
 }
 
 },{}],399:[function(require,module,exports){
