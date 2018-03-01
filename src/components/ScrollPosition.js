@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { GetVisibleListitemHeightOffset, GetListHeightAvailableOnScreen, GetVisibleItems } from '../VirtualScroll';
+import { GetNumberOfItemScrolledOutOfView,
+  GetListHeightAvailableOnScreen, GetVisibleItems } from '../VirtualScroll';
 
 const debounce = (fn, time) => {
   let timeout;
 
-  return function() {
+  return function () {
     const functionCall = () => fn.apply(this, arguments);
 
     clearTimeout(timeout);
@@ -47,8 +48,10 @@ export default class ScrollPosition extends React.Component {
     const availableHeight = GetListHeightAvailableOnScreen(elementHeight,
       this.domRect.top, window.scrollY, this.windowHeight);
 
-    const heightOffset = GetVisibleListitemHeightOffset(elementHeight,
-      this.domRect.top, window.scrollY, this.windowHeight);
+    const numItemsScrolled = GetNumberOfItemScrolledOutOfView(elementHeight,
+      this.domRect.top, this.props.itemHeight, window.scrollY);
+
+    const heightOffset = (numItemsScrolled * this.props.itemHeight);
 
     const items = GetVisibleItems(this.props.items,
       this.props.itemHeight, availableHeight, heightOffset);

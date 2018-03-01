@@ -30059,15 +30059,25 @@ function GetPace(time, distance) {
 }
 
 },{}],398:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.GetNumberOfItemScrolledOutOfView = GetNumberOfItemScrolledOutOfView;
 exports.GetListHeightAvailableOnScreen = GetListHeightAvailableOnScreen;
 exports.GetNumberOfItemsThatFit = GetNumberOfItemsThatFit;
 exports.GetVisibleItems = GetVisibleItems;
-exports.GetVisibleListitemHeightOffset = GetVisibleListitemHeightOffset;
+exports.GetOffsetYForElement = GetOffsetYForElement;
+
+// return the array items we can display
+function GetNumberOfItemScrolledOutOfView(elementHeight, elementYFromTopOfWindow, itemHeight, scrollPositionY) {
+  if (elementYFromTopOfWindow - Math.round(scrollPositionY) >= 0) {
+    return 0;
+  }
+
+  return Math.floor((Math.round(scrollPositionY) - elementYFromTopOfWindow) / itemHeight);
+}
 
 // return the number of visible pixels available
 function GetListHeightAvailableOnScreen(elementHeight, elementYFromTopOfWindow, scrollPositionY, windowHeight) {
@@ -30119,12 +30129,11 @@ function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOffset) {
     return itemArray.slice(0, numOfItemsThatCanBeRendered);
   }
 
-  // heightOffset is greater than 0... the top of the list is off the page
+  // heightOffset is greater than 0... the top of the element is off the page
   var numOfItemsOffThePage = Math.floor(heightOffset / itemHeight);
 
   if (heightOffset % itemHeight > 0) {
     // didn't divide evenly
-    console.log('here');
     numOfItemsThatCanBeRendered += 1;
   }
 
@@ -30135,28 +30144,21 @@ function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOffset) {
 }
 
 // calc how far down we need to move the items within the container
-function GetVisibleListitemHeightOffset(elementHeight, elementYFromTopOfWindow, scrollPositionY, windowHeight) {
+function GetOffsetYForElement(elementHeight, elementYFromTopOfWindow, scrollPositionY, windowHeight) {
   if (elementYFromTopOfWindow >= Math.round(scrollPositionY)) {
-    // no offset needed.. the top of the main list element is visible
+    // no offset needed.. the top of the element is visible
     return 0;
   }
 
   var availableHeightForElement = GetListHeightAvailableOnScreen(elementHeight, elementYFromTopOfWindow, scrollPositionY, windowHeight);
 
   if (availableHeightForElement === 0) {
-    // the list is off the visible page.
+    // the element is off the visible page.
     return 0;
   }
 
-  // if the end of the list is visible... lock the offset at its max.
-
+  //this places the offset at the top of the window
   var offset = Math.round(scrollPositionY) - elementYFromTopOfWindow;
-
-  var maxOffset = elementHeight - windowHeight;
-
-  if (offset > maxOffset) {
-    return maxOffset;
-  }
 
   return offset;
 }
@@ -32626,7 +32628,7 @@ var FilterableRaceResults = function (_React$Component) {
           })
         ),
         _react2.default.createElement(_ScrollPosition2.default, {
-          itemHeight: 42,
+          itemHeight: 41,
           items: this.state.results,
           render: function render(totalHeight, heightOffset, results) {
             return _react2.default.createElement(_SimpleResults2.default, { totalHeight: totalHeight, results: results, heightOffset: heightOffset });
@@ -34014,7 +34016,9 @@ var ScrollPosition = function (_React$Component) {
 
       var availableHeight = (0, _VirtualScroll.GetListHeightAvailableOnScreen)(elementHeight, this.domRect.top, window.scrollY, this.windowHeight);
 
-      var heightOffset = (0, _VirtualScroll.GetVisibleListitemHeightOffset)(elementHeight, this.domRect.top, window.scrollY, this.windowHeight);
+      var numItemsScrolled = (0, _VirtualScroll.GetNumberOfItemScrolledOutOfView)(elementHeight, this.domRect.top, this.props.itemHeight, window.scrollY);
+
+      var heightOffset = numItemsScrolled * this.props.itemHeight;
 
       var items = (0, _VirtualScroll.GetVisibleItems)(this.props.items, this.props.itemHeight, availableHeight, heightOffset);
 

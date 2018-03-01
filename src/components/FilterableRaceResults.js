@@ -109,7 +109,7 @@ export default class FilterableRaceResults extends React.Component {
         />
       </RaceHeader>
       <ScrollPosition
-        itemHeight={42}
+        itemHeight={41}
         items={this.state.results}
         render={(totalHeight, heightOffset, results) => (
           (<SimpleResults totalHeight={totalHeight} results={results} heightOffset={heightOffset} />)

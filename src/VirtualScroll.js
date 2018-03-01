@@ -1,4 +1,16 @@
 
+// return the array items we can display
+export function GetNumberOfItemScrolledOutOfView(elementHeight,
+  elementYFromTopOfWindow, itemHeight, scrollPositionY) {
+  if ((elementYFromTopOfWindow - Math.round(scrollPositionY)) >= 0) {
+    return 0;
+  }
+
+
+  return Math.floor((Math.round(scrollPositionY) - elementYFromTopOfWindow) / itemHeight);
+}
+
+
 // return the number of visible pixels available
 export function GetListHeightAvailableOnScreen(elementHeight,
   elementYFromTopOfWindow, scrollPositionY, windowHeight) {
@@ -52,26 +64,25 @@ export function GetVisibleItems(itemArray, itemHeight, heightAvailable, heightOf
     return itemArray.slice(0, numOfItemsThatCanBeRendered);
   }
 
-  // heightOffset is greater than 0... the top of the list is off the page
+  // heightOffset is greater than 0... the top of the element is off the page
   const numOfItemsOffThePage = Math.floor(heightOffset / itemHeight);
 
   if ((heightOffset % itemHeight) > 0) {
     // didn't divide evenly
-    console.log('here');
     numOfItemsThatCanBeRendered += 1;
   }
 
   const startPosition = numOfItemsOffThePage;
-  const endPosition = startPosition + (numOfItemsThatCanBeRendered);
+  const endPosition = startPosition + numOfItemsThatCanBeRendered;
 
   return itemArray.slice(startPosition, endPosition);
 }
 
 // calc how far down we need to move the items within the container
-export function GetVisibleListitemHeightOffset(elementHeight, elementYFromTopOfWindow,
+export function GetOffsetYForElement(elementHeight, elementYFromTopOfWindow,
   scrollPositionY, windowHeight) {
   if (elementYFromTopOfWindow >= Math.round(scrollPositionY)) {
-    // no offset needed.. the top of the main list element is visible
+    // no offset needed.. the top of the element is visible
     return 0;
   }
 
@@ -80,19 +91,12 @@ export function GetVisibleListitemHeightOffset(elementHeight, elementYFromTopOfW
       scrollPositionY, windowHeight);
 
   if (availableHeightForElement === 0) {
-    // the list is off the visible page.
+    // the element is off the visible page.
     return 0;
   }
 
-  // if the end of the list is visible... lock the offset at its max.
-
+  //this places the offset at the top of the window
   const offset = (Math.round(scrollPositionY) - elementYFromTopOfWindow);
-
-  const maxOffset = elementHeight - windowHeight;
-
-  if (offset > maxOffset) {
-    return maxOffset;
-  }
 
   return offset;
 }
