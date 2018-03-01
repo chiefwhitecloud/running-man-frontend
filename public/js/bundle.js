@@ -30287,7 +30287,7 @@ var ImportRace = exports.ImportRace = function (_EventEmitter) {
   return ImportRace;
 }(_events.EventEmitter);
 
-},{"./../xhr":442,"events":326}],400:[function(require,module,exports){
+},{"./../xhr":443,"events":326}],400:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31913,7 +31913,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":442,"events":326}],414:[function(require,module,exports){
+},{"./../xhr":443,"events":326}],414:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32080,7 +32080,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":442}],417:[function(require,module,exports){
+},{"./../xhr":443}],417:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32643,7 +32643,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../RaceTimeConverter":397,"./../xhr":442,"./FetchData":416,"./FilterBar":417,"./Loading":420,"./RaceHeader":422,"./ScrollPosition":434,"./SelectedFilters":435,"./SimpleResults":437,"react":389}],419:[function(require,module,exports){
+},{"./../RaceTimeConverter":397,"./../xhr":443,"./FetchData":416,"./FilterBar":417,"./Loading":420,"./RaceHeader":422,"./ScrollPosition":434,"./SelectedFilters":435,"./SimpleResults":437,"react":389}],419:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33544,7 +33544,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":442,"./RaceResultsTable":423,"react":389}],428:[function(require,module,exports){
+},{"./../xhr":443,"./RaceResultsTable":423,"react":389}],428:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34113,167 +34113,128 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _reactRouterDom = require('react-router-dom');
+
+var _RaceResult = require('../types/RaceResult');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SimpleResultRow = function (_React$Component) {
-  _inherits(SimpleResultRow, _React$Component);
-
-  function SimpleResultRow() {
-    _classCallCheck(this, SimpleResultRow);
-
-    return _possibleConstructorReturn(this, (SimpleResultRow.__proto__ || Object.getPrototypeOf(SimpleResultRow)).apply(this, arguments));
-  }
-
-  _createClass(SimpleResultRow, [{
-    key: 'shouldComponentUpdate',
-    value: function shouldComponentUpdate() {
-      return false;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
+var SimpleResultRow = function SimpleResultRow(props) {
+  return _react2.default.createElement(
+    'div',
+    { className: 'table_row' },
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
         'div',
-        { className: 'table_row' },
+        { className: 'table_cell' },
+        'Position'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.position
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Bib'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.bibNumber
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Name'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
         _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Position'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            this.props.position
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Bib'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            this.props.bibNumber
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Name'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            _react2.default.createElement(
-              _reactRouterDom.Link,
-              { to: '/racer/' + this.props.racerId },
-              this.props.name
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Time'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            this.props.time
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Category'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            this.props.sex,
-            ' (',
-            this.props.sexPosition,
-            ')'
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'table_small' },
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            'Age'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'table_cell' },
-            this.props.ageCategory,
-            ' (',
-            this.props.ageCategoryPosition,
-            ')'
-          )
+          _reactRouterDom.Link,
+          { to: '/racer/' + props.racerId },
+          props.name
         )
-      );
-    }
-  }]);
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Time'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.time
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Category'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.sex,
+        ' (',
+        props.sexPosition,
+        ')'
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Age'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.ageCategory,
+        ' (',
+        props.ageCategoryPosition,
+        ')'
+      )
+    )
+  );
+};
 
-  return SimpleResultRow;
-}(_react2.default.Component);
+SimpleResultRow.propTypes = _RaceResult.RaceResultPropType;
 
 exports.default = SimpleResultRow;
 
-
-SimpleResultRow.propTypes = {
-  bibNumber: _propTypes2.default.string.isRequired,
-  position: _propTypes2.default.number.isRequired,
-  racerId: _propTypes2.default.string.isRequired,
-  name: _propTypes2.default.string.isRequired,
-  time: _propTypes2.default.string.isRequired
-};
-
-},{"prop-types":357,"react":389,"react-router-dom":373}],437:[function(require,module,exports){
+},{"../types/RaceResult":442,"react":389,"react-router-dom":373}],437:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -34281,6 +34242,8 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _RaceResult = require('../types/RaceResult');
 
 var _SimpleResultRow = require('./SimpleResultRow');
 
@@ -34288,64 +34251,42 @@ var _SimpleResultRow2 = _interopRequireDefault(_SimpleResultRow);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var SimpleResults = function SimpleResults(props) {
+  var results = props.results.map(function (result) {
+    return _react2.default.createElement(_SimpleResultRow2.default, {
+      key: result.racerId,
+      racerId: result.racerId,
+      name: result.name,
+      position: result.position,
+      bibNumber: result.bibNumber,
+      time: result.time,
+      sex: result.sex,
+      sexPosition: result.sexPosition,
+      ageCategory: result.ageCategory,
+      ageCategoryPosition: result.ageCategoryPosition
+    });
+  });
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SimpleResults = function (_Component) {
-  _inherits(SimpleResults, _Component);
-
-  function SimpleResults() {
-    _classCallCheck(this, SimpleResults);
-
-    return _possibleConstructorReturn(this, (SimpleResults.__proto__ || Object.getPrototypeOf(SimpleResults)).apply(this, arguments));
-  }
-
-  _createClass(SimpleResults, [{
-    key: 'render',
-    value: function render() {
-      var results = this.props.results.map(function (result) {
-        return _react2.default.createElement(_SimpleResultRow2.default, {
-          key: result.racerId,
-          racerId: result.racerId,
-          name: result.name,
-          position: result.position,
-          bibNumber: result.bibNumber,
-          time: result.time,
-          sex: result.sex,
-          sexPosition: result.sexPosition,
-          ageCategory: result.ageCategory,
-          ageCategoryPosition: result.ageCategoryPosition
-        });
-      });
-
-      return _react2.default.createElement(
-        'div',
-        { style: { height: this.props.totalHeight, position: 'relative' } },
-        _react2.default.createElement(
-          'div',
-          { className: 'table', style: { position: 'absolute', top: this.props.heightOffset } },
-          results
-        )
-      );
-    }
-  }]);
-
-  return SimpleResults;
-}(_react.Component);
-
-exports.default = SimpleResults;
-
+  return _react2.default.createElement(
+    'div',
+    { style: { height: props.totalHeight, position: 'relative' } },
+    _react2.default.createElement(
+      'div',
+      { className: 'table', style: { position: 'absolute', top: props.heightOffset } },
+      results
+    )
+  );
+};
 
 SimpleResults.propTypes = {
   heightOffset: _propTypes2.default.number.isRequired,
   totalHeight: _propTypes2.default.number.isRequired,
-  results: _propTypes2.default.array.isRequired
+  results: _propTypes2.default.arrayOf(_RaceResult.RaceResultPropType).isRequired
 };
 
-},{"./SimpleResultRow":436,"prop-types":357,"react":389}],438:[function(require,module,exports){
+exports.default = SimpleResults;
+
+},{"../types/RaceResult":442,"./SimpleResultRow":436,"prop-types":357,"react":389}],438:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34615,6 +34556,32 @@ var TopNavBar = function TopNavBar() {
 exports.default = TopNavBar;
 
 },{"react":389,"react-router-dom":373}],442:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RaceResultPropType = undefined;
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RaceResultPropType = exports.RaceResultPropType = _propTypes2.default.shape({
+  racerId: _propTypes2.default.number.isRequired,
+  name: _propTypes2.default.string.isRequired,
+  position: _propTypes2.default.number.isRequired,
+  bibNumber: _propTypes2.default.string.isRequired,
+  time: _propTypes2.default.string.isRequired,
+  sex: _propTypes2.default.string.isRequired,
+  sexPosition: _propTypes2.default.number.isRequired,
+  ageCategory: _propTypes2.default.string.isRequired,
+  ageCategoryPosition: _propTypes2.default.number.isRequired
+});
+
+},{"prop-types":357}],443:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,34 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-
+import { RaceResultPropType } from '../types/RaceResult';
 import SimpleResultRow from './SimpleResultRow';
 
-export default class SimpleResults extends Component {
-  render() {
-    const results = this.props.results.map(result =>
-      <SimpleResultRow
-        key={result.racerId}
-        racerId={result.racerId}
-        name={result.name}
-        position={result.position}
-        bibNumber={result.bibNumber}
-        time={result.time}
-        sex={result.sex}
-        sexPosition={result.sexPosition}
-        ageCategory={result.ageCategory}
-        ageCategoryPosition={result.ageCategoryPosition}
-      />);
+const SimpleResults = (props) => {
+  const results = props.results.map(result =>
+    <SimpleResultRow
+      key={result.racerId}
+      racerId={result.racerId}
+      name={result.name}
+      position={result.position}
+      bibNumber={result.bibNumber}
+      time={result.time}
+      sex={result.sex}
+      sexPosition={result.sexPosition}
+      ageCategory={result.ageCategory}
+      ageCategoryPosition={result.ageCategoryPosition}
+    />);
 
-    return (<div style={{ height: this.props.totalHeight, position: 'relative' }}>
-      <div className={'table'} style={{ position: 'absolute', top: this.props.heightOffset }}>
-        {results}
-      </div>
-    </div>);
-  }
-}
+  return (<div style={{ height: props.totalHeight, position: 'relative' }}>
+    <div className={'table'} style={{ position: 'absolute', top: props.heightOffset }}>
+      {results}
+    </div>
+  </div>);
+};
 
 SimpleResults.propTypes = {
   heightOffset: PropTypes.number.isRequired,
   totalHeight: PropTypes.number.isRequired,
-  results: PropTypes.array.isRequired,
+  results: PropTypes.arrayOf(RaceResultPropType).isRequired,
 };
+
+export default SimpleResults;
