@@ -30287,7 +30287,7 @@ var ImportRace = exports.ImportRace = function (_EventEmitter) {
   return ImportRace;
 }(_events.EventEmitter);
 
-},{"./../xhr":443,"events":326}],400:[function(require,module,exports){
+},{"./../xhr":444,"events":326}],400:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30721,7 +30721,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./../components/TabPane":439,"./../components/Tabs":440,"./ImportRaceContainer":400,"./RaceGroupListContainer":406,"./RaceListContainer":410,"react":389}],404:[function(require,module,exports){
+},{"./../components/TabPane":440,"./../components/Tabs":441,"./ImportRaceContainer":400,"./RaceGroupListContainer":406,"./RaceListContainer":410,"react":389}],404:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31913,7 +31913,7 @@ var Store = function (_EventEmitter) {
 
 var store = exports.store = new Store();
 
-},{"./../xhr":443,"events":326}],414:[function(require,module,exports){
+},{"./../xhr":444,"events":326}],414:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31987,7 +31987,7 @@ var App = function App() {
 
 exports.default = App;
 
-},{"../AdminApp":393,"./HeroComponent":419,"./Main":421,"./Races/ListContainer":430,"./TopNavBar":441,"react":389,"react-router-dom":373}],415:[function(require,module,exports){
+},{"../AdminApp":393,"./HeroComponent":419,"./Main":421,"./Races/ListContainer":430,"./TopNavBar":442,"react":389,"react-router-dom":373}],415:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32080,7 +32080,7 @@ var doRequests = exports.doRequests = function doRequests(requests) {
   return Promise.all(xhrs);
 };
 
-},{"./../xhr":443}],417:[function(require,module,exports){
+},{"./../xhr":444}],417:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32445,6 +32445,10 @@ var _SimpleResults = require('./SimpleResults');
 
 var _SimpleResults2 = _interopRequireDefault(_SimpleResults);
 
+var _SimpleResultsHeader = require('./SimpleResultsHeader');
+
+var _SimpleResultsHeader2 = _interopRequireDefault(_SimpleResultsHeader);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32467,7 +32471,8 @@ var FilterableRaceResults = function (_React$Component) {
       race: {},
       results: [],
       isLoading: true,
-      selectedAgeCategoryKeys: []
+      selectedAgeCategoryKeys: [],
+      showChipTime: false
     };
     var raceMeta = void 0;
     _xhr2.default.get('/feed/race/' + props.match.params.raceId).then(function (race) {
@@ -32531,6 +32536,14 @@ var FilterableRaceResults = function (_React$Component) {
         result.pace = (0, _RaceTimeConverter.GetPace)(result.time, _this.raceGroup.distance);
       });
 
+      var showChipTime = false;
+
+      if (_this.raceResults.length > 0) {
+        if (_this.raceResults[0].chipTime) {
+          showChipTime = true;
+        }
+      }
+
       _this.ageCategories = ageCategories;
 
       _this.setState({
@@ -32538,7 +32551,8 @@ var FilterableRaceResults = function (_React$Component) {
         results: raceResults["results"],
         selectedAgeCategory: undefined,
         isLoading: false,
-        selectedAgeCategoryKeys: []
+        selectedAgeCategoryKeys: [],
+        showChipTime: showChipTime
       });
     });
     return _this;
@@ -32627,6 +32641,7 @@ var FilterableRaceResults = function (_React$Component) {
             selectedAgeCategoryKey: this.state.selectedAgeCategoryKeys
           })
         ),
+        _react2.default.createElement(_SimpleResultsHeader2.default, { showChipTime: this.state.showChipTime }),
         _react2.default.createElement(_ScrollPosition2.default, {
           itemHeight: 41,
           items: this.state.results,
@@ -32643,7 +32658,7 @@ var FilterableRaceResults = function (_React$Component) {
 
 exports.default = FilterableRaceResults;
 
-},{"./../RaceTimeConverter":397,"./../xhr":443,"./FetchData":416,"./FilterBar":417,"./Loading":420,"./RaceHeader":422,"./ScrollPosition":434,"./SelectedFilters":435,"./SimpleResults":437,"react":389}],419:[function(require,module,exports){
+},{"./../RaceTimeConverter":397,"./../xhr":444,"./FetchData":416,"./FilterBar":417,"./Loading":420,"./RaceHeader":422,"./ScrollPosition":434,"./SelectedFilters":435,"./SimpleResults":437,"./SimpleResultsHeader":438,"react":389}],419:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33544,7 +33559,7 @@ var RacerResult = function (_React$Component) {
 
 exports.default = RacerResult;
 
-},{"./../xhr":443,"./RaceResultsTable":423,"react":389}],428:[function(require,module,exports){
+},{"./../xhr":444,"./RaceResultsTable":423,"react":389}],428:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34124,6 +34139,25 @@ var _RaceResult = require('../types/RaceResult');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SimpleResultRow = function SimpleResultRow(props) {
+  var chipTimeCell = null;
+
+  if (props.chipTime) {
+    chipTimeCell = _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Chip Time'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.chipTime
+      )
+    );
+  }
+
   return _react2.default.createElement(
     'div',
     { className: 'table_row' },
@@ -34187,6 +34221,21 @@ var SimpleResultRow = function SimpleResultRow(props) {
         props.time
       )
     ),
+    chipTimeCell,
+    _react2.default.createElement(
+      'div',
+      { className: 'table_small' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        'Pace'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_cell' },
+        props.pace
+      )
+    ),
     _react2.default.createElement(
       'div',
       { className: 'table_small' },
@@ -34228,7 +34277,7 @@ SimpleResultRow.propTypes = _RaceResult.RaceResultPropType;
 
 exports.default = SimpleResultRow;
 
-},{"../types/RaceResult":442,"react":389,"react-router-dom":373}],437:[function(require,module,exports){
+},{"../types/RaceResult":443,"react":389,"react-router-dom":373}],437:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34260,6 +34309,8 @@ var SimpleResults = function SimpleResults(props) {
       position: result.position,
       bibNumber: result.bibNumber,
       time: result.time,
+      pace: result.pace,
+      chipTime: result.chipTime,
       sex: result.sex,
       sexPosition: result.sexPosition,
       ageCategory: result.ageCategory,
@@ -34267,12 +34318,19 @@ var SimpleResults = function SimpleResults(props) {
     });
   });
 
+  var resultsStyle = {
+    position: 'absolute',
+    top: props.heightOffset,
+    left: 0,
+    right: 0
+  };
+
   return _react2.default.createElement(
     'div',
     { style: { height: props.totalHeight, position: 'relative' } },
     _react2.default.createElement(
       'div',
-      { className: 'table', style: { position: 'absolute', top: props.heightOffset } },
+      { className: 'table', style: resultsStyle },
       results
     )
   );
@@ -34286,7 +34344,79 @@ SimpleResults.propTypes = {
 
 exports.default = SimpleResults;
 
-},{"../types/RaceResult":442,"./SimpleResultRow":436,"prop-types":357,"react":389}],438:[function(require,module,exports){
+},{"../types/RaceResult":443,"./SimpleResultRow":436,"prop-types":357,"react":389}],438:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SimpleResultsHeader = function SimpleResultsHeader(props) {
+  var chipTimeCell = null;
+
+  if (props.showChipTime) {
+    chipTimeCell = _react2.default.createElement(
+      'div',
+      { className: 'table_header' },
+      'Chip Time'
+    );
+  }
+
+  return _react2.default.createElement(
+    'div',
+    { className: 'table' },
+    _react2.default.createElement(
+      'div',
+      { className: 'theader' },
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Place'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Bib'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Name'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Time'
+      ),
+      chipTimeCell,
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Pace'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Cat'
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'table_header' },
+        'Age'
+      )
+    )
+  );
+};
+
+exports.default = SimpleResultsHeader;
+
+},{"react":389}],439:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34344,7 +34474,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"react":389}],439:[function(require,module,exports){
+},{"react":389}],440:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34377,7 +34507,7 @@ TabPane.propTypes = {
 
 exports.default = TabPane;
 
-},{"prop-types":357,"react":389}],440:[function(require,module,exports){
+},{"prop-types":357,"react":389}],441:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34468,7 +34598,7 @@ var _class = function (_React$Component) {
 
 exports.default = _class;
 
-},{"./TabHeader":438,"react":389}],441:[function(require,module,exports){
+},{"./TabHeader":439,"react":389}],442:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34555,13 +34685,12 @@ var TopNavBar = function TopNavBar() {
 
 exports.default = TopNavBar;
 
-},{"react":389,"react-router-dom":373}],442:[function(require,module,exports){
+},{"react":389,"react-router-dom":373}],443:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RaceResultPropType = undefined;
 
 var _propTypes = require('prop-types');
 
@@ -34569,19 +34698,23 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var RaceResultPropType = exports.RaceResultPropType = _propTypes2.default.shape({
+var RaceResultPropType = _propTypes2.default.shape({
   racerId: _propTypes2.default.number.isRequired,
   name: _propTypes2.default.string.isRequired,
   position: _propTypes2.default.number.isRequired,
   bibNumber: _propTypes2.default.string.isRequired,
   time: _propTypes2.default.string.isRequired,
+  pace: _propTypes2.default.string,
+  chipTime: _propTypes2.default.string,
   sex: _propTypes2.default.string.isRequired,
   sexPosition: _propTypes2.default.number.isRequired,
   ageCategory: _propTypes2.default.string.isRequired,
   ageCategoryPosition: _propTypes2.default.number.isRequired
 });
 
-},{"prop-types":357}],443:[function(require,module,exports){
+exports.default = RaceResultPropType;
+
+},{"prop-types":357}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

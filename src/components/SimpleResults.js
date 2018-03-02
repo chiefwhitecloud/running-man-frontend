@@ -12,14 +12,23 @@ const SimpleResults = (props) => {
       position={result.position}
       bibNumber={result.bibNumber}
       time={result.time}
+      pace={result.pace}
+      chipTime={result.chipTime}
       sex={result.sex}
       sexPosition={result.sexPosition}
       ageCategory={result.ageCategory}
       ageCategoryPosition={result.ageCategoryPosition}
     />);
 
+  const resultsStyle = {
+    position: 'absolute',
+    top: props.heightOffset,
+    left: 0,
+    right: 0,
+  };
+
   return (<div style={{ height: props.totalHeight, position: 'relative' }}>
-    <div className={'table'} style={{ position: 'absolute', top: props.heightOffset }}>
+    <div className={'table'} style={resultsStyle}>
       {results}
     </div>
   </div>);

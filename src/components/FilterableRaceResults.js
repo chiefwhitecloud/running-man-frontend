@@ -8,6 +8,7 @@ import { GetPace } from './../RaceTimeConverter';
 import { doRequests } from './FetchData';
 import ScrollPosition from './ScrollPosition';
 import SimpleResults from './SimpleResults';
+import SimpleResultsHeader from './SimpleResultsHeader';
 
 export default class FilterableRaceResults extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class FilterableRaceResults extends React.Component {
       results: [],
       isLoading: true,
       selectedAgeCategoryKeys: [],
+      showChipTime: false,
     };
     let raceMeta;
     xhr.get(`/feed/race/${props.match.params.raceId}`).then((race) => {
@@ -59,6 +61,14 @@ export default class FilterableRaceResults extends React.Component {
         result.pace = GetPace(result.time, this.raceGroup.distance);
       });
 
+      let showChipTime = false;
+
+      if (this.raceResults.length > 0) {
+        if (this.raceResults[0].chipTime !== undefined) {
+          showChipTime = true;
+        }
+      }
+
       this.ageCategories = ageCategories;
 
       this.setState({
@@ -66,7 +76,8 @@ export default class FilterableRaceResults extends React.Component {
         results: raceResults["results"],
         selectedAgeCategory: undefined,
         isLoading: false,
-        selectedAgeCategoryKeys: []
+        selectedAgeCategoryKeys: [],
+        showChipTime,
       });
     });
   }
@@ -108,6 +119,7 @@ export default class FilterableRaceResults extends React.Component {
           selectedAgeCategoryKey={this.state.selectedAgeCategoryKeys}
         />
       </RaceHeader>
+      <SimpleResultsHeader showChipTime={this.state.showChipTime} />
       <ScrollPosition
         itemHeight={41}
         items={this.state.results}
