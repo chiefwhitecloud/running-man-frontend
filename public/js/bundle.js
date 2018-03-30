@@ -32539,7 +32539,7 @@ var FilterableRaceResults = function (_React$Component) {
       var showChipTime = false;
 
       if (_this.raceResults.length > 0) {
-        if (_this.raceResults[0].chipTime) {
+        if (_this.raceResults[0].chipTime !== undefined) {
           showChipTime = true;
         }
       }
@@ -34144,7 +34144,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
   if (props.chipTime) {
     chipTimeCell = _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_chiptime' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34152,7 +34152,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value' },
         props.chipTime
       )
     );
@@ -34160,10 +34160,10 @@ var SimpleResultRow = function SimpleResultRow(props) {
 
   return _react2.default.createElement(
     'div',
-    { className: 'table_row' },
+    { className: 'table_row raceresultstable__row' },
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_position' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34171,13 +34171,13 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value raceresultstable__value_position' },
         props.position
       )
     ),
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_bib' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34185,13 +34185,13 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value raceresultstable__value_bib' },
         props.bibNumber
       )
     ),
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_name' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34199,7 +34199,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value raceresultstable__value_name' },
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: '/racer/' + props.racerId },
@@ -34209,7 +34209,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
     ),
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_time' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34217,14 +34217,14 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value' },
         props.time
       )
     ),
     chipTimeCell,
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_pace' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34232,13 +34232,13 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value' },
         props.pace
       )
     ),
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_cat' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34246,7 +34246,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value' },
         props.sex,
         ' (',
         props.sexPosition,
@@ -34255,7 +34255,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
     ),
     _react2.default.createElement(
       'div',
-      { className: 'table_small' },
+      { className: 'table_small raceresultstable__column_age' },
       _react2.default.createElement(
         'div',
         { className: 'table_cell' },
@@ -34263,7 +34263,7 @@ var SimpleResultRow = function SimpleResultRow(props) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_cell' },
+        { className: 'table_cell raceresultstable__value' },
         props.ageCategory,
         ' (',
         props.ageCategoryPosition,
@@ -34322,7 +34322,8 @@ var SimpleResults = function SimpleResults(props) {
     position: 'absolute',
     top: props.heightOffset,
     left: 0,
-    right: 0
+    right: 0,
+    width: '100%'
   };
 
   return _react2.default.createElement(
@@ -34330,7 +34331,7 @@ var SimpleResults = function SimpleResults(props) {
     { style: { height: props.totalHeight, position: 'relative' } },
     _react2.default.createElement(
       'div',
-      { className: 'table', style: resultsStyle },
+      { className: 'table raceresultstable', style: resultsStyle },
       results
     )
   );
@@ -34363,51 +34364,51 @@ var SimpleResultsHeader = function SimpleResultsHeader(props) {
   if (props.showChipTime) {
     chipTimeCell = _react2.default.createElement(
       'div',
-      { className: 'table_header' },
+      { className: 'table_header raceresultsheader__column_chiptime' },
       'Chip Time'
     );
   }
 
   return _react2.default.createElement(
     'div',
-    { className: 'table' },
+    { className: 'table raceresultsheader' },
     _react2.default.createElement(
       'div',
       { className: 'theader' },
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_position' },
         'Place'
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_bib' },
         'Bib'
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_name' },
         'Name'
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_time' },
         'Time'
       ),
       chipTimeCell,
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_pace' },
         'Pace'
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_cat' },
         'Cat'
       ),
       _react2.default.createElement(
         'div',
-        { className: 'table_header' },
+        { className: 'table_header raceresultsheader__column_age' },
         'Age'
       )
     )

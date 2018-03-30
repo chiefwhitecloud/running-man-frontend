@@ -25,10 +25,11 @@ const SimpleResults = (props) => {
     top: props.heightOffset,
     left: 0,
     right: 0,
+    width: '100%',
   };
 
   return (<div style={{ height: props.totalHeight, position: 'relative' }}>
-    <div className={'table'} style={resultsStyle}>
+    <div className={'table raceresultstable'} style={resultsStyle}>
       {results}
     </div>
   </div>);
